@@ -1,3 +1,3 @@
-add_executable(bloodline
-  main.cpp
-)
+add_subdirectory(client)
+add_subdirectory(server)
+add_subdirectory(data)

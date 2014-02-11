@@ -15,17 +15,17 @@ public abstract class LivingThing {
 	/**
 	 * Creates a LivingThing in a starting area.
 	 * 
-	 * @param startingArea
-	 *            This is where the newly created living thing will appear
+	 * @param startingArea This is where the newly created living thing will
+	 *            appear
 	 */
 	public LivingThing(Area startingArea) {
 		area = startingArea;
-		// area.register(this); 
+		area.register(this);
 	}
 
-	public abstract void live(); 
-	
+	public abstract void live();
+
 	public void die() {
-		// area.unregister(this); 
+		area.unregister(this);
 	}
 }

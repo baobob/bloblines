@@ -16,6 +16,8 @@ public abstract class LivingThing {
 
 	public Area area;
 
+	public boolean dead = false;
+
 	/**
 	 * Creates a LivingThing in a starting area.
 	 * 
@@ -30,7 +32,11 @@ public abstract class LivingThing {
 	public abstract void live();
 
 	public void die() {
-		area.unregister(this);
+		// area.unregister(this);
+	}
+
+	public void dieLater() {
+		dead = true;
 	}
 
 	/**

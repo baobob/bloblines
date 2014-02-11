@@ -2,6 +2,7 @@ package org.bloblines.data.world;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +54,14 @@ public class Area {
 		}
 		for (Area area : subAreas) {
 			area.live();
+		}
+		Iterator<LivingThing> deathIterator = livingThings.iterator();
+		while (deathIterator.hasNext()) {
+			LivingThing livingThing = deathIterator.next();
+			if (livingThing.dead) {
+				livingThing.die();
+				deathIterator.remove();
+			}
 		}
 	}
 }

@@ -18,12 +18,14 @@ public class Launcher {
 		new Potato(world);
 		new Potato(world);
 		new Cucumber(world);
-		new Blob(null, null, world); 
-		new Blob(null, null, world); 
 		new Blob(null, null, world);
-		
-		// world.launch();
-		
+		new Blob(null, null, world);
+		new Blob(null, null, world);
+
+		int i = 0;
+		while (i++ < 150)
+			world.live();
+
 	}
 
 }

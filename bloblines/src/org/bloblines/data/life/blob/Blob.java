@@ -21,4 +21,14 @@ public class Blob extends LivingThing {
 		super(startingArea);
 	}
 
+	@Override
+	public void live() {
+		
+	}
+
+	@Override
+	public void die() {
+			
+	}
+
 }

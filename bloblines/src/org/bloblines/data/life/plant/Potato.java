@@ -14,6 +14,8 @@ public class Potato extends LivingThing {
 		super(startingArea);
 	}
 
-	
-	
+	@Override
+	public void live() {
+		
+	}
 }

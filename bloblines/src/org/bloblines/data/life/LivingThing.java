@@ -10,7 +10,7 @@ import org.bloblines.data.world.Area;
  */
 public abstract class LivingThing {
 
-	private Area area;
+	public Area area;
 
 	/**
 	 * Creates a LivingThing in a starting area.
@@ -19,7 +19,13 @@ public abstract class LivingThing {
 	 *            This is where the newly created living thing will appear
 	 */
 	public LivingThing(Area startingArea) {
-		this.area = startingArea;
+		area = startingArea;
+		// area.register(this); 
 	}
 
+	public abstract void live(); 
+	
+	public void die() {
+		// area.unregister(this); 
+	}
 }

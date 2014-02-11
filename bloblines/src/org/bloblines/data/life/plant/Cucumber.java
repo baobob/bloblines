@@ -13,5 +13,10 @@ public class Cucumber extends LivingThing {
 	public Cucumber(Area startingArea) {
 		super(startingArea);
 	}
+
+	@Override
+	public void live() {
+		
+	}
 	
 }

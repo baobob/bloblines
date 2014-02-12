@@ -23,8 +23,14 @@ public class Launcher {
 		new Blob(null, null, world);
 
 		int i = 0;
-		while (i++ < 150)
+		while (i++ < 300) {
 			world.live();
+			if (i % 30 == 0) {
+				System.out.println("There are currently "
+						+ world.livingThings.size()
+						+ " living things in this world");
+			}
+		}
 
 	}
 

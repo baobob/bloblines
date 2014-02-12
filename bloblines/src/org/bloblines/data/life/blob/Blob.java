@@ -24,22 +24,22 @@ public class Blob extends LivingThing {
 
 	@Override
 	public void live() {
-		if (random(10)) {
-			System.out.println(name + "> \"I'm happy to be " + age + "\"");
+		if (random(5)) {
+			say("I'm happy to be " + age);
 		} else if (random(5)) {
-			System.out.println(name + "> \"To Blob or not to Blob...\"");
+			say("To Blob or not to Blob...");
 		}
 		age++;
 		if (random(age - 20)) {
-			dieLater();
+			die();
 		}
 	}
 
 	@Override
 	public void die() {
+		say("Arrrgh. ");
+		say("-- dead at the age of " + age);
 		super.die();
-		System.out.println(name + "> \"Arrrgh. \"");
-		System.out.println("\t" + name + " is dead at the age of " + age);
 	}
 
 }

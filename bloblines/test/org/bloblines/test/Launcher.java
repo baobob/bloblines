@@ -12,7 +12,7 @@ public class Launcher {
 	 */
 	public static void main(String[] args) {
 		// Create a world with a few area
-		Area world = new Area();
+		Area world = new Area(100, 100);
 
 		// Create some living things
 		new Potato(world);

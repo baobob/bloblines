@@ -53,8 +53,8 @@ public class Potato extends LivingThing {
 			if (random(5)) {
 				say("Mitosis process");
 				// Mitosis process
-				new Potato(area);
-				new Potato(area);
+				//				new Potato(area);
+				//				new Potato(area);
 				die();
 			}
 		}

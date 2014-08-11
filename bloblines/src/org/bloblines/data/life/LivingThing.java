@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bloblines.data.world.Area;
+import org.bloblines.data.world.Pos;
 
 /**
  * Represents a living thing in BlobWorld
@@ -20,9 +21,9 @@ public abstract class LivingThing {
 	public static Random r = new Random();
 
 	/**
-	 * The area where the livingThing currently is.
+	 * The Position where the livingThing currently is.
 	 */
-	public Area area;
+	public Pos p;
 
 	/**
 	 * Is this living thing alive ? Set to true on instantiation. die() method
@@ -34,6 +35,8 @@ public abstract class LivingThing {
 	 * Unique identifier.
 	 */
 	public String name = id();
+
+	public Area area;
 
 	/**
 	 * Creates a LivingThing in a starting area.

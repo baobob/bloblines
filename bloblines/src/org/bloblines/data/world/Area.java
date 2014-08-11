@@ -1,13 +1,22 @@
 package org.bloblines.data.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bloblines.data.life.LivingThing;
 
 public class Area {
+
+	public int height;
+	public int width;
+
+	public Pos spawnPoint;
+
+	public Map<Pos, Cell> cells = new HashMap<Pos, Cell>();
 
 	/**
 	 * List of sub areas contained inside this area.
@@ -32,11 +41,13 @@ public class Area {
 	/**
 	 * Construct an empty area.
 	 */
-	public Area() {
+	public Area(int w, int h) {
 		subAreas = new ArrayList<>();
 		livingThings = new HashSet<>();
 		futureLivingThings = new HashSet<>();
 		futureDeadThings = new HashSet<>();
+		width = w;
+		height = h;
 	}
 
 	/**
@@ -46,6 +57,7 @@ public class Area {
 	 */
 	public void register(LivingThing thing) {
 		futureLivingThings.add(thing);
+		thing.p = spawnPoint;
 	}
 
 	/**

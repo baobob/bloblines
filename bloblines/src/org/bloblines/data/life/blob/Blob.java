@@ -7,6 +7,8 @@ public class Blob extends LivingThing {
 
 	public String name;
 	public int age = 0;
+	public int life = 100;
+	public int lifeMax = 100;
 
 	/**
 	 * Creates a Blob from a dominantParent and a recessiveParent. The newly
@@ -20,6 +22,7 @@ public class Blob extends LivingThing {
 	public Blob(Blob dominantParent, Blob recessiveParent, Area startingArea) {
 		super(startingArea);
 		name = "BobTheBlob" + r.nextInt(100);
+
 	}
 
 	@Override

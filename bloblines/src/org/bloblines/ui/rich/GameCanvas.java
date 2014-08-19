@@ -8,7 +8,9 @@ import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 
 import org.bloblines.data.game.Player;
+import org.bloblines.data.life.blob.Blob;
 import org.bloblines.data.world.Cell;
+import org.bloblines.data.world.Cell.Type;
 import org.bloblines.data.world.Pos;
 import org.bloblines.server.GameServer;
 
@@ -28,6 +30,7 @@ public class GameCanvas extends JPanel implements KeyListener {
 		this.server = server;
 		this.player = player;
 		setFocusable(true);
+		setOpaque(false);
 		addKeyListener(this);
 	}
 
@@ -49,7 +52,19 @@ public class GameCanvas extends JPanel implements KeyListener {
 		g.setColor(Color.RED);
 		g.drawRect(BLOBS_X, BLOBS_Y, BLOBS_W, BLOBS_H);
 
-		System.out.println(player.blobs);
+		int x = BLOBS_X + 20;
+		int y = BLOBS_Y + 20;
+		for (Blob b : player.blobs) {
+			drawBlobInfo(b, x, y, g);
+			y += 100;
+		}
+	}
+
+	private void drawBlobInfo(Blob b, int x, int y, Graphics g) {
+		g.setColor(Color.BLACK);
+		g.drawString("Name : " + b.name, x, y);
+		g.drawString("Age : " + b.age, x, y + 20);
+		g.drawString("Life : " + b.life + "/" + b.lifeMax, x, y + 40);
 	}
 
 	private final static int MAP_X = SPACING + BLOBS_W + SPACING;
@@ -84,6 +99,16 @@ public class GameCanvas extends JPanel implements KeyListener {
 		for (int xi = 0; xi < 10; xi++) {
 			for (int yi = 0; yi < 10; yi++) {
 				Cell c = server.world.cells.get(new Pos(p.x + xi, p.y + yi));
+				if (c.type == Type.MOUNTAIN) {
+					g.setColor(Color.DARK_GRAY);
+				} else if (c.type == Type.FOREST) {
+					g.setColor(Color.GREEN);
+				} else {
+					g.setColor(Color.BLUE);
+				}
+				g.fillRect(MAP_X + CELL_SIZE * xi + 1, MAP_Y + CELL_SIZE * yi
+						+ 1, CELL_SIZE - 1, CELL_SIZE - 1);
+				g.setColor(Color.BLACK);
 				g.drawString(c.p.x + "/" + c.p.y, MAP_X + CELL_SIZE * xi + 5,
 						MAP_Y + CELL_SIZE * yi + 15);
 				g.drawString(c.type.name().substring(0, 3), MAP_X + CELL_SIZE
@@ -95,37 +120,80 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	private void drawThings(Graphics g) {
 		// Draw player
-
+		g.setColor(Color.RED);
+		g.drawOval(MAP_X + CELL_SIZE * player.pos.x + 1, MAP_Y + CELL_SIZE
+				* player.pos.y + 1, CELL_SIZE - 1, CELL_SIZE - 1);
 	}
 
 	private void drawMessages(Graphics g) {
 
 	}
 
+	private boolean canMove(Dir d) {
+		return true;
+	}
+
+	private void move(Dir d) {
+		if (canMove(d)) {
+			switch (d) {
+			case NORTH:
+				if (viewPos.y > 0) {
+					viewPos.y--;
+				}
+				if (player.pos.y > 0) {
+					player.pos.y--;
+				}
+				break;
+			case WEST:
+				if (viewPos.x > 0) {
+					viewPos.x--;
+				}
+				if (player.pos.x > 0) {
+					player.pos.x--;
+				}
+				break;
+			case SOUTH:
+				if (viewPos.y < server.world.height) {
+					viewPos.y++;
+				}
+				if (player.pos.y < server.world.height) {
+					player.pos.y++;
+				}
+				break;
+			case EAST:
+				if (viewPos.x < server.world.width) {
+					viewPos.x++;
+				}
+				if (player.pos.y < server.world.height) {
+					player.pos.y++;
+				}
+				break;
+			default:
+				break;
+			}
+		} else {
+			client.info("Cannot move to " + d + " because path is blocked");
+		}
+	}
+
+	public enum Dir {
+		NORTH, WEST, SOUTH, EAST
+	}
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		client.info("Key Pressed " + arg0.getKeyChar() + " : "
-				+ arg0.getKeyCode());
 		switch (arg0.getKeyCode()) {
-		case 37: // LEFT
-			if (viewPos.x > 0) {
-				viewPos.x--;
-			}
-			break;
 		case 38: // UP
-			if (viewPos.y > 0) {
-				viewPos.y--;
-			}
+			move(Dir.NORTH);
 			break;
-		case 39: // RIGHT
-			if (viewPos.x < server.world.width) {
-				viewPos.x++;
-			}
+		case 37: // LEFT
+			move(Dir.WEST);
 			break;
 		case 40: // DOWN
-			if (viewPos.y < server.world.height) {
-				viewPos.y++;
-			}
+			move(Dir.SOUTH);
+			break;
+		case 39: // RIGHT
+			move(Dir.EAST);
 			break;
 		}
 		repaint();

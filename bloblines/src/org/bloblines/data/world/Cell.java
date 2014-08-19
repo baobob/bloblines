@@ -10,7 +10,7 @@ public class Cell {
 
 	public Cell(Pos p) {
 		this.p = p;
-		switch (new Random().nextInt(3)) {
+		switch (new Random().nextInt(8)) {
 		case 0:
 			type = Type.MOUNTAIN;
 			break;

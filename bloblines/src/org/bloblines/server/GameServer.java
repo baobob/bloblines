@@ -52,7 +52,7 @@ public class GameServer {
 			for (int j = 0; j < 100; j++) {
 				Pos p = new Pos(i, j);
 				Cell c = new Cell(p);
-				if (i == 17 && j == 26) {
+				if (i == 5 && j == 5) {
 					// Spawn point is forest
 					c.type = Type.FOREST;
 				}

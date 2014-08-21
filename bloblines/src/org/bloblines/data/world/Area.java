@@ -38,6 +38,10 @@ public class Area {
 	 */
 	public Set<LivingThing> futureDeadThings;
 
+	public enum Dir {
+		NORTH, WEST, SOUTH, EAST
+	}
+
 	/**
 	 * Construct an empty area.
 	 */
@@ -88,5 +92,30 @@ public class Area {
 			livingThings.add(babyThing);
 		}
 		futureLivingThings.clear();
+	}
+
+	public Cell getCell(Pos p, Dir d) {
+		// Map border
+		if (d == Dir.NORTH && p.y == 0 || d == Dir.SOUTH && p.y == height
+				|| d == Dir.WEST && p.x == 0 || d == Dir.EAST && p.x == width) {
+			return null;
+		}
+		return cells.get(Area.getPos(p, d));
+	}
+
+	public static Pos getPos(Pos p, Dir d) {
+		switch (d) {
+		case NORTH:
+			return new Pos(p.x, p.y - 1);
+		case SOUTH:
+			return new Pos(p.x, p.y + 1);
+		case WEST:
+			return new Pos(p.x - 1, p.y);
+		case EAST:
+			return new Pos(p.x + 1, p.y);
+		default:
+			break;
+		}
+		return null;
 	}
 }

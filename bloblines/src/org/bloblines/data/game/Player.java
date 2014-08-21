@@ -5,14 +5,18 @@ import java.util.List;
 
 import org.bloblines.data.life.blob.Blob;
 import org.bloblines.data.world.Area;
+import org.bloblines.data.world.Area.Dir;
+import org.bloblines.data.world.Cell;
 import org.bloblines.data.world.Pos;
 
 public class Player {
 
 	public String name;
 
-	public Pos pos; 
-	
+	public Pos pos;
+
+	public Area area;
+
 	public List<Blob> blobs = new ArrayList<>();
 
 	public Player(String name, Area area) {
@@ -21,7 +25,16 @@ public class Player {
 		this.blobs.add(firstBorn);
 		this.blobs.add(new Blob(null, null, area));
 		this.blobs.add(new Blob(null, null, area));
-		this.pos = area.spawnPoint; 
+		this.pos = area.spawnPoint;
+		this.area = area;
 	}
 
+	public boolean move(Dir d) {
+		Cell c = area.getCell(pos, d);
+		if (c != null && c.isPassable()) {
+			pos = area.getPos(pos, d);
+			return true;
+		}
+		return false;
+	}
 }

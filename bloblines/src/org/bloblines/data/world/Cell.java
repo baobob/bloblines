@@ -25,4 +25,8 @@ public class Cell {
 	public enum Type {
 		WATER, FOREST, MOUNTAIN
 	}
+
+	public boolean isPassable() {
+		return type == Type.FOREST;
+	}
 }

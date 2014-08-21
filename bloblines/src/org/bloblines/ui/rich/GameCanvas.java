@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import org.bloblines.data.game.Player;
 import org.bloblines.data.life.blob.Blob;
+import org.bloblines.data.world.Area.Dir;
 import org.bloblines.data.world.Cell;
 import org.bloblines.data.world.Cell.Type;
 import org.bloblines.data.world.Pos;
@@ -76,8 +77,6 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	private final static int MAP_X = SPACING + BLOBS_W + SPACING;
 	private final static int MAP_Y = SPACING;
-	private final static int MAP_W = 400;
-	private final static int MAP_H = 400;
 
 	private final static int CELL_SIZE = 32;
 
@@ -105,7 +104,8 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	}
 
-	private int MAP_CELLS = 12;
+	private int MAP_CELLS = 13;
+	private int HALF_MAP_CELLS = MAP_CELLS / 2;
 
 	/**
 	 * We'll draw a MAP_CELLS * MAP_CELLS cell grid. This will display world map
@@ -155,71 +155,54 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	}
 
-	private boolean canMove(Dir d) {
-		return true;
-	}
-
-	private void move(Dir d) {
-		if (canMove(d)) {
+	private void clientMove(Dir d) {
+		if (player.move(d)) {
+			// Try to keep the player at the center 
 			switch (d) {
 			case NORTH:
-				if (viewPos.y > 0) {
+				if (viewPos.y > 0
+						&& (player.pos.y - viewPos.y) < HALF_MAP_CELLS) {
 					viewPos.y--;
-				}
-				if (player.pos.y > 0) {
-					player.pos.y--;
 				}
 				break;
 			case WEST:
-				if (viewPos.x > 0) {
+				if (viewPos.x > 0
+						&& (player.pos.x - viewPos.x) < HALF_MAP_CELLS) {
 					viewPos.x--;
-				}
-				if (player.pos.x > 0) {
-					player.pos.x--;
 				}
 				break;
 			case SOUTH:
-				if (viewPos.y < server.world.height) {
+				if (viewPos.y < server.world.height - MAP_CELLS
+						&& (player.pos.y - viewPos.y > HALF_MAP_CELLS)) {
 					viewPos.y++;
-				}
-				if (player.pos.y < server.world.height) {
-					player.pos.y++;
 				}
 				break;
 			case EAST:
-				if (viewPos.x < server.world.width) {
+				if (viewPos.x < server.world.width - MAP_CELLS
+						&& (player.pos.x - viewPos.x) > HALF_MAP_CELLS) {
 					viewPos.x++;
-				}
-				if (player.pos.x < server.world.height) {
-					player.pos.x++;
 				}
 				break;
 			default:
 				break;
 			}
-		} else {
-			client.info("Cannot move to " + d + " because path is blocked");
 		}
-	}
-
-	public enum Dir {
-		NORTH, WEST, SOUTH, EAST
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		switch (arg0.getKeyCode()) {
 		case 38: // UP
-			move(Dir.NORTH);
+			clientMove(Dir.NORTH);
 			break;
 		case 37: // LEFT
-			move(Dir.WEST);
+			clientMove(Dir.WEST);
 			break;
 		case 40: // DOWN
-			move(Dir.SOUTH);
+			clientMove(Dir.SOUTH);
 			break;
 		case 39: // RIGHT
-			move(Dir.EAST);
+			clientMove(Dir.EAST);
 			break;
 		}
 		repaint();

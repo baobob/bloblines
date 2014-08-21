@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.bloblines.data.game.Player;
@@ -23,15 +27,18 @@ public class GameCanvas extends JPanel implements KeyListener {
 	private GameServer server;
 	private Player player;
 
-	private Pos viewPos = new Pos(0, 0);
+	private Pos viewPos = new Pos(11, 20);
 
-	public GameCanvas(Bloblines client, GameServer server, Player player) {
+	public GameCanvas(Bloblines client, GameServer server, Player player)
+			throws IOException {
 		this.client = client;
 		this.server = server;
 		this.player = player;
 		setFocusable(true);
 		setOpaque(false);
 		addKeyListener(this);
+		tileset = ImageIO.read(new File(this.getClass()
+				.getResource("overworld-tileset.png").getFile()));
 	}
 
 	public void paintComponent(Graphics g) {
@@ -72,47 +79,65 @@ public class GameCanvas extends JPanel implements KeyListener {
 	private final static int MAP_W = 400;
 	private final static int MAP_H = 400;
 
-	private final static int CELL_SIZE = 40;
+	private final static int CELL_SIZE = 32;
+
+	private BufferedImage tileset;
+	private int TILE_SIZE = 16;
+
+	private Pos TILE_GRASS = new Pos(16, 16);
+	private Pos TILE_FOREST = new Pos(112, 64);
+	private Pos TILE_MOUNTAIN = new Pos(224, 96);
+	private Pos TILE_WATER = new Pos(64, 128);
 
 	/**
-	 * We'll draw a 10 * 10 cell grid. This will display world map as currently
-	 * known by player
+	 * Utility method
+	 * @param srcTile
+	 * @param dstCell
+	 * @param g
+	 */
+	private void drawImageAt(Pos srcTile, Pos dstCell, Graphics g) {
+		int dstx = MAP_X + CELL_SIZE * dstCell.x;
+		int dsty = MAP_Y + CELL_SIZE * dstCell.y;
+
+		g.drawImage(tileset, dstx, dsty, dstx + CELL_SIZE, dsty + CELL_SIZE,
+				srcTile.x, srcTile.y, srcTile.x + TILE_SIZE, srcTile.y
+						+ TILE_SIZE, null);
+
+	}
+
+	private int MAP_CELLS = 12;
+
+	/**
+	 * We'll draw a MAP_CELLS * MAP_CELLS cell grid. This will display world map
+	 * as currently known by player
 	 * @param g
 	 */
 	private void drawMap(Graphics g) {
-		// Frame
-		g.setColor(Color.RED);
-		g.drawRect(MAP_X - 1, MAP_Y - 1, MAP_W + 2, MAP_H + 2);
-
-		// Grid
-		g.setColor(Color.BLACK);
-		// Vertical lines
-		for (int x = MAP_X; x <= MAP_X + MAP_W; x += CELL_SIZE) {
-			g.drawLine(x, MAP_Y, x, MAP_Y + MAP_H);
-		}
-		// Horizontal lines
-		for (int y = MAP_Y; y <= MAP_Y + MAP_H; y += CELL_SIZE) {
-			g.drawLine(MAP_X, y, MAP_X + MAP_W, y);
+		// Draw background (put grass everywhere)
+		for (int x = 0; x < MAP_CELLS; x++) {
+			for (int y = 0; y < MAP_CELLS; y++) {
+				drawImageAt(TILE_GRASS, new Pos(x, y), g);
+			}
 		}
 
 		Pos p = viewPos;
-		for (int xi = 0; xi < 10; xi++) {
-			for (int yi = 0; yi < 10; yi++) {
+		for (int xi = 0; xi < MAP_CELLS; xi++) {
+			for (int yi = 0; yi < MAP_CELLS; yi++) {
 				Cell c = server.world.cells.get(new Pos(p.x + xi, p.y + yi));
 				if (c.type == Type.MOUNTAIN) {
-					g.setColor(Color.DARK_GRAY);
+					drawImageAt(TILE_MOUNTAIN, new Pos(xi, yi), g);
 				} else if (c.type == Type.FOREST) {
-					g.setColor(Color.GREEN);
+					drawImageAt(TILE_FOREST, new Pos(xi, yi), g);
 				} else {
-					g.setColor(Color.BLUE);
+					drawImageAt(TILE_WATER, new Pos(xi, yi), g);
 				}
-				g.fillRect(MAP_X + CELL_SIZE * xi + 1, MAP_Y + CELL_SIZE * yi
-						+ 1, CELL_SIZE - 1, CELL_SIZE - 1);
-				g.setColor(Color.BLACK);
-				g.drawString(c.p.x + "/" + c.p.y, MAP_X + CELL_SIZE * xi + 5,
-						MAP_Y + CELL_SIZE * yi + 15);
-				g.drawString(c.type.name().substring(0, 3), MAP_X + CELL_SIZE
-						* xi + 5, MAP_Y + CELL_SIZE * yi + 25);
+				//				g.fillRect(MAP_X + CELL_SIZE * xi + 1, MAP_Y + CELL_SIZE * yi
+				//						+ 1, CELL_SIZE - 1, CELL_SIZE - 1);
+				//g.setColor(Color.BLACK);
+				//				g.drawString(c.p.x + "/" + c.p.y, MAP_X + CELL_SIZE * xi + 5,
+				//						MAP_Y + CELL_SIZE * yi + 15);
+				//				g.drawString(c.type.name().substring(0, 3), MAP_X + CELL_SIZE
+				//						* xi + 5, MAP_Y + CELL_SIZE * yi + 25);
 			}
 		}
 
@@ -121,8 +146,9 @@ public class GameCanvas extends JPanel implements KeyListener {
 	private void drawThings(Graphics g) {
 		// Draw player
 		g.setColor(Color.RED);
-		g.drawOval(MAP_X + CELL_SIZE * player.pos.x + 1, MAP_Y + CELL_SIZE
-				* player.pos.y + 1, CELL_SIZE - 1, CELL_SIZE - 1);
+		g.fillOval(MAP_X + CELL_SIZE * (player.pos.x - viewPos.x) + 1, MAP_Y
+				+ CELL_SIZE * (player.pos.y - viewPos.y) + 1, CELL_SIZE - 1,
+				CELL_SIZE - 1);
 	}
 
 	private void drawMessages(Graphics g) {
@@ -164,8 +190,8 @@ public class GameCanvas extends JPanel implements KeyListener {
 				if (viewPos.x < server.world.width) {
 					viewPos.x++;
 				}
-				if (player.pos.y < server.world.height) {
-					player.pos.y++;
+				if (player.pos.x < server.world.height) {
+					player.pos.x++;
 				}
 				break;
 			default:

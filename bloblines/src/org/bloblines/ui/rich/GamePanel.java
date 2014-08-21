@@ -1,5 +1,7 @@
 package org.bloblines.ui.rich;
 
+import java.io.IOException;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,10 +23,14 @@ public class GamePanel extends JPanel {
 		JLabel lblServerName = new JLabel(server.name);
 		add(lblServerName);
 
-		JPanel gameCanvas = new GameCanvas(client, server, player);
-		add(gameCanvas);
-		gameCanvas.requestFocusInWindow();
+		try {
+			JPanel gameCanvas = new GameCanvas(client, server, player);
+			add(gameCanvas);
+			gameCanvas.requestFocusInWindow();
+		} catch (IOException ex) {
 
+			client.error("Unable to load game resources" + ex.toString());
+		}
 	}
 
 }

@@ -2,15 +2,21 @@ package org.bloblines.ui.rich;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ByteLookupTable;
+import java.awt.image.LookupOp;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.bloblines.data.event.Event;
 import org.bloblines.data.game.Player;
 import org.bloblines.data.life.blob.Blob;
 import org.bloblines.data.world.Area.Dir;
@@ -53,7 +59,7 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	private final static int BLOBS_X = SPACING;
 	private final static int BLOBS_Y = SPACING;
-	private final static int BLOBS_W = 200;
+	private final static int BLOBS_W = 150;
 	private final static int BLOBS_H = 400;
 
 	private void drawBlobs(Graphics g) {
@@ -70,7 +76,7 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	private void drawBlobInfo(Blob b, int x, int y, Graphics g) {
 		g.setColor(Color.BLACK);
-		g.drawString("Name : " + b.name, x, y);
+		g.drawString(b.name, x, y);
 		g.drawString("Age : " + b.age, x, y + 20);
 		g.drawString("Life : " + b.life + "/" + b.lifeMax, x, y + 40);
 	}
@@ -121,15 +127,38 @@ public class GameCanvas extends JPanel implements KeyListener {
 		}
 
 		Pos p = viewPos;
-		for (int xi = 0; xi < MAP_CELLS; xi++) {
-			for (int yi = 0; yi < MAP_CELLS; yi++) {
-				Cell c = server.world.cells.get(new Pos(p.x + xi, p.y + yi));
+		for (int x = 0; x < MAP_CELLS; x++) {
+			for (int y = 0; y < MAP_CELLS; y++) {
+				Cell c = server.world.cells.get(new Pos(p.x + x, p.y + y));
+				Pos xy = new Pos(x, y);
 				if (c.type == Type.MOUNTAIN) {
-					drawImageAt(TILE_MOUNTAIN, new Pos(xi, yi), g);
+					drawImageAt(TILE_MOUNTAIN, xy, g);
 				} else if (c.type == Type.FOREST) {
-					drawImageAt(TILE_FOREST, new Pos(xi, yi), g);
+					drawImageAt(TILE_FOREST, xy, g);
 				} else {
-					drawImageAt(TILE_WATER, new Pos(xi, yi), g);
+					drawImageAt(TILE_WATER, xy, g);
+				}
+
+				if (player.area.fixedEvents.get(c.p) != null) {
+					int dstx = MAP_X + CELL_SIZE * x;
+					int dsty = MAP_Y + CELL_SIZE * y;
+
+					Graphics2D g2 = (Graphics2D) g;
+					byte lut[] = new byte[256];
+					for (int j = 0; j < 256; j++) {
+						lut[j] = (byte) (256 - j);
+					}
+					ByteLookupTable blut = new ByteLookupTable(0, lut);
+					LookupOp lop = new LookupOp(blut, null);
+					BufferedImage manaTree = tileset.getSubimage(TILE_FOREST.x,
+							TILE_FOREST.y, TILE_SIZE, TILE_SIZE);
+					manaTree = lop.filter(manaTree, null);
+
+					AffineTransformOp aop = new AffineTransformOp(
+							AffineTransform.getScaleInstance(CELL_SIZE
+									/ TILE_SIZE, CELL_SIZE / TILE_SIZE),
+							AffineTransformOp.TYPE_BICUBIC);
+					g2.drawImage(manaTree, aop, dstx, dsty);
 				}
 				//				g.fillRect(MAP_X + CELL_SIZE * xi + 1, MAP_Y + CELL_SIZE * yi
 				//						+ 1, CELL_SIZE - 1, CELL_SIZE - 1);
@@ -152,7 +181,11 @@ public class GameCanvas extends JPanel implements KeyListener {
 	}
 
 	private void drawMessages(Graphics g) {
-
+		for (Event e : player.area.events) {
+			if (e.happens(player)) {
+				client.info(e.text);
+			}
+		}
 	}
 
 	private void clientMove(Dir d) {

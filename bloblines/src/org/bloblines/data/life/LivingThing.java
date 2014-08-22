@@ -26,12 +26,6 @@ public abstract class LivingThing {
 	public Pos p;
 
 	/**
-	 * Is this living thing alive ? Set to true on instantiation. die() method
-	 * will set it to false.
-	 */
-	public boolean alive = true;
-
-	/**
 	 * Unique identifier.
 	 */
 	public String name = id();
@@ -44,22 +38,9 @@ public abstract class LivingThing {
 	 * @param startingArea This is where the newly created living thing will
 	 *            appear
 	 */
-	public LivingThing(Area startingArea) {
-		area = startingArea;
-		area.register(this);
-	}
-
-	/**
-	 * Get a life and do something !
-	 */
-	public abstract void live();
-
-	/**
-	 * Bye !
-	 */
-	public void die() {
-		alive = false;
-		area.unregister(this);
+	public LivingThing(Area startingArea, Pos p) {
+		this.area = startingArea;
+		this.p = p;
 	}
 
 	/**

@@ -21,10 +21,10 @@ public class Player {
 
 	public Player(String name, Area area) {
 		this.name = name;
-		Blob firstBorn = new Blob(null, null, area);
+		Blob firstBorn = new Blob(null, null, area, area.spawnPoint);
 		this.blobs.add(firstBorn);
-		this.blobs.add(new Blob(null, null, area));
-		this.blobs.add(new Blob(null, null, area));
+		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
+		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
 		this.pos = area.spawnPoint;
 		this.area = area;
 	}
@@ -32,7 +32,10 @@ public class Player {
 	public boolean move(Dir d) {
 		Cell c = area.getCell(pos, d);
 		if (c != null && c.isPassable()) {
-			pos = area.getPos(pos, d);
+			pos = c.p;
+			for (Blob b : blobs) {
+				b.p = c.p;
+			}
 			return true;
 		}
 		return false;

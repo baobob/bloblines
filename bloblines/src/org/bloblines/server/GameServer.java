@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.bloblines.data.game.Player;
 import org.bloblines.data.world.Area;
-import org.bloblines.data.world.Cell;
-import org.bloblines.data.world.Cell.Type;
-import org.bloblines.data.world.Pos;
 
 public class GameServer {
 
@@ -46,18 +43,6 @@ public class GameServer {
 	}
 
 	private void loadWorld() {
-		world = new Area(100, 100);
-		world.spawnPoint = new Pos(17, 26);
-		for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
-				Pos p = new Pos(i, j);
-				Cell c = new Cell(p);
-				if (i == 5 && j == 5) {
-					// Spawn point is forest
-					c.type = Type.FOREST;
-				}
-				world.cells.put(p, c);
-			}
-		}
+		world = Area.getHardcodedWorld();
 	}
 }

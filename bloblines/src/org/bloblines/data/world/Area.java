@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
-import org.bloblines.data.life.LivingThing;
+import org.bloblines.data.event.Event;
+import org.bloblines.data.event.FixedPosEvent;
+import org.bloblines.data.event.RandomEvent;
+import org.bloblines.data.world.Cell.Type;
 
 public class Area {
 
@@ -18,25 +22,12 @@ public class Area {
 
 	public Map<Pos, Cell> cells = new HashMap<Pos, Cell>();
 
+	public Set<Event> events = new HashSet<Event>();
+	public Map<Pos, FixedPosEvent> fixedEvents = new HashMap<Pos, FixedPosEvent>();
 	/**
 	 * List of sub areas contained inside this area.
 	 */
 	public List<Area> subAreas;
-
-	/**
-	 * All registered living things currently in this area.
-	 */
-	public Set<LivingThing> livingThings;
-
-	/**
-	 * Future living things that will get born at the end of turn.
-	 */
-	public Set<LivingThing> futureLivingThings;
-
-	/**
-	 * Future dead things that will disappear at the end of turn.
-	 */
-	public Set<LivingThing> futureDeadThings;
 
 	public enum Dir {
 		NORTH, WEST, SOUTH, EAST
@@ -47,51 +38,8 @@ public class Area {
 	 */
 	public Area(int w, int h) {
 		subAreas = new ArrayList<>();
-		livingThings = new HashSet<>();
-		futureLivingThings = new HashSet<>();
-		futureDeadThings = new HashSet<>();
 		width = w;
 		height = h;
-	}
-
-	/**
-	 * Register a new thing to be added in the list of managed things.
-	 * 
-	 * @param thing the new thing to add
-	 */
-	public void register(LivingThing thing) {
-		futureLivingThings.add(thing);
-		thing.p = spawnPoint;
-	}
-
-	/**
-	 * Removes a living thing from the things in this area.
-	 * @param thing
-	 */
-	public void unregister(LivingThing thing) {
-		futureDeadThings.add(thing);
-	}
-
-	/**
-	 * Make all things live in this area and all sub areas.
-	 */
-	public void live() {
-		for (LivingThing livingThing : livingThings) {
-			livingThing.live();
-		}
-		for (Area area : subAreas) {
-			area.live();
-		}
-		// Remove dead things from living things list
-		for (LivingThing deadThing : futureDeadThings) {
-			livingThings.remove(deadThing);
-		}
-		futureDeadThings.clear();
-		// Add newly born things
-		for (LivingThing babyThing : futureLivingThings) {
-			livingThings.add(babyThing);
-		}
-		futureLivingThings.clear();
 	}
 
 	public Cell getCell(Pos p, Dir d) {
@@ -101,6 +49,14 @@ public class Area {
 			return null;
 		}
 		return cells.get(Area.getPos(p, d));
+	}
+
+	public void addEvent(Event e) {
+		events.add(e);
+		if (e instanceof FixedPosEvent) {
+			FixedPosEvent fixed = (FixedPosEvent) e;
+			fixedEvents.put(fixed.ePos, fixed);
+		}
 	}
 
 	public static Pos getPos(Pos p, Dir d) {
@@ -117,5 +73,34 @@ public class Area {
 			break;
 		}
 		return null;
+	}
+
+	public static Area getHardcodedWorld() {
+		Area a = new Area(100, 100);
+		a.spawnPoint = new Pos(17, 26);
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 100; j++) {
+				Pos p = new Pos(i, j);
+				Cell c = new Cell(p);
+				if (i == 5 && j == 5) {
+					// Spawn point is forest
+					c.type = Type.FOREST;
+				}
+				a.cells.put(p, c);
+			}
+		}
+		RandomEvent traveller = new RandomEvent(a, 20);
+		traveller.text = "You met a traveller, he's happy";
+		a.addEvent(traveller);
+
+		for (Cell c : a.cells.values()) {
+			if (new Random().nextInt(10) == 0 && c.type == Type.FOREST) {
+				FixedPosEvent manaTree = new FixedPosEvent(a, c.p);
+				manaTree.text = "This is the Mana Tree (n°" + (c.p.x * c.p.y)
+						+ "). Awesome !";
+				a.addEvent(manaTree);
+			}
+		}
+		return a;
 	}
 }

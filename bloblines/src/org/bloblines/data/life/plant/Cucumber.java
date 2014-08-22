@@ -2,6 +2,7 @@ package org.bloblines.data.life.plant;
 
 import org.bloblines.data.life.LivingThing;
 import org.bloblines.data.world.Area;
+import org.bloblines.data.world.Pos;
 
 /**
  * A cucumber is a vicious lifeform, ready to attack any Blob at any time to
@@ -11,13 +12,8 @@ import org.bloblines.data.world.Area;
  */
 public class Cucumber extends LivingThing {
 
-	public Cucumber(Area startingArea) {
-		super(startingArea);
-	}
-
-	@Override
-	public void live() {
-
+	public Cucumber(Area startingArea, Pos p) {
+		super(startingArea, p);
 	}
 
 }

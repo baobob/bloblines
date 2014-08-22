@@ -2,6 +2,7 @@ package org.bloblines.data.life.plant;
 
 import org.bloblines.data.life.LivingThing;
 import org.bloblines.data.world.Area;
+import org.bloblines.data.world.Pos;
 
 /**
  * Potatoes are peaceful plants. Blob usually take them into breeding farms.
@@ -28,36 +29,35 @@ public class Potato extends LivingThing {
 	 */
 	private int hungerLimit = 30;
 
-	public Potato(Area startingArea) {
-		super(startingArea);
+	public Potato(Area startingArea, Pos p) {
+		super(startingArea, p);
 	}
 
-	@Override
 	public void live() {
 		age++;
 		hunger++;
 
-		if (random(age - ageLimit)) {
-			say("Potato died of old age");
-			die();
-		} else if (random(hunger - hungerLimit)) {
-			say("Potato starved to death");
-			die();
-		}
-
-		if (!alive) {
-			return;
-		}
-
-		if (age > 20) {
-			if (random(5)) {
-				say("Mitosis process");
-				// Mitosis process
-				//				new Potato(area);
-				//				new Potato(area);
-				die();
-			}
-		}
+		//		if (random(age - ageLimit)) {
+		//			say("Potato died of old age");
+		//			die();
+		//		} else if (random(hunger - hungerLimit)) {
+		//			say("Potato starved to death");
+		//			die();
+		//		}
+		//
+		//		if (!alive) {
+		//			return;
+		//		}
+		//
+		//		if (age > 20) {
+		//			if (random(5)) {
+		//				say("Mitosis process");
+		//				// Mitosis process
+		//				//				new Potato(area);
+		//				//				new Potato(area);
+		//				die();
+		//			}
+		//		}
 
 	}
 }

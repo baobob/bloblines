@@ -23,8 +23,8 @@ public class Player {
 		this.name = name;
 		Blob firstBorn = new Blob(null, null, area, area.spawnPoint);
 		this.blobs.add(firstBorn);
-		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
-		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
+		//		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
+		//		this.blobs.add(new Blob(null, null, area, area.spawnPoint));
 		this.pos = area.spawnPoint;
 		this.area = area;
 	}

@@ -89,12 +89,16 @@ public class Area {
 				a.cells.put(p, c);
 			}
 		}
-		RandomEvent traveller = new RandomEvent(a, 20);
+		RandomEvent traveller = new RandomEvent(a, 30);
 		traveller.text = "You met a traveller, he's happy";
 		a.addEvent(traveller);
 
+		RandomEvent fight = new RandomEvent(a, 30);
+		fight.text = "Here comes a fight !";
+		a.addEvent(fight);
+
 		for (Cell c : a.cells.values()) {
-			if (new Random().nextInt(10) == 0 && c.type == Type.FOREST) {
+			if (new Random().nextInt(20) == 0 && c.type == Type.FOREST) {
 				FixedPosEvent manaTree = new FixedPosEvent(a, c.p);
 				manaTree.text = "This is the Mana Tree (n°" + (c.p.x * c.p.y)
 						+ "). Awesome !";

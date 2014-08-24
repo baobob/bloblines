@@ -3,13 +3,19 @@ package org.bloblines.ui.rich;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ByteLookupTable;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.awt.image.LookupOp;
+import java.awt.image.RGBImageFilter;
 import java.io.File;
 import java.io.IOException;
 
@@ -46,6 +52,9 @@ public class GameCanvas extends JPanel implements KeyListener {
 		addKeyListener(this);
 		tileset = ImageIO.read(new File(this.getClass()
 				.getResource("overworld-tileset.png").getFile()));
+		blobs = GameCanvas.makeColorTransparent(
+				ImageIO.read(new File(this.getClass().getResource("blobs2.png")
+						.getFile())), Color.WHITE);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -87,12 +96,16 @@ public class GameCanvas extends JPanel implements KeyListener {
 	private final static int CELL_SIZE = 32;
 
 	private BufferedImage tileset;
-	private int TILE_SIZE = 16;
+	private int MAP_TILE_SIZE = 16;
 
 	private Pos TILE_GRASS = new Pos(16, 16);
 	private Pos TILE_FOREST = new Pos(112, 64);
 	private Pos TILE_MOUNTAIN = new Pos(224, 96);
 	private Pos TILE_WATER = new Pos(64, 128);
+
+	private BufferedImage blobs;
+	private int TILE_BLOB_SIZE = 38;
+	private Pos TILE_BLOB = new Pos(108, 36);
 
 	/**
 	 * Utility method
@@ -100,13 +113,22 @@ public class GameCanvas extends JPanel implements KeyListener {
 	 * @param dstCell
 	 * @param g
 	 */
-	private void drawImageAt(Pos srcTile, Pos dstCell, Graphics g) {
+	private void drawMapAt(Pos srcTile, Pos dstCell, Graphics g) {
+		drawSomethingAt(tileset, srcTile, MAP_TILE_SIZE, dstCell, g);
+	}
+
+	private void drawBlobAt(Pos srcTile, int srcTileSize, Pos dstCell,
+			Graphics g) {
+		drawSomethingAt(blobs, srcTile, srcTileSize, dstCell, g);
+	}
+
+	private void drawSomethingAt(BufferedImage tiles, Pos srcTile,
+			int srcTileSize, Pos dstCell, Graphics g) {
 		int dstx = MAP_X + CELL_SIZE * dstCell.x;
 		int dsty = MAP_Y + CELL_SIZE * dstCell.y;
-
-		g.drawImage(tileset, dstx, dsty, dstx + CELL_SIZE, dsty + CELL_SIZE,
-				srcTile.x, srcTile.y, srcTile.x + TILE_SIZE, srcTile.y
-						+ TILE_SIZE, null);
+		g.drawImage(tiles, dstx, dsty, dstx + CELL_SIZE, dsty + CELL_SIZE,
+				srcTile.x, srcTile.y, srcTile.x + srcTileSize, srcTile.y
+						+ srcTileSize, null);
 
 	}
 
@@ -122,7 +144,7 @@ public class GameCanvas extends JPanel implements KeyListener {
 		// Draw background (put grass everywhere)
 		for (int x = 0; x < MAP_CELLS; x++) {
 			for (int y = 0; y < MAP_CELLS; y++) {
-				drawImageAt(TILE_GRASS, new Pos(x, y), g);
+				drawMapAt(TILE_GRASS, new Pos(x, y), g);
 			}
 		}
 
@@ -132,11 +154,11 @@ public class GameCanvas extends JPanel implements KeyListener {
 				Cell c = server.world.cells.get(new Pos(p.x + x, p.y + y));
 				Pos xy = new Pos(x, y);
 				if (c.type == Type.MOUNTAIN) {
-					drawImageAt(TILE_MOUNTAIN, xy, g);
+					drawMapAt(TILE_MOUNTAIN, xy, g);
 				} else if (c.type == Type.FOREST) {
-					drawImageAt(TILE_FOREST, xy, g);
+					drawMapAt(TILE_FOREST, xy, g);
 				} else {
-					drawImageAt(TILE_WATER, xy, g);
+					drawMapAt(TILE_WATER, xy, g);
 				}
 
 				if (player.area.fixedEvents.get(c.p) != null) {
@@ -151,12 +173,12 @@ public class GameCanvas extends JPanel implements KeyListener {
 					ByteLookupTable blut = new ByteLookupTable(0, lut);
 					LookupOp lop = new LookupOp(blut, null);
 					BufferedImage manaTree = tileset.getSubimage(TILE_FOREST.x,
-							TILE_FOREST.y, TILE_SIZE, TILE_SIZE);
+							TILE_FOREST.y, MAP_TILE_SIZE, MAP_TILE_SIZE);
 					manaTree = lop.filter(manaTree, null);
 
 					AffineTransformOp aop = new AffineTransformOp(
 							AffineTransform.getScaleInstance(CELL_SIZE
-									/ TILE_SIZE, CELL_SIZE / TILE_SIZE),
+									/ MAP_TILE_SIZE, CELL_SIZE / MAP_TILE_SIZE),
 							AffineTransformOp.TYPE_BICUBIC);
 					g2.drawImage(manaTree, aop, dstx, dsty);
 				}
@@ -174,10 +196,8 @@ public class GameCanvas extends JPanel implements KeyListener {
 
 	private void drawThings(Graphics g) {
 		// Draw player
-		g.setColor(Color.RED);
-		g.fillOval(MAP_X + CELL_SIZE * (player.pos.x - viewPos.x) + 1, MAP_Y
-				+ CELL_SIZE * (player.pos.y - viewPos.y) + 1, CELL_SIZE - 1,
-				CELL_SIZE - 1);
+		drawBlobAt(TILE_BLOB, TILE_BLOB_SIZE, new Pos(player.pos.x - viewPos.x,
+				player.pos.y - viewPos.y), g);
 	}
 
 	private void drawMessages(Graphics g) {
@@ -241,13 +261,43 @@ public class GameCanvas extends JPanel implements KeyListener {
 		repaint();
 	}
 
+	public static BufferedImage makeColorTransparent(final BufferedImage im,
+			final Color color) {
+		final ImageFilter filter = new RGBImageFilter() {
+			// the color we are looking for (white)... Alpha bits are set to opaque  
+			public int markerRGB = color.getRGB() | 0xFFFFFFFF;
+
+			public final int filterRGB(final int x, final int y, final int rgb) {
+				if ((rgb | 0xFF000000) == markerRGB) {
+					// Mark the alpha bits as zero - transparent  
+					return 0x00FFFFFF & rgb;
+				} else {
+					// nothing to do  
+					return rgb;
+				}
+			}
+		};
+
+		final ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
+		Image image = Toolkit.getDefaultToolkit().createImage(ip);
+
+		BufferedImage bufferedImage = new BufferedImage(image.getWidth(null),
+				image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		final Graphics2D g2 = bufferedImage.createGraphics();
+		g2.drawImage(image, 0, 0, null);
+		g2.dispose();
+		return bufferedImage;
+	}
+
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 }

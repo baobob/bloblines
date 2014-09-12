@@ -1,13 +1,11 @@
 BUILD_DIR=bin
 SOURCE_DIR=src
-TEST_DIR=test
-WEB_DIR=web
 LIBS_DIR=lib
 
 # Rebuild when a file has changed
 DEPS_DIRS=$(shell find ${SOURCE_DIR} -type d)
 
-JAVAC=javac -d ${BUILD_DIR} -sourcepath ${SOURCE_DIR} -extdirs lib
+JAVAC=javac -encoding iso8859-15 -d ${BUILD_DIR} -sourcepath ${SOURCE_DIR} -extdirs lib
 JAVA=java -classpath bin:lib/*
 
 
@@ -17,11 +15,13 @@ all: compile
 
 compile: ${DEPS_DIRS}
 	find ${SOURCE_DIR} -name '*.java' > compile
-	find ${TEST_DIR} -name '*.java' >> compile
-	find ${WEB_DIR} -name '*.java' >> compile
+	rsync -a assets/ ${BUILD_DIR}/
 	${JAVAC} '@compile'
 
 run: compile
-	${JAVA} org.bloblines.test.BloblinesUi
+	${JAVA} org.bloblines.desktop.DesktopLauncher
 
-.PHONY: all run
+clean:
+	rm -rf bin/* compile
+
+.PHONY: all run clean

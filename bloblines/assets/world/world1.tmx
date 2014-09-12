@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="16" tileheight="16" backgroundcolor="#ffffff">
+ <tileset firstgid="1" name="overworld" tilewidth="16" tileheight="16">
+  <image source="overworld.png" width="336" height="144"/>
+ </tileset>
+ <layer name="Grass Water Desert" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2UzQ3CMAxGI35WaAvqCIjMQC7doGUKhoAZEAxBdySVEimy4sQuCY0Qh3dxlT77c9paCFH/CXL88rkSZyl5JllADzCjjeaAsM3objQdQsXIjpup6x0J3pzzvhJ4Y/e8cTyUnFOx06wXyBnLekzs9eWO3emKsCfOTjneFO+PeeH9+oX9ngzKqU13euVh/4EH7qI3DKDO/c/JyDlYt96zM7sPRfRT6T3cPbXBkxUnB8zbIj7bB5YHlgP0YfvFaCPPuf2EvBdDrCdKP5g/l9f1q0DONs+r5jbj/aF9WHdo3ofmOWPP3NxTZMlh+h7lQt5p3jf8IDcWEA4AAA==
+  </data>
+ </layer>
+ <layer name="Mountain" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2WSw6CMBBAeynUMwgeAaNX8IOrHkCQjQdQdOVe1Os5E2bCpOEjhcBCFi8NpMzrZ5g2VEpFJYQCF0iMdyH1OwC6IVeKF1EruQpW5PaM99hvYeHlMbPHFfHkc0zutVgLHkeb+cbU+kAKvESL3IGlMSYeh818I3J9KP67ou/TcLv0bdU3ZSQN12lOPt6fk4VTU4wNMAFmP/TfAXvaF9u5Ih4RkL/K7QDbDuaqaeyByv9ZM5Yj1uKi8tzG/bm18Mr/KCnw8n6iA/MKcxxzuy4H6+Dc9EtisauNo4i0xDcyMjIsssb16eUah/V+2qP/qLL6i3Ufzxybe4ENfH4kKjtDqs6PR4derul8P8IafCb63G8tvEO49YDekf/gC3sM7U4QDgAA
+  </data>
+ </layer>
+ <layer name="Forest" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC8WVaxKCMAyEc2M8hI8z8PrtP0FPaBnZcQ1pTWkdM7MDUumXDSFcReRaQXPQPegQdFs1BLVB3XrOx9z9EbG1fmVOxOjUeSmX4xx0CToZ3ImuQXuYVvQrZ1BcfS3mN1bHVJzJZ6u8aa7lV0cOE3uzJsoDv3HUXA9LMzuDx/1keS6pL54pescS157zsrx6PTN3kHgfMa+R13tuMbx17uU9F7Afzw72jfVHpjcd3MPLvqORD/sfZVvPPVz2uux7lNfcwOzQda/B1V7BRh667lZ9c9g8g3W/tJRDQxzcZ7E8bD37wQLnINua6ntjnBhXX5/ls2dHeb9T2quH7fXM31s8u1niz9HiirG2N1J9k1PnVF94vmGp9RIfqX6owc3J7R9cKwcrt1JurHe8/y/letdrcL/1uKfff839Njty3pWSHPZIZJvPL1m1w8uplQvufwJPXjNAEA4AAA==
+  </data>
+ </layer>
+ <layer name="Places" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC1vOwMCwnAqYE4i5qGQWKVgOiOUHwF5qYQ0g1gRiLTrbawvEdkBsT2d7g4A4GIhDBkHY0xsrDJC9SoPA75TgGCAupIG5lVCzccnTwk5ysQ2J6qnhdnxhMxIwNxDzYMG8ZISxMRCbUMFNQgTsRhf3AGLPQRCWxGBLILYCYms62+sHxP5AHDAIwmAo4sABtDuVzvYthtLqRKrfA8W0dtckKEa3l9Z2T0Kzmx72gsrAgaibYHE+kOmd1hgAzzLAihAOAAA=
+  </data>
+ </layer>
+ <objectgroup name="Events" width="30" height="30" opacity="0.35">
+  <object name="Start" type="RP" x="265" y="305">
+   <ellipse/>
+  </object>
+  <object name="Bridge house" type="RP" x="200" y="278">
+   <ellipse/>
+  </object>
+  <object name="Forest Entrance" type="Entrance" x="287" y="247">
+   <ellipse/>
+  </object>
+  <object name="Desert Entrance" type="Entrance" x="231" y="355">
+   <ellipse/>
+  </object>
+  <object name="Land Exploration" type="Random" x="319" y="341">
+   <ellipse/>
+  </object>
+  <object name="Dark Cave" type="Entrance" x="391" y="366">
+   <ellipse/>
+  </object>
+  <object name="Carrot Village" type="Village" x="439" y="362">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

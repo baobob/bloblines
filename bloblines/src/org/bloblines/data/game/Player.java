@@ -3,6 +3,7 @@ package org.bloblines.data.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bloblines.data.action.Action;
 import org.bloblines.data.life.blob.Blob;
 import org.bloblines.data.world.Area;
 import org.bloblines.data.world.Area.Dir;
@@ -40,4 +41,7 @@ public class Player {
 		}
 		return false;
 	}
+
+	public List<Action> actions;
+
 }

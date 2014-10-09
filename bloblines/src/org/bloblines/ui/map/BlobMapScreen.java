@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+// Unused class ?
 public class BlobMapScreen extends BlobScreen {
 
 	private OrthogonalTiledMapRenderer renderer;

@@ -32,7 +32,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private Stage stage;
 	private Texture spot;
 	private Texture spotDone;
-	private Texture paperIcon;
+	private Texture questsIcon;
+	private Texture eventsIcon;
+	private Texture paramsIcon;
+	private Texture blobsIcon;
 
 	public BlobPlayer player;
 
@@ -43,7 +46,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		spotDone = new Texture(Gdx.files.internal("characters/spot_done.png"));
 		skin = new Skin(Gdx.files.internal("skins/ui.json"));
 
-		paperIcon = new Texture(Gdx.files.internal("icons/paper.png"));
+		questsIcon = new Texture(Gdx.files.internal("icons/book.png"));
+		eventsIcon = new Texture(Gdx.files.internal("icons/map.png"));
+		paramsIcon = new Texture(Gdx.files.internal("icons/cog.png"));
+		blobsIcon = new Texture(Gdx.files.internal("icons/drop.png"));
 
 		stage = new Stage();
 
@@ -96,28 +102,96 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void initMenu() {
 		// Add menu Icon + Dialog
-		final Table menuTable = new Table(skin);
-		menuTable.add("Ceci est le menu");
-		menuTable.add(new Image(spot));
-		menuTable.add("Encore du texte");
-		menuTable.setBounds(30, 30, 200, 200);
-		menuTable.setVisible(false);
-		stage.addActor(menuTable);
+		final Table menuParamsTable = new Table(skin);
+		menuParamsTable.add("Parametres");
+		menuParamsTable.add("Vous pouvez changer des trucs ici...");
+		menuParamsTable.setBounds(30, 30, 200, 200);
+		menuParamsTable.setVisible(false);
+		stage.addActor(menuParamsTable);
 
-		Image menuIcon = new Image(paperIcon);
-		menuIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32, 32);
-		menuIcon.addListener(new EventListener() {
-
+		Image menuParamsIcon = new Image(paramsIcon);
+		menuParamsIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32,
+				32);
+		menuParamsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
 				if (((InputEvent) event).getType().equals(Type.touchDown)) {
-					menuTable.setVisible(!menuTable.isVisible());
+					menuParamsTable.setVisible(!menuParamsTable.isVisible());
 					return true;
 				}
 				return false;
 			}
 		});
-		stage.addActor(menuIcon);
+		stage.addActor(menuParamsIcon);
+
+		// Add menu Icon + Dialog
+		final Table menuQuestsTable = new Table(skin);
+		menuQuestsTable.add("Quêtes");
+		menuQuestsTable.add("Liste des quêtes à effectuer");
+		menuQuestsTable.setBounds(30, 30, 200, 200);
+		menuQuestsTable.setVisible(false);
+		stage.addActor(menuQuestsTable);
+
+		Image menuQuestsIcon = new Image(questsIcon);
+		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (50 + 32), 32,
+				32);
+		menuQuestsIcon.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if (((InputEvent) event).getType().equals(Type.touchDown)) {
+					menuQuestsTable.setVisible(!menuQuestsTable.isVisible());
+					return true;
+				}
+				return false;
+			}
+		});
+		stage.addActor(menuQuestsIcon);
+
+		// Add menu Icon + Dialog
+		final Table menuEventsTable = new Table(skin);
+		menuEventsTable.add("Evenements");
+		menuEventsTable.add("Trucs faisaibles là ou vous êtes actuellement...");
+		menuEventsTable.setBounds(30, 30, 200, 200);
+		menuEventsTable.setVisible(false);
+		stage.addActor(menuEventsTable);
+
+		Image menuEventsIcon = new Image(eventsIcon);
+		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (80 + 32), 32,
+				32);
+		menuEventsIcon.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if (((InputEvent) event).getType().equals(Type.touchDown)) {
+					menuEventsTable.setVisible(!menuEventsTable.isVisible());
+					return true;
+				}
+				return false;
+			}
+		});
+		stage.addActor(menuEventsIcon);
+
+		// Add menu Icon + Dialog
+		final Table menuBlobsTable = new Table(skin);
+		menuBlobsTable.add("Blobs");
+		menuBlobsTable.add("Blobs de l'équipe");
+		menuBlobsTable.setBounds(30, 30, 200, 200);
+		menuBlobsTable.setVisible(false);
+		stage.addActor(menuBlobsTable);
+
+		Image menuBlobsIcon = new Image(blobsIcon);
+		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (110 + 32), 32,
+				32);
+		menuBlobsIcon.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if (((InputEvent) event).getType().equals(Type.touchDown)) {
+					menuBlobsTable.setVisible(!menuBlobsTable.isVisible());
+					return true;
+				}
+				return false;
+			}
+		});
+		stage.addActor(menuBlobsIcon);
 	}
 
 	@Override

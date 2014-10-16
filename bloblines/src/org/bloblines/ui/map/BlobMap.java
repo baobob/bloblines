@@ -86,7 +86,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		float h = 300;
 		Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
 		String message = "Bienvenue jeune Blob,\n\n"
-				+ "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
+				+ "Dans cette incroyable quÃªte, vous devrez faire plein de choses Ã©piques et gÃ©niales pour rÃ©ussir Ã  survivre. Essayez de trouver des compagnons et de l'Ã©quipement de meilleure qualitÃ© que ce que vous possÃ©dez actuellement.";
 		Label dialogTxt = new Label(message, skin);
 		dialogTxt.setWrap(true);
 		dialog.getContentTable().add(dialogTxt).prefWidth(w);
@@ -126,14 +126,14 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 		// Add menu Icon + Dialog
 		final Table menuQuestsTable = new Table(skin);
-		menuQuestsTable.add("Quêtes");
-		menuQuestsTable.add("Liste des quêtes à effectuer");
+		menuQuestsTable.add("QuÃªtes");
+		menuQuestsTable.add("Liste des quÃªtes Ã  effectuer");
 		menuQuestsTable.setBounds(30, 30, 200, 200);
 		menuQuestsTable.setVisible(false);
 		stage.addActor(menuQuestsTable);
 
 		Image menuQuestsIcon = new Image(questsIcon);
-		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (50 + 32), 32,
+		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (60 + 32), 32,
 				32);
 		menuQuestsIcon.addListener(new EventListener() {
 			@Override
@@ -150,13 +150,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// Add menu Icon + Dialog
 		final Table menuEventsTable = new Table(skin);
 		menuEventsTable.add("Evenements");
-		menuEventsTable.add("Trucs faisaibles là ou vous êtes actuellement...");
+		menuEventsTable.add("Trucs faisaibles lï¿½ ou vous ï¿½tes actuellement...");
 		menuEventsTable.setBounds(30, 30, 200, 200);
 		menuEventsTable.setVisible(false);
 		stage.addActor(menuEventsTable);
 
 		Image menuEventsIcon = new Image(eventsIcon);
-		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (80 + 32), 32,
+		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32,
 				32);
 		menuEventsIcon.addListener(new EventListener() {
 			@Override
@@ -173,13 +173,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// Add menu Icon + Dialog
 		final Table menuBlobsTable = new Table(skin);
 		menuBlobsTable.add("Blobs");
-		menuBlobsTable.add("Blobs de l'équipe");
+		menuBlobsTable.add("Blobs de l'Ã©quipe");
 		menuBlobsTable.setBounds(30, 30, 200, 200);
 		menuBlobsTable.setVisible(false);
 		stage.addActor(menuBlobsTable);
 
 		Image menuBlobsIcon = new Image(blobsIcon);
-		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (110 + 32), 32,
+		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32,
 				32);
 		menuBlobsIcon.addListener(new EventListener() {
 			@Override

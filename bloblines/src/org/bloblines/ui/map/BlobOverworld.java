@@ -23,10 +23,10 @@ public class BlobOverworld {
 		renderer = new OrthogonalTiledMapRenderer(map);
 		for (MapObject event : map.getLayers().get("Events").getObjects()) {
 			Ellipse e = ((EllipseMapObject) event).getEllipse();
-			// TODO faire ça mieux.
-			// On fait -8 sur les 2 coordonnées pour corriger le décalage entre
-			// le centre de l'ellipse et le coin inférieur gauche qui correspond
-			// aux coordonnées de la ou l'on veut dessiner les sprites.
+			// TODO faire ï¿½a mieux.
+			// On fait -8 sur les 2 coordonnï¿½es pour corriger le dï¿½calage entre
+			// le centre de l'ellipse et le coin infï¿½rieur gauche qui correspond
+			// aux coordonnï¿½es de la ou l'on veut dessiner les sprites.
 			XY pos = new XY(e.x - 8, e.y - 8);
 
 			if ("Start".equals(event.getName())) {
@@ -34,7 +34,7 @@ public class BlobOverworld {
 				start.text = "Bienvue jeune Blob, que la force soit avec toi !";
 				events.add(start);
 			} else {
-				events.add(new BlobEvent(pos, event.getName(), false));
+				events.add(new BlobEvent(pos, event.getName(), true));
 			}
 		}
 

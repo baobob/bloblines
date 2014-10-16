@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class BlobMenu extends BlobScreen {
@@ -71,7 +74,8 @@ public class BlobMenu extends BlobScreen {
 		return btn;
 	}
 
-	private final void startGame() {
+	private final void startGame(String playerName) {
+		b.startNewGame(playerName);
 		b.setScreen(new BlobMap(b));
 		dispose();
 	}
@@ -84,7 +88,21 @@ public class BlobMenu extends BlobScreen {
 		btnStart.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				startGame();
+				new Dialog("Start new game", getDefaultSkin(), "dialog") {
+					private TextField nameField = new TextField("", getDefaultSkin());
+					{
+						getContentTable().add(new Label("Enter your name:", getDefaultSkin()));
+						getContentTable().add(nameField);
+					}
+
+					protected void result(Object object) {
+						if (object.equals(true)) {
+							startGame(nameField.getText());
+						} else {
+							cancel();
+						}
+					}
+				}.button("Go !", true).show(stage);
 			}
 		});
 

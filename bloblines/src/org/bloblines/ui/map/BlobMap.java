@@ -85,7 +85,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		float w = 400;
 		float h = 300;
 		Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
-		String message = "Bienvenue jeune Blob,\n\n"
+		String message = "Bienvenue "
+				+ b.state.player.name
+				+ ",\n\n"
 				+ "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
 		Label dialogTxt = new Label(message, skin);
 		dialogTxt.setWrap(true);
@@ -94,8 +96,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		dialog.setMovable(true);
 		dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
 
-		dialog.setBounds((Gdx.graphics.getWidth() - w) / 2,
-				(Gdx.graphics.getHeight() - h) / 2, w, h);
+		dialog.setBounds((Gdx.graphics.getWidth() - w) / 2, (Gdx.graphics.getHeight() - h) / 2, w, h);
 		dialog.button("C'est parti !");
 		stage.addActor(dialog);
 	}
@@ -110,8 +111,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(menuParamsTable);
 
 		Image menuParamsIcon = new Image(paramsIcon);
-		menuParamsIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32,
-				32);
+		menuParamsIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32, 32);
 		menuParamsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -133,8 +133,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(menuQuestsTable);
 
 		Image menuQuestsIcon = new Image(questsIcon);
-		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (60 + 32), 32,
-				32);
+		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (60 + 32), 32, 32);
 		menuQuestsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -156,8 +155,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(menuEventsTable);
 
 		Image menuEventsIcon = new Image(eventsIcon);
-		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32,
-				32);
+		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32, 32);
 		menuEventsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -179,8 +177,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(menuBlobsTable);
 
 		Image menuBlobsIcon = new Image(blobsIcon);
-		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32,
-				32);
+		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32, 32);
 		menuBlobsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {

@@ -1,16 +1,18 @@
 package org.bloblines;
 
+import org.bloblines.data.game.Game;
 import org.bloblines.ui.BlobMenu;
 import org.bloblines.utils.Assets;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Bloblines extends Game {
+public class Bloblines extends com.badlogic.gdx.Game {
 
 	public SpriteBatch batch;
 
 	public Assets assets;
+
+	public Game state = null;
 
 	public void create() {
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
@@ -19,6 +21,10 @@ public class Bloblines extends Game {
 
 		batch = new SpriteBatch();
 		this.setScreen(new BlobMenu(this));
+	}
+
+	public void startNewGame(String playerName) {
+		state = new Game(playerName);
 	}
 
 	public void render() {

@@ -5,4 +5,6 @@ package org.bloblines.data.map;
  */
 public class Action {
 	public String description;
+
+	public ActionType type;
 }

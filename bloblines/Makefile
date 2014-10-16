@@ -5,7 +5,7 @@ LIBS_DIR=lib
 # Rebuild when a file has changed
 DEPS_DIRS=$(shell find ${SOURCE_DIR} -type d)
 
-JAVAC=javac -encoding iso8859-15 -d ${BUILD_DIR} -sourcepath ${SOURCE_DIR} -extdirs lib
+JAVAC=javac -d ${BUILD_DIR} -sourcepath ${SOURCE_DIR} -extdirs lib
 JAVA=java -classpath bin:lib/*
 
 

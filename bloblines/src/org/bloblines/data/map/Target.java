@@ -1,6 +1,6 @@
 package org.bloblines.data.map;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * This is a target possible inside a location.
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public class Target {
 	public Location destination;
-	public List<Requirement> requirements;
+	public Set<Requirement> requirements;
 }

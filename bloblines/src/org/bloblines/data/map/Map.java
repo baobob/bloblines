@@ -1,7 +1,7 @@
 package org.bloblines.data.map;
 
-import java.util.List;
+import java.util.Set;
 
 public class Map {
-	List<Location> locations;
+	Set<Location> locations;
 }

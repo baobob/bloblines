@@ -1,6 +1,6 @@
 package org.bloblines.data.map;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * This is a location where various types of events can take place.
@@ -8,9 +8,9 @@ import java.util.List;
  * Locations correspond to the "event" type in the TMX map.
  */
 public class Location {
-	public List<Event> events;
-	public List<Action> actions;
-	public List<Target> targets;
+	public Set<Event> events;
+	public Set<Action> actions;
+	public Set<Target> targets;
 
 	public String description;
 }

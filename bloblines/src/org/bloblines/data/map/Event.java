@@ -1,8 +1,8 @@
 package org.bloblines.data.map;
 
-import java.util.List;
+import java.util.Set;
 
 public class Event {
-	public List<Requirement> requirements;
+	public Set<Requirement> requirements;
 	public Action launchedAction;
 }

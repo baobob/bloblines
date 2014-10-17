@@ -21,7 +21,7 @@ public class BlobOverworld {
 
 	public BlobOverworld(TiledMap map) {
 		renderer = new OrthogonalTiledMapRenderer(map);
-		for (MapObject event : map.getLayers().get("Events").getObjects()) {
+		for (MapObject event : map.getLayers().get("Locations").getObjects()) {
 			Ellipse e = ((EllipseMapObject) event).getEllipse();
 			// TODO faire �a mieux.
 			// On fait -8 sur les 2 coordonn�es pour corriger le d�calage entre

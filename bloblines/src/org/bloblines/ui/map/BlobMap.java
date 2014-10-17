@@ -2,6 +2,7 @@ package org.bloblines.ui.map;
 
 import org.bloblines.Game;
 import org.bloblines.data.map.Location;
+import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.utils.Assets.Textures;
 
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -181,6 +183,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.world.renderer.setView(camera);
 		game.world.renderer.render();
 
+		game.shapeRenderer.setProjectionMatrix(camera.combined);
+		game.shapeRenderer.begin(ShapeType.Filled);
+		renderEventsLinks();
+		game.shapeRenderer.end();
+
 		// Render player / events / moving stuff
 		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
 		batch.begin();
@@ -216,6 +223,15 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				t = getTexture(Textures.SPRITE_LOCATION_DONE);
 			}
 			batch.draw(t, location.pos.x, location.pos.y);
+		}
+	}
+
+	private void renderEventsLinks() {
+		for (Location location : game.world.area.locations.values()) {
+			for (Target target : location.targets) {
+				game.shapeRenderer.rectLine(location.pos.x + 8, location.pos.y + 8, target.destination.pos.x + 8,
+						target.destination.pos.y + 8, 8);
+			}
 		}
 	}
 
@@ -292,9 +308,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		if (amount < 0) {
-			camera.zoom -= 0.1f;
+			camera.zoom /= 1.1f;
 		} else {
-			camera.zoom += 0.1f;
+			camera.zoom *= 1.1f;
 		}
 		System.out.println(camera.zoom);
 		return true;

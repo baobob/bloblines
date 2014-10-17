@@ -1,9 +1,8 @@
 package org.bloblines.ui.map;
 
-import org.bloblines.Bloblines;
+import org.bloblines.Game;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.utils.Assets.Textures;
-import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -28,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class BlobMap extends BlobScreen implements InputProcessor {
 
-	private BlobOverworld world;
 	private OrthographicCamera camera;
 	private Stage stage;
 
@@ -36,9 +33,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	public UiPlayer uiPlayer;
 
-	public BlobMap(Bloblines b) {
-		super(b);
-		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
+	public BlobMap(Game game) {
+		super(game);
+		uiPlayer = new UiPlayer(game.player);
 
 		stage = new Stage();
 
@@ -54,16 +51,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
 
-		initPlayer();
-		initGame();
+		initUserInterface();
 	}
 
-	private void initPlayer() {
-		uiPlayer = new UiPlayer(b.state.player);
-		b.state.player.pos = new XY(world.area.locations.get("Start").pos);
-	}
-
-	private void initGame() {
+	private void initUserInterface() {
 		initStartDialog();
 		initMenu();
 	}
@@ -186,11 +177,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		updateCamera();
 
 		// Render base Map
-		world.renderer.setView(camera);
-		world.renderer.render();
+		game.world.renderer.setView(camera);
+		game.world.renderer.render();
 
 		// Render player / events / moving stuff
-		SpriteBatch batch = (SpriteBatch) world.renderer.getSpriteBatch();
+		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
 		batch.begin();
 		renderEvents(batch);
 		renderPlayer(batch);
@@ -218,7 +209,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderEvents(SpriteBatch batch) {
-		for (BlobEvent e : world.events) {
+		for (BlobEvent e : game.world.events) {
 			if (e.visible) {
 				Texture t = getTexture(Textures.SPRITE_LOCATION);
 				if (e.done) {
@@ -309,5 +300,4 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		System.out.println(camera.zoom);
 		return true;
 	}
-
 }

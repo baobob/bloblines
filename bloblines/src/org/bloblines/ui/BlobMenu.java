@@ -1,6 +1,6 @@
 package org.bloblines.ui;
 
-import org.bloblines.Bloblines;
+import org.bloblines.Game;
 import org.bloblines.ui.map.BlobMap;
 import org.bloblines.utils.Assets.Textures;
 
@@ -31,7 +31,7 @@ public class BlobMenu extends BlobScreen {
 
 	OrthographicCamera camera;
 
-	public BlobMenu(Bloblines b) {
+	public BlobMenu(Game b) {
 		super(b);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 600);
@@ -46,6 +46,16 @@ public class BlobMenu extends BlobScreen {
 		addMenuListeners();
 	}
 
+	private final void startGame(String playerName) {
+		game.start(playerName);
+		game.setScreen(new BlobMap(game));
+		dispose();
+	}
+
+	private void quitGame() {
+		Gdx.app.exit();
+	}
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -53,12 +63,12 @@ public class BlobMenu extends BlobScreen {
 
 		camera.update();
 
-		b.batch.begin();
-		b.batch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
+		game.batch.begin();
+		game.batch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
 		getDefaultFont().setScale(3);
-		getDefaultFont().draw(b.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
+		getDefaultFont().draw(game.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
 
-		b.batch.end();
+		game.batch.end();
 
 		stage.act(delta);
 		stage.draw();
@@ -75,16 +85,6 @@ public class BlobMenu extends BlobScreen {
 		btnYPos -= 50;
 		stage.addActor(btn);
 		return btn;
-	}
-
-	private final void startGame(String playerName) {
-		b.startNewGame(playerName);
-		b.setScreen(new BlobMap(b));
-		dispose();
-	}
-
-	private void quitGame() {
-		Gdx.app.exit();
 	}
 
 	private TextField nameField = new TextField("Blobonymous", getDefaultSkin());

@@ -1,6 +1,6 @@
 package org.bloblines.ui;
 
-import org.bloblines.Bloblines;
+import org.bloblines.Game;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Screen;
@@ -10,22 +10,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class BlobScreen implements Screen {
 
-	protected Bloblines b;
+	protected Game game;
 
-	public BlobScreen(Bloblines b) {
-		this.b = b;
+	public BlobScreen(Game game) {
+		this.game = game;
 	}
 
 	protected Texture getTexture(Textures t) {
-		return b.assets.getTexture(t);
+		return game.assets.getTexture(t);
 	}
 
 	protected BitmapFont getDefaultFont() {
-		return b.assets.getFont();
+		return game.assets.getFont();
 	}
 
 	protected Skin getDefaultSkin() {
-		return b.assets.getSkin();
+		return game.assets.getSkin();
 	}
 
 	@Override

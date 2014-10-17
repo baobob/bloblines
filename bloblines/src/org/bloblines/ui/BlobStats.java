@@ -1,10 +1,10 @@
 package org.bloblines.ui;
 
-import org.bloblines.Bloblines;
+import org.bloblines.Game;
 
 public class BlobStats extends BlobScreen {
 
-	public BlobStats(Bloblines b) {
+	public BlobStats(Game b) {
 		super(b);
 	}
 

@@ -1,18 +1,23 @@
 package org.bloblines;
 
-import org.bloblines.data.game.Game;
+import org.bloblines.data.game.Player;
 import org.bloblines.ui.BlobMenu;
+import org.bloblines.ui.map.BlobOverworld;
 import org.bloblines.utils.Assets;
+import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-public class Bloblines extends com.badlogic.gdx.Game {
+public class Game extends com.badlogic.gdx.Game {
 
 	public SpriteBatch batch;
 
 	public Assets assets;
 
-	public Game state = null;
+	public Player player;
+
+	public BlobOverworld world;
 
 	public void create() {
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
@@ -23,8 +28,9 @@ public class Bloblines extends com.badlogic.gdx.Game {
 		this.setScreen(new BlobMenu(this));
 	}
 
-	public void startNewGame(String playerName) {
-		state = new Game(playerName);
+	public void start(String playerName) {
+		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
+		player = new Player(playerName, new XY(world.area.locations.get("Start").pos));
 	}
 
 	public void render() {

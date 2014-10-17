@@ -58,6 +58,7 @@ public class BlobMenu extends BlobScreen {
 
 		b.batch.end();
 
+		stage.act(delta);
 		stage.draw();
 	}
 
@@ -98,11 +99,9 @@ public class BlobMenu extends BlobScreen {
 					protected void result(Object object) {
 						if (object.equals(true)) {
 							startGame(nameField.getText());
-						} else {
-							cancel();
 						}
 					}
-				}.button("Go !", true).show(stage);
+				}.button("Cancel", false).button("Go !", true).show(stage);
 			}
 		});
 

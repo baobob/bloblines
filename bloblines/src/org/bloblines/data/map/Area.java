@@ -1,8 +1,8 @@
 package org.bloblines.data.map;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Area {
-	public Set<Location> locations = new HashSet<Location>();
+	public Map<String, Location> locations = new HashMap<String, Location>();
 }

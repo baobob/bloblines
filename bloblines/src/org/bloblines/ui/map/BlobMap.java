@@ -59,8 +59,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void initPlayer() {
 		player = new BlobPlayer(b);
-		player.event = world.start;
-		player.pos = world.start.pos;
+		player.pos = world.area.locations.get("Start").pos;
 	}
 
 	private void initGame() {

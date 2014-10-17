@@ -1,9 +1,7 @@
 package org.bloblines.ui.map;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
@@ -20,13 +18,11 @@ public class BlobOverworld {
 
 	public OrthogonalTiledMapRenderer renderer;
 
-	public BlobEvent start;
 	public Area area;
 	public List<BlobEvent> events = new ArrayList<BlobEvent>();
 
 	public BlobOverworld(TiledMap map) {
 		BlobEvent locationEvent;
-		Map<String, Location> locations = new HashMap<String, Location>();
 		renderer = new OrthogonalTiledMapRenderer(map);
 		area = new Area();
 
@@ -48,22 +44,21 @@ public class BlobOverworld {
 			locationEvent.text = location.description;
 			events.add(locationEvent);
 
-			locations.put(location.name, location);
-			area.locations.add(location);
-
-			if ("Start".equals(location.name)) {
-				start = locationEvent;
-			}
+			area.locations.put(location.name, location);
 		}
 
+		initLocationLinks(map);
+	}
+
+	private void initLocationLinks(TiledMap map) {
 		for (MapObject event : map.getLayers().get("Locations").getObjects()) {
-			Location location = locations.get(event.getName());
+			Location location = area.locations.get(event.getName());
 			String neighbours = event.getProperties().get("neighbours", String.class);
 			if (neighbours == null)
 				continue;
 
 			for (String neighbour : neighbours.split(",")) {
-				Location targetLocation = locations.get(neighbour.trim());
+				Location targetLocation = area.locations.get(neighbour.trim());
 				if (targetLocation == null) {
 					System.err.printf("Cannot find the target location %s in location %s", neighbour.trim(), location.name);
 				} else {

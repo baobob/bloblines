@@ -1,21 +1,16 @@
 package org.bloblines.ui.map;
 
-import org.bloblines.utils.XY;
+import org.bloblines.data.map.Location;
 
 public class BlobEvent {
-
-	public XY pos;
+	public Location location;
 
 	public boolean visible;
 	public boolean done;
 
-	public String text;
-	public String name;
-
-	public BlobEvent(XY pos, String name, boolean visible) {
-		this.pos = pos;
+	public BlobEvent(Location location, boolean visible) {
+		this.location = location;
 		this.visible = visible;
-		this.name = name;
 	}
 
 }

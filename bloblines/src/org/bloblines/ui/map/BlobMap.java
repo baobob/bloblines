@@ -223,7 +223,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				if (e.done) {
 					t = getTexture(Textures.SPRITE_LOCATION_DONE);
 				}
-				batch.draw(t, e.pos.x, e.pos.y);
+				batch.draw(t, e.location.pos.x, e.location.pos.y);
 			}
 		}
 	}
@@ -235,8 +235,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void startEvent() {
-		Dialog dialog = new Dialog(player.event.name, skin, "default");
-		Label dialogTxt = new Label(player.event.text, skin);
+		Dialog dialog = new Dialog(player.event.location.name, skin, "default");
+		Label dialogTxt = new Label(player.event.location.description, skin);
 		dialogTxt.setWrap(true);
 		dialog.getContentTable().add(dialogTxt).prefWidth(300);
 

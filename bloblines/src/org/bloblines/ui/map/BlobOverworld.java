@@ -40,8 +40,7 @@ public class BlobOverworld {
 			location.description = event.getProperties().get("description", String.class);
 			location.pos = pos;
 
-			locationEvent = new BlobEvent(pos, location.name, true);
-			locationEvent.text = location.description;
+			locationEvent = new BlobEvent(location, true);
 			events.add(locationEvent);
 
 			area.locations.put(location.name, location);

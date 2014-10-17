@@ -3,6 +3,8 @@ package org.bloblines.ui.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bloblines.data.map.Action;
+import org.bloblines.data.map.ActionType;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
@@ -42,6 +44,10 @@ public class BlobOverworld {
 
 			locationEvent = new BlobEvent(location, true);
 			events.add(locationEvent);
+
+			location.actions.add(new Action(ActionType.MOVE, "Move"));
+			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
+			location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
 
 			area.locations.put(location.name, location);
 		}

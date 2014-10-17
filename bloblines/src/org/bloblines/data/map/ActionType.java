@@ -1,5 +1,5 @@
 package org.bloblines.data.map;
 
 public enum ActionType {
-	Fight, SpeakToNpc, Shop
+	FIGHT, SPEAK_TO_NPC, SHOP, MOVE
 }

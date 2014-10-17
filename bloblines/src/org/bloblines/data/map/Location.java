@@ -1,5 +1,6 @@
 package org.bloblines.data.map;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bloblines.utils.XY;
@@ -10,9 +11,9 @@ import org.bloblines.utils.XY;
  * Locations correspond to the "event" type in the TMX map.
  */
 public class Location {
-	public Set<Event> events;
-	public Set<Action> actions;
-	public Set<Target> targets;
+	public Set<Event> events = new HashSet<Event>();
+	public Set<Action> actions = new HashSet<Action>();
+	public Set<Target> targets = new HashSet<Target>();
 
 	public String description;
 	public XY pos;

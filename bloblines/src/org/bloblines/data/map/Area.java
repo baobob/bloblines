@@ -1,10 +1,11 @@
 package org.bloblines.data.map;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Area {
-	Set<Location> locations;
+	Set<Location> locations = new HashSet<Location>();
 
 	public static Area createSampleMap() {
 		Area area = new Area();

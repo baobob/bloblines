@@ -9,14 +9,37 @@ public class Assets extends AssetManager {
 
 	private BitmapFont font = null;
 
-	public static final String TEXTURE_SPLASH_SCREEN = "img/hourglass.png";
+	public enum Textures {
+		// @formatter:off
+		SPLASH_SCREEN("img/hourglass.png"), 
+		
+		SPRITE_LOCATION("characters/spot.png"), 
+		SPRITE_LOCATION_DONE("characters/spot_done.png"), 
+		
+		ICON_BOOK("icons/book.png"), 
+		ICON_LOCATION("icons/map.png"), 
+		ICON_PARAMS("icons/cog.png"), 
+		ICON_BLOB("icons/drop.png"); 
+		// @formatter:on
+
+		Textures(String path) {
+			this.path = path;
+		}
+
+		private final String path;
+
+		public String getPath() {
+			return path;
+		}
+	}
 
 	public Assets() {
 		// Use LibGDX's default Arial font.
 		font = new BitmapFont();
 
-		// load("data/mytexture.png", Texture.class);
-		load(TEXTURE_SPLASH_SCREEN, Texture.class);
+		for (Textures t : Textures.values()) {
+			load(t.path, Texture.class);
+		}
 
 		load("skins/ui.json", Skin.class);
 		// skin = new Skin(Gdx.files.internal("skins/ui.json"));
@@ -31,8 +54,8 @@ public class Assets extends AssetManager {
 		return get("skins/ui.json", Skin.class);
 	}
 
-	public Texture getTexture(String t) {
-		return get(t, Texture.class);
+	public Texture getTexture(Textures t) {
+		return get(t.getPath(), Texture.class);
 	}
 
 	@Override

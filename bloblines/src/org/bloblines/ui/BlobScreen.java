@@ -1,6 +1,7 @@
 package org.bloblines.ui;
 
 import org.bloblines.Bloblines;
+import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +16,7 @@ public abstract class BlobScreen implements Screen {
 		this.b = b;
 	}
 
-	protected Texture getTexture(String t) {
+	protected Texture getTexture(Textures t) {
 		return b.assets.getTexture(t);
 	}
 

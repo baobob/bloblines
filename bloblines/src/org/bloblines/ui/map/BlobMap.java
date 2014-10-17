@@ -2,6 +2,7 @@ package org.bloblines.ui.map;
 
 import org.bloblines.Bloblines;
 import org.bloblines.ui.BlobScreen;
+import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -28,28 +29,15 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private BlobOverworld world;
 	private OrthographicCamera camera;
-	private Skin skin;
 	private Stage stage;
-	private Texture spot;
-	private Texture spotDone;
-	private Texture questsIcon;
-	private Texture eventsIcon;
-	private Texture paramsIcon;
-	private Texture blobsIcon;
+
+	private Skin skin = getDefaultSkin();
 
 	public BlobPlayer player;
 
 	public BlobMap(Bloblines b) {
 		super(b);
 		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
-		spot = new Texture(Gdx.files.internal("characters/spot.png"));
-		spotDone = new Texture(Gdx.files.internal("characters/spot_done.png"));
-		skin = new Skin(Gdx.files.internal("skins/ui.json"));
-
-		questsIcon = new Texture(Gdx.files.internal("icons/book.png"));
-		eventsIcon = new Texture(Gdx.files.internal("icons/map.png"));
-		paramsIcon = new Texture(Gdx.files.internal("icons/cog.png"));
-		blobsIcon = new Texture(Gdx.files.internal("icons/drop.png"));
 
 		stage = new Stage();
 
@@ -85,9 +73,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		float w = 400;
 		float h = 300;
 		Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
-		String message = "Bienvenue "
-				+ b.state.player.name
-				+ ",\n\n"
+		String message = "Bienvenue jeune Blob,\n\n"
 				+ "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
 		Label dialogTxt = new Label(message, skin);
 		dialogTxt.setWrap(true);
@@ -110,7 +96,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuParamsTable.setVisible(false);
 		stage.addActor(menuParamsTable);
 
-		Image menuParamsIcon = new Image(paramsIcon);
+		Image menuParamsIcon = new Image(getTexture(Textures.ICON_PARAMS));
 		menuParamsIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32, 32);
 		menuParamsIcon.addListener(new EventListener() {
 			@Override
@@ -132,7 +118,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuQuestsTable.setVisible(false);
 		stage.addActor(menuQuestsTable);
 
-		Image menuQuestsIcon = new Image(questsIcon);
+		Image menuQuestsIcon = new Image(getTexture(Textures.ICON_BOOK));
 		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (60 + 32), 32, 32);
 		menuQuestsIcon.addListener(new EventListener() {
 			@Override
@@ -154,7 +140,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuEventsTable.setVisible(false);
 		stage.addActor(menuEventsTable);
 
-		Image menuEventsIcon = new Image(eventsIcon);
+		Image menuEventsIcon = new Image(getTexture(Textures.ICON_LOCATION));
 		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32, 32);
 		menuEventsIcon.addListener(new EventListener() {
 			@Override
@@ -176,7 +162,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuBlobsTable.setVisible(false);
 		stage.addActor(menuBlobsTable);
 
-		Image menuBlobsIcon = new Image(blobsIcon);
+		Image menuBlobsIcon = new Image(getTexture(Textures.ICON_BLOB));
 		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32, 32);
 		menuBlobsIcon.addListener(new EventListener() {
 			@Override
@@ -234,9 +220,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void renderEvents(SpriteBatch batch) {
 		for (BlobEvent e : world.events) {
 			if (e.visible) {
-				Texture t = spot;
+				Texture t = getTexture(Textures.SPRITE_LOCATION);
 				if (e.done) {
-					t = spotDone;
+					t = getTexture(Textures.SPRITE_LOCATION_DONE);
 				}
 				batch.draw(t, e.pos.x, e.pos.y);
 			}
@@ -273,17 +259,15 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		if (keycode == Input.Keys.ENTER) {
 			startEvent();
 		}
-		// if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT
-		// || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
-		// s.player.updateAnimation();
+		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
+			player.updateAnimation();
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT
-		// || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
-		// s.player.updateAnimation();
+		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
+			player.updateAnimation();
 		return false;
 	}
 

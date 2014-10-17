@@ -2,7 +2,7 @@ package org.bloblines.ui;
 
 import org.bloblines.Bloblines;
 import org.bloblines.ui.map.BlobMap;
-import org.bloblines.utils.Assets;
+import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -52,7 +52,7 @@ public class BlobMenu extends BlobScreen {
 		camera.update();
 
 		b.batch.begin();
-		b.batch.draw(getTexture(Assets.TEXTURE_SPLASH_SCREEN), 250, -85);
+		b.batch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
 		getDefaultFont().setScale(3);
 		getDefaultFont().draw(b.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
 

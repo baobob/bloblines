@@ -1,6 +1,7 @@
 package org.bloblines.ui.map;
 
 import org.bloblines.Game;
+import org.bloblines.data.map.Location;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.utils.Assets.Textures;
 
@@ -209,14 +210,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderEvents(SpriteBatch batch) {
-		for (BlobEvent e : game.world.events) {
-			if (e.visible) {
-				Texture t = getTexture(Textures.SPRITE_LOCATION);
-				if (e.done) {
-					t = getTexture(Textures.SPRITE_LOCATION_DONE);
-				}
-				batch.draw(t, e.location.pos.x, e.location.pos.y);
+		for (Location location : game.world.area.locations.values()) {
+			Texture t = getTexture(Textures.SPRITE_LOCATION);
+			if (location.done) {
+				t = getTexture(Textures.SPRITE_LOCATION_DONE);
 			}
+			batch.draw(t, location.pos.x, location.pos.y);
 		}
 	}
 

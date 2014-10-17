@@ -18,4 +18,5 @@ public class Location {
 	public String name;
 	public String description;
 	public XY pos;
+	public boolean done;
 }

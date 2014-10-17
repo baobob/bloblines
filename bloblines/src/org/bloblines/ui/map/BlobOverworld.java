@@ -1,8 +1,5 @@
 package org.bloblines.ui.map;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bloblines.data.map.Action;
 import org.bloblines.data.map.ActionType;
 import org.bloblines.data.map.Area;
@@ -21,10 +18,8 @@ public class BlobOverworld {
 	public OrthogonalTiledMapRenderer renderer;
 
 	public Area area;
-	public List<BlobEvent> events = new ArrayList<BlobEvent>();
 
 	public BlobOverworld(TiledMap map) {
-		BlobEvent locationEvent;
 		renderer = new OrthogonalTiledMapRenderer(map);
 		area = new Area();
 
@@ -41,9 +36,6 @@ public class BlobOverworld {
 			location.name = event.getName();
 			location.description = event.getProperties().get("description", String.class);
 			location.pos = pos;
-
-			locationEvent = new BlobEvent(location, true);
-			events.add(locationEvent);
 
 			location.actions.add(new Action(ActionType.MOVE, "Move"));
 			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));

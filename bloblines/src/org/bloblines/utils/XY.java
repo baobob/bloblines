@@ -9,4 +9,10 @@ public class XY {
 		this.x = x;
 		this.y = y;
 	}
+
+	public XY(XY xy) {
+		this.x = xy.x;
+		this.y = xy.y;
+	}
+
 }

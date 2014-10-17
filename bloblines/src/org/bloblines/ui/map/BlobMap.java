@@ -3,6 +3,7 @@ package org.bloblines.ui.map;
 import org.bloblines.Bloblines;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.utils.Assets.Textures;
+import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,7 +34,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private Skin skin = getDefaultSkin();
 
-	public BlobPlayer player;
+	public UiPlayer uiPlayer;
 
 	public BlobMap(Bloblines b) {
 		super(b);
@@ -58,8 +59,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initPlayer() {
-		player = new BlobPlayer(b);
-		player.pos = world.area.locations.get("Start").pos;
+		uiPlayer = new UiPlayer(b.state.player);
+		b.state.player.pos = new XY(world.area.locations.get("Start").pos);
 	}
 
 	private void initGame() {
@@ -203,15 +204,15 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void updatePlayer(float delta) {
 		// update player - Move and stuff
-		player.update(delta);
+		uiPlayer.update(delta);
 	}
 
 	private void updateCamera() {
 		// Keep player as centered as possible
-		camera.position.x = player.pos.x;
+		camera.position.x = uiPlayer.getPos().x;
 		// if (camera.position.x < Gdx.graphics.getWidth() / 2)
 		// camera.position.x = Gdx.graphics.getWidth() / 2;
-		camera.position.y = player.pos.y;
+		camera.position.y = uiPlayer.getPos().y;
 
 		camera.update();
 	}
@@ -229,14 +230,14 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderPlayer(SpriteBatch batch) {
-		TextureRegion frame = player.getAnimation();
-		batch.draw(frame, player.pos.x, player.pos.y, 16, 16);
+		TextureRegion frame = uiPlayer.getAnimation();
+		batch.draw(frame, uiPlayer.getPos().x, uiPlayer.getPos().y, 16, 16);
 
 	}
 
 	private void startEvent() {
-		Dialog dialog = new Dialog(player.event.location.name, skin, "default");
-		Label dialogTxt = new Label(player.event.location.description, skin);
+		Dialog dialog = new Dialog("TODO", skin, "default");
+		Label dialogTxt = new Label("DESCRIPTION TODO", skin);
 		dialogTxt.setWrap(true);
 		dialog.getContentTable().add(dialogTxt).prefWidth(300);
 
@@ -259,14 +260,14 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			startEvent();
 		}
 		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
-			player.updateAnimation();
+			uiPlayer.updateAnimation();
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
-			player.updateAnimation();
+			uiPlayer.updateAnimation();
 		return false;
 	}
 

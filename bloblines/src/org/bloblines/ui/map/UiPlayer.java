@@ -3,7 +3,7 @@ package org.bloblines.ui.map;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bloblines.Bloblines;
+import org.bloblines.data.game.Player;
 import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
@@ -13,34 +13,28 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-public class BlobPlayer {
+public class UiPlayer {
 
 	private static final int MOVE_UP = 1;
 	private static final int MOVE_DOWN = 2;
 	private static final int MOVE_LEFT = 3;
 	private static final int MOVE_RIGHT = 4;
 
-	private Bloblines b;
+	private Player player;
 
 	private float stateTime = 0;
 
 	Map<Integer, Animation> anims = new HashMap<Integer, Animation>();
 
-	public XY pos = new XY(0, 0);
-	public BlobEvent event = null;
-
 	private int moving = 0x0000;
 	private int currentAnimation = MOVE_DOWN;
 
-	public BlobPlayer(Bloblines b) {
-		this.b = b;
-		Texture slimeTexture = new Texture(
-				Gdx.files.internal("characters/slime.png"));
+	public UiPlayer(Player p) {
+		player = p;
+		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
 
-		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(
-				32, 32);
-		TextureRegion[][] slimeRegionMirror = new TextureRegion(slimeTexture)
-				.split(32, 32);
+		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(32, 32);
+		TextureRegion[][] slimeRegionMirror = new TextureRegion(slimeTexture).split(32, 32);
 
 		for (TextureRegion[] rx : slimeRegionMirror)
 			for (TextureRegion ry : rx)
@@ -56,21 +50,20 @@ public class BlobPlayer {
 	public void update(float delta) {
 		stateTime += delta;
 		if ((moving & 0xF000) > 0)
-			pos.y += 2;
+			player.pos.y += 2;
 		if ((moving & 0x0F00) > 0)
-			pos.x += 2;
+			player.pos.x += 2;
 		if ((moving & 0x00F0) > 0)
-			pos.y -= 2;
+			player.pos.y -= 2;
 		if ((moving & 0x000F) > 0)
-			pos.x -= 2;
+			player.pos.x -= 2;
 	}
 
 	public TextureRegion getAnimation() {
 		return anims.get(currentAnimation).getKeyFrame(stateTime, true);
 	}
 
-	private Animation getColumnAnimation(TextureRegion[][] r, int col,
-			int frames) {
+	private Animation getColumnAnimation(TextureRegion[][] r, int col, int frames) {
 		Array<TextureRegion> keyFrames = new Array<TextureRegion>();
 		for (int i = 0; i < frames; i++) {
 			keyFrames.add(r[i][col]);
@@ -105,5 +98,9 @@ public class BlobPlayer {
 		else if (left > 0)
 			currentAnimation = MOVE_LEFT;
 		// moving = (up || left || down || right);
+	}
+
+	public XY getPos() {
+		return player.pos;
 	}
 }

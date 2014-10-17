@@ -15,6 +15,7 @@ public class Location {
 	public Set<Action> actions = new HashSet<Action>();
 	public Set<Target> targets = new HashSet<Target>();
 
+	public String name;
 	public String description;
 	public XY pos;
 }

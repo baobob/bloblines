@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Area {
-	Set<Location> locations = new HashSet<Location>();
+	public Set<Location> locations = new HashSet<Location>();
 
 	public static Area createSampleMap() {
 		Area area = new Area();

@@ -135,7 +135,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// Add menu Icon + Dialog
 		final Table menuEventsTable = new Table(skin);
 		menuEventsTable.add("Evenements");
-		menuEventsTable.add("Trucs faisaibles l� ou vous �tes actuellement...");
+		menuEventsTable.add("Trucs faisables là ou vous êtes actuellement...");
 		menuEventsTable.setBounds(30, 30, 200, 200);
 		menuEventsTable.setVisible(false);
 		stage.addActor(menuEventsTable);

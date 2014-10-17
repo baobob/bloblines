@@ -2,6 +2,8 @@ package org.bloblines.data.map;
 
 import java.util.Set;
 
+import org.bloblines.utils.XY;
+
 /**
  * This is a location where various types of events can take place.
  * 
@@ -13,4 +15,5 @@ public class Location {
 	public Set<Target> targets;
 
 	public String description;
+	public XY pos;
 }

@@ -3,11 +3,11 @@ package org.bloblines.data.map;
 import java.util.Arrays;
 import java.util.Set;
 
-public class Map {
+public class Area {
 	Set<Location> locations;
 
-	public static Map createSampleMap() {
-		Map map = new Map();
+	public static Area createSampleMap() {
+		Area area = new Area();
 		Location start = new Location();
 		Location forestEntrance = new Location();
 		Location bridgeHouse = new Location();
@@ -25,8 +25,8 @@ public class Map {
 		darkCave.targets.addAll(Arrays.asList(new Target(landExploration), new Target(carrotVillage)));
 		carrotVillage.targets.add(new Target(darkCave));
 
-		map.locations.addAll(Arrays.asList(start, forestEntrance, bridgeHouse, desertEntrance, landExploration, darkCave, carrotVillage));
+		area.locations.addAll(Arrays.asList(start, forestEntrance, bridgeHouse, desertEntrance, landExploration, darkCave, carrotVillage));
 
-		return map;
+		return area;
 	}
 }

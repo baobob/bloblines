@@ -1,12 +1,12 @@
 package org.bloblines.data.game;
 
-import org.bloblines.data.map.Map;
+import org.bloblines.data.map.Area;
 
 public class Game {
 
 	public Player player;
 
-	public Map map;
+	public Area area;
 
 	public Game(String playerName) {
 		player = new Player(playerName);

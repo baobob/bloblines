@@ -5,9 +5,11 @@ import org.bloblines.ui.map.BlobMap;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -85,12 +87,13 @@ public class BlobMenu extends BlobScreen {
 		Gdx.app.exit();
 	}
 
+	private TextField nameField = new TextField("Blobonymous", getDefaultSkin());
+
 	private void addMenuListeners() {
 		btnStart.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				new Dialog("Start new game", getDefaultSkin(), "dialog") {
-					private TextField nameField = new TextField("", getDefaultSkin());
 					{
 						getContentTable().add(new Label("Enter your name:", getDefaultSkin()));
 						getContentTable().add(nameField);
@@ -102,7 +105,18 @@ public class BlobMenu extends BlobScreen {
 						}
 					}
 				}.button("Cancel", false).button("Go !", true).show(stage);
+				nameField.addListener(new InputListener() {
+					@Override
+					public boolean keyDown(InputEvent event, int keycode) {
+						if (keycode == Keys.ENTER) {
+							startGame(nameField.getText());
+						}
+						return super.keyDown(event, keycode);
+					}
+				});
+				stage.setKeyboardFocus(nameField);
 			}
+
 		});
 
 		btnContinue.setDisabled(true);

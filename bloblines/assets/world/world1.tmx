@@ -31,7 +31,7 @@
    </properties>
    <ellipse/>
   </object>
-  <object name="Bridge house" type="RP" x="200" y="278">
+  <object name="Bridge House" type="RP" x="200" y="278">
    <properties>
     <property name="description" value="A guardian keeps this bridge."/>
     <property name="neighbours" value="Start"/>

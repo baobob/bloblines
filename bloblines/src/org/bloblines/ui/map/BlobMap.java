@@ -8,6 +8,7 @@ import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,16 +17,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BlobMap extends BlobScreen implements InputProcessor {
 
@@ -40,21 +46,28 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
 
-		stage = new Stage();
-
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-		int wpx = 600;
+		int wpx = 1024;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * wpx, wpx);
-		camera.zoom = 0.4f;
+		camera.zoom = 0.2f;
 		camera.update();
+
+		stage = new Stage(new ScreenViewport());
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
 
 		initUserInterface();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+		System.out.println("viewport " + camera.viewportWidth + " " + camera.viewportHeight);
+		System.out.println("stage " + stage.getWidth() + " " + stage.getHeight());
 	}
 
 	private void initUserInterface() {
@@ -81,7 +94,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(dialog);
 	}
 
+	private Group menuGroup = new Group();
+
 	private void initMenu() {
+		menuGroup.setOrigin(camera.position.x, camera.position.y);
+		System.out.println(menuGroup.getCenterX());
+		System.out.println(menuGroup.getCenterY());
+		stage.addActor(menuGroup);
 		// Add menu Icon + Dialog
 		final Table menuParamsTable = new Table(skin);
 		menuParamsTable.add("Parametres");
@@ -91,7 +110,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(menuParamsTable);
 
 		Image menuParamsIcon = new Image(getTexture(Textures.ICON_PARAMS));
-		menuParamsIcon.setBounds(20, Gdx.graphics.getHeight() - (20 + 32), 32, 32);
+		menuParamsIcon.setOrigin(menuGroup.getOriginX(), menuGroup.getOriginY()); // , 32, 32);
+		menuParamsIcon.setBounds(0, 50, 32, 32);
 		menuParamsIcon.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -102,7 +122,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				return false;
 			}
 		});
-		stage.addActor(menuParamsIcon);
+		menuGroup.addActor(menuParamsIcon);
+
+		menuParamsIcon.addAction(new RotateToAction());
 
 		// Add menu Icon + Dialog
 		final Table menuQuestsTable = new Table(skin);
@@ -124,7 +146,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				return false;
 			}
 		});
-		stage.addActor(menuQuestsIcon);
+		menuGroup.addActor(menuQuestsIcon);
 
 		// Add menu Icon + Dialog
 		final Table menuEventsTable = new Table(skin);
@@ -146,7 +168,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				return false;
 			}
 		});
-		stage.addActor(menuEventsIcon);
+		menuGroup.addActor(menuEventsIcon);
 
 		// Add menu Icon + Dialog
 		final Table menuBlobsTable = new Table(skin);
@@ -168,7 +190,20 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				return false;
 			}
 		});
-		stage.addActor(menuBlobsIcon);
+		menuGroup.addActor(menuBlobsIcon);
+
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				if (keycode == Keys.TAB) {
+					for (Actor child : menuGroup.getChildren()) {
+						child.setVisible(!child.isVisible());
+					}
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override

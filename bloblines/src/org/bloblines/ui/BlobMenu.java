@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BlobMenu extends BlobScreen {
 
@@ -34,9 +35,9 @@ public class BlobMenu extends BlobScreen {
 	public BlobMenu(Game b) {
 		super(b);
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 600);
+		camera.setToOrtho(false, 1024, 768);
 
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport(camera));
 
 		btnStart = initTextButton("Start new game", stage);
 		btnContinue = initTextButton("Continue", stage);
@@ -44,6 +45,12 @@ public class BlobMenu extends BlobScreen {
 		btnQuit = initTextButton("Quit game", stage);
 
 		addMenuListeners();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		// See below for what true means.
+		stage.getViewport().update(width, height, true);
 	}
 
 	private final void startGame(String playerName) {

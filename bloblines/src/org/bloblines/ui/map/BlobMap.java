@@ -17,12 +17,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
@@ -48,10 +46,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-		int wpx = 1024;
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * wpx, wpx);
+		camera.setToOrtho(false, w, h);
 		camera.zoom = 0.2f;
 		camera.update();
 
@@ -66,8 +63,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		System.out.println("viewport " + camera.viewportWidth + " " + camera.viewportHeight);
-		System.out.println("stage " + stage.getWidth() + " " + stage.getHeight());
 	}
 
 	private void initUserInterface() {
@@ -95,12 +90,33 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private Group menuGroup = new Group();
+	private int currentRotation = 0;
+
+	private Image addMenuIcon(Group menuGroup, Textures t, Vector3 v) {
+		Image menuIcon = new Image(getTexture(t));
+		menuIcon.setBounds(menuGroup.getOriginX() + v.x - 16, menuGroup.getOriginY() + v.y - 16, 32, 32);
+		menuGroup.addActor(menuIcon);
+		return menuIcon;
+	}
 
 	private void initMenu() {
-		menuGroup.setOrigin(camera.position.x, camera.position.y);
-		System.out.println(menuGroup.getCenterX());
-		System.out.println(menuGroup.getCenterY());
+		menuGroup.setOrigin(camera.position.x, camera.position.y - 8);
 		stage.addActor(menuGroup);
+
+		int menuAngle = -30;
+		Vector3 v = new Vector3(0, 80, 0);
+		addMenuIcon(menuGroup, Textures.ICON_PARAMS, v);
+		v.rotate(menuAngle, 0, 0, 10);
+		addMenuIcon(menuGroup, Textures.ICON_BOOK, v);
+		v.rotate(menuAngle, 0, 0, 10);
+		addMenuIcon(menuGroup, Textures.ICON_LOCATION, v);
+		v.rotate(menuAngle, 0, 0, 10);
+		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
+		v.rotate(menuAngle, 0, 0, 10);
+		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
+		v.rotate(menuAngle, 0, 0, 10);
+		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
+
 		// Add menu Icon + Dialog
 		final Table menuParamsTable = new Table(skin);
 		menuParamsTable.add("Parametres");
@@ -109,22 +125,16 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuParamsTable.setVisible(false);
 		stage.addActor(menuParamsTable);
 
-		Image menuParamsIcon = new Image(getTexture(Textures.ICON_PARAMS));
-		menuParamsIcon.setOrigin(menuGroup.getOriginX(), menuGroup.getOriginY()); // , 32, 32);
-		menuParamsIcon.setBounds(0, 50, 32, 32);
-		menuParamsIcon.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				if (((InputEvent) event).getType().equals(Type.touchDown)) {
-					menuParamsTable.setVisible(!menuParamsTable.isVisible());
-					return true;
-				}
-				return false;
-			}
-		});
-		menuGroup.addActor(menuParamsIcon);
-
-		menuParamsIcon.addAction(new RotateToAction());
+		// menuParamsIcon.addListener(new EventListener() {
+		// @Override
+		// public boolean handle(Event event) {
+		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
+		// menuParamsTable.setVisible(!menuParamsTable.isVisible());
+		// return true;
+		// }
+		// return false;
+		// }
+		// });
 
 		// Add menu Icon + Dialog
 		final Table menuQuestsTable = new Table(skin);
@@ -134,71 +144,78 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuQuestsTable.setVisible(false);
 		stage.addActor(menuQuestsTable);
 
-		Image menuQuestsIcon = new Image(getTexture(Textures.ICON_BOOK));
-		menuQuestsIcon.setBounds(20, Gdx.graphics.getHeight() - (60 + 32), 32, 32);
-		menuQuestsIcon.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				if (((InputEvent) event).getType().equals(Type.touchDown)) {
-					menuQuestsTable.setVisible(!menuQuestsTable.isVisible());
-					return true;
-				}
-				return false;
-			}
-		});
-		menuGroup.addActor(menuQuestsIcon);
-
-		// Add menu Icon + Dialog
-		final Table menuEventsTable = new Table(skin);
-		menuEventsTable.add("Evenements");
-		menuEventsTable.add("Trucs faisables là ou vous êtes actuellement...");
-		menuEventsTable.setBounds(30, 30, 200, 200);
-		menuEventsTable.setVisible(false);
-		stage.addActor(menuEventsTable);
-
-		Image menuEventsIcon = new Image(getTexture(Textures.ICON_LOCATION));
-		menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32, 32);
-		menuEventsIcon.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				if (((InputEvent) event).getType().equals(Type.touchDown)) {
-					menuEventsTable.setVisible(!menuEventsTable.isVisible());
-					return true;
-				}
-				return false;
-			}
-		});
-		menuGroup.addActor(menuEventsIcon);
-
-		// Add menu Icon + Dialog
-		final Table menuBlobsTable = new Table(skin);
-		menuBlobsTable.add("Blobs");
-		menuBlobsTable.add("Blobs de l'équipe");
-		menuBlobsTable.setBounds(30, 30, 200, 200);
-		menuBlobsTable.setVisible(false);
-		stage.addActor(menuBlobsTable);
-
-		Image menuBlobsIcon = new Image(getTexture(Textures.ICON_BLOB));
-		menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32, 32);
-		menuBlobsIcon.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				if (((InputEvent) event).getType().equals(Type.touchDown)) {
-					menuBlobsTable.setVisible(!menuBlobsTable.isVisible());
-					return true;
-				}
-				return false;
-			}
-		});
-		menuGroup.addActor(menuBlobsIcon);
+		// menuQuestsIcon.addListener(new EventListener() {
+		// @Override
+		// public boolean handle(Event event) {
+		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
+		// menuQuestsTable.setVisible(!menuQuestsTable.isVisible());
+		// return true;
+		// }
+		// return false;
+		// }
+		// });
+		// menuGroup.addActor(menuQuestsIcon);
+		//
+		// // Add menu Icon + Dialog
+		// final Table menuEventsTable = new Table(skin);
+		// menuEventsTable.add("Evenements");
+		// menuEventsTable.add("Trucs faisables là ou vous êtes actuellement...");
+		// menuEventsTable.setBounds(30, 30, 200, 200);
+		// menuEventsTable.setVisible(false);
+		// stage.addActor(menuEventsTable);
+		//
+		// Image menuEventsIcon = new Image(getTexture(Textures.ICON_LOCATION));
+		// menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32, 32);
+		// menuEventsIcon.addListener(new EventListener() {
+		// @Override
+		// public boolean handle(Event event) {
+		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
+		// menuEventsTable.setVisible(!menuEventsTable.isVisible());
+		// return true;
+		// }
+		// return false;
+		// }
+		// });
+		// menuGroup.addActor(menuEventsIcon);
+		//
+		// // Add menu Icon + Dialog
+		// final Table menuBlobsTable = new Table(skin);
+		// menuBlobsTable.add("Blobs");
+		// menuBlobsTable.add("Blobs de l'équipe");
+		// menuBlobsTable.setBounds(30, 30, 200, 200);
+		// menuBlobsTable.setVisible(false);
+		// stage.addActor(menuBlobsTable);
+		//
+		// Image menuBlobsIcon = new Image(getTexture(Textures.ICON_BLOB));
+		// menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32, 32);
+		// menuBlobsIcon.addListener(new EventListener() {
+		// @Override
+		// public boolean handle(Event event) {
+		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
+		// menuBlobsTable.setVisible(!menuBlobsTable.isVisible());
+		// return true;
+		// }
+		// return false;
+		// }
+		// });
+		// menuGroup.addActor(menuBlobsIcon);
 
 		stage.addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.TAB) {
+					menuGroup.setVisible(!menuGroup.isVisible());
 					for (Actor child : menuGroup.getChildren()) {
 						child.setVisible(!child.isVisible());
 					}
+					return true;
+				}
+				if ((keycode == Keys.RIGHT || keycode == Keys.LEFT) && menuGroup.isVisible()) {
+					RotateToAction rotation = new RotateToAction();
+					rotation.setDuration(0.3f);
+					currentRotation += (keycode == Keys.RIGHT ? 30 : -30);
+					rotation.setRotation(currentRotation);
+					menuGroup.addAction(rotation);
 					return true;
 				}
 				return false;
@@ -243,10 +260,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void updateCamera() {
 		// Keep player as centered as possible
-		camera.position.x = uiPlayer.getPos().x;
+		camera.position.x = uiPlayer.getPos().x + 8;
 		// if (camera.position.x < Gdx.graphics.getWidth() / 2)
 		// camera.position.x = Gdx.graphics.getWidth() / 2;
-		camera.position.y = uiPlayer.getPos().y;
+		camera.position.y = uiPlayer.getPos().y + 8;
 
 		camera.update();
 	}
@@ -319,6 +336,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		System.out.println("touchDown: " + screenX + "/" + screenY);
 		return false;
 	}
 

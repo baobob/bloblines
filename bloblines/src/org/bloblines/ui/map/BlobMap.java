@@ -4,6 +4,7 @@ import org.bloblines.Game;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
+import org.bloblines.ui.ring.MenuGroup;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
@@ -17,15 +18,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -89,33 +86,17 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(dialog);
 	}
 
-	private Group menuGroup = new Group();
-	private int currentRotation = 0;
-
-	private Image addMenuIcon(Group menuGroup, Textures t, Vector3 v) {
-		Image menuIcon = new Image(getTexture(t));
-		menuIcon.setBounds(menuGroup.getOriginX() + v.x - 16, menuGroup.getOriginY() + v.y - 16, 32, 32);
-		menuGroup.addActor(menuIcon);
-		return menuIcon;
-	}
+	private MenuGroup menuGroup = new MenuGroup(game.assets);
 
 	private void initMenu() {
 		menuGroup.setOrigin(camera.position.x, camera.position.y - 8);
 		stage.addActor(menuGroup);
 
-		int menuAngle = -30;
-		Vector3 v = new Vector3(0, 80, 0);
-		addMenuIcon(menuGroup, Textures.ICON_PARAMS, v);
-		v.rotate(menuAngle, 0, 0, 10);
-		addMenuIcon(menuGroup, Textures.ICON_BOOK, v);
-		v.rotate(menuAngle, 0, 0, 10);
-		addMenuIcon(menuGroup, Textures.ICON_LOCATION, v);
-		v.rotate(menuAngle, 0, 0, 10);
-		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
-		v.rotate(menuAngle, 0, 0, 10);
-		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
-		v.rotate(menuAngle, 0, 0, 10);
-		addMenuIcon(menuGroup, Textures.ICON_BLOB, v);
+		menuGroup.addElement("Parameters", Textures.ICON_PARAMS);
+		menuGroup.addElement("Journal", Textures.ICON_BOOK);
+		menuGroup.addElement("Travel", Textures.ICON_LOCATION);
+		menuGroup.addElement("Actions", Textures.ICON_BLOB);
+		menuGroup.addElement("Status", Textures.ICON_HEART);
 
 		// Add menu Icon + Dialog
 		final Table menuParamsTable = new Table(skin);
@@ -210,12 +191,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 					}
 					return true;
 				}
-				if ((keycode == Keys.RIGHT || keycode == Keys.LEFT) && menuGroup.isVisible()) {
-					RotateToAction rotation = new RotateToAction();
-					rotation.setDuration(0.3f);
-					currentRotation += (keycode == Keys.RIGHT ? 30 : -30);
-					rotation.setRotation(currentRotation);
-					menuGroup.addAction(rotation);
+				if (keycode == Keys.RIGHT && menuGroup.isVisible()) {
+					menuGroup.right();
+					return true;
+				}
+				if (keycode == Keys.LEFT && menuGroup.isVisible()) {
+					menuGroup.left();
 					return true;
 				}
 				return false;

@@ -19,7 +19,8 @@ public class Assets extends AssetManager {
 		ICON_BOOK("icons/book.png"), 
 		ICON_LOCATION("icons/map.png"), 
 		ICON_PARAMS("icons/cog.png"), 
-		ICON_BLOB("icons/drop.png"); 
+		ICON_BLOB("icons/drop.png"), 
+		ICON_HEART("icons/heart.png"); 
 		// @formatter:on
 
 		Textures(String path) {

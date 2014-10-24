@@ -198,6 +198,14 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.shapeRenderer.setColor(1, 1, 1, 1);
 		renderEventsLinks();
 		game.shapeRenderer.end();
+
+		// Render player / events / moving stuff
+		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
+		batch.begin();
+		renderEvents(batch);
+		renderPlayer(batch);
+		batch.end();
+
 		if (menuGroup.isVisible()) {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -207,13 +215,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			game.shapeRenderer.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
-
-		// Render player / events / moving stuff
-		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
-		batch.begin();
-		renderEvents(batch);
-		renderPlayer(batch);
-		batch.end();
 
 		// Render UI (dialogs / buttons / etc)
 		stage.act(delta);

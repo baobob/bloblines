@@ -1,8 +1,5 @@
 package org.bloblines.ui.ring;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bloblines.utils.Assets;
 import org.bloblines.utils.Assets.Textures;
 
@@ -11,7 +8,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class MenuGroup extends Group {
 
@@ -19,7 +15,7 @@ public class MenuGroup extends Group {
 
 	private static final int ELEMENTS_DISTANCE = 80;
 
-	private static final float ROTATION_DURATION = 0.3f;
+	private static final float ROTATION_DURATION = 0.1f;
 
 	private Assets assets;
 
@@ -30,18 +26,18 @@ public class MenuGroup extends Group {
 
 	public int rotationIndex = 0;
 
-	public List<MenuElement> elements = new ArrayList<>();
-
 	public MenuGroup(Assets assets) {
 		this.assets = assets;
 	}
 
 	public void addElement(String label, Textures t) {
-		MenuElement element = new MenuElement(label);
-		Image menuIcon = new Image(assets.getTexture(t));
-		menuIcon.setBounds(getOriginX() + nextElementVector.x - 16, getOriginY() + nextElementVector.y - 16, 32, 32);
-		addActor(menuIcon);
-		elements.add(element);
+		MenuElement menuElement = new MenuElement(label, assets.getTexture(t));
+		// Rotation moves object center because we rotate it aroud the bottom left corner, it's not pretty atm so it's disabled
+		// menuElement.setRotation(getChildren().size * -ELEMENTS_ANGLE);
+		menuElement.setWidth(32);
+		menuElement.setHeight(32);
+		menuElement.setCenterPosition(getOriginX() + nextElementVector.x, getOriginY() + nextElementVector.y);
+		addActor(menuElement);
 		nextElementVector.rotate(-ELEMENTS_ANGLE, 0, 0, 1);
 	}
 
@@ -68,7 +64,7 @@ public class MenuGroup extends Group {
 	 * Rotates menu to the right
 	 */
 	public void right() {
-		if (rotationIndex == elements.size() - 1) {
+		if (rotationIndex == getChildren().size - 1) {
 			// We can't rotate right of the last element
 			return;
 		}

@@ -18,9 +18,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -97,6 +94,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuGroup.addElement("Travel", Textures.ICON_LOCATION);
 		menuGroup.addElement("Actions", Textures.ICON_BLOB);
 		menuGroup.addElement("Status", Textures.ICON_HEART);
+		menuGroup.setVisible(false);
 
 		// Add menu Icon + Dialog
 		final Table menuParamsTable = new Table(skin);
@@ -181,27 +179,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// });
 		// menuGroup.addActor(menuBlobsIcon);
 
-		stage.addListener(new InputListener() {
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				if (keycode == Keys.TAB) {
-					menuGroup.setVisible(!menuGroup.isVisible());
-					for (Actor child : menuGroup.getChildren()) {
-						child.setVisible(!child.isVisible());
-					}
-					return true;
-				}
-				if (keycode == Keys.RIGHT && menuGroup.isVisible()) {
-					menuGroup.right();
-					return true;
-				}
-				if (keycode == Keys.LEFT && menuGroup.isVisible()) {
-					menuGroup.left();
-					return true;
-				}
-				return false;
-			}
-		});
 	}
 
 	@Override
@@ -218,8 +195,18 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 		game.shapeRenderer.setProjectionMatrix(camera.combined);
 		game.shapeRenderer.begin(ShapeType.Filled);
+		game.shapeRenderer.setColor(1, 1, 1, 1);
 		renderEventsLinks();
 		game.shapeRenderer.end();
+		if (menuGroup.isVisible()) {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			game.shapeRenderer.begin(ShapeType.Filled);
+			game.shapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
+			game.shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			game.shapeRenderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
 
 		// Render player / events / moving stuff
 		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
@@ -231,7 +218,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// Render UI (dialogs / buttons / etc)
 		stage.act(delta);
 		stage.draw();
-
 	}
 
 	private void updatePlayer(float delta) {
@@ -242,10 +228,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void updateCamera() {
 		// Keep player as centered as possible
 		camera.position.x = uiPlayer.getPos().x + 8;
-		// if (camera.position.x < Gdx.graphics.getWidth() / 2)
-		// camera.position.x = Gdx.graphics.getWidth() / 2;
 		camera.position.y = uiPlayer.getPos().y + 8;
-
 		camera.update();
 	}
 
@@ -274,37 +257,30 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	}
 
-	private void startEvent() {
-		Dialog dialog = new Dialog("TODO", skin, "default");
-		Label dialogTxt = new Label("DESCRIPTION TODO", skin);
-		dialogTxt.setWrap(true);
-		dialog.getContentTable().add(dialogTxt).prefWidth(300);
-
-		dialog.setMovable(true);
-		dialog.setColor(0.9f, 0.9f, 0.9f, 0.7f);
-
-		dialog.setBounds(100, 400, 300, 200);
-		dialog.validate();
-		stage.addActor(dialog);
-
-		// MoveToAction a = new MoveToAction();
-		// a.setPosition(300, 500);
-		// a.setDuration(10);
-		// dialog.addAction(a);
-	}
-
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.ENTER) {
-			startEvent();
+		if (keycode == Keys.TAB) {
+			menuGroup.setVisible(!menuGroup.isVisible());
+			return true;
 		}
-		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
+		if (menuGroup.isVisible()) {
+			// Menu should handle this
+			menuGroup.keyDown(keycode);
+			return true;
+		}
+		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
 			uiPlayer.updateAnimation();
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if (menuGroup.isVisible()) {
+			// Menu is visible, we don't care
+			return true;
+		}
 		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
 			uiPlayer.updateAnimation();
 		return false;

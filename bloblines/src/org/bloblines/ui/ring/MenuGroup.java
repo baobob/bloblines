@@ -6,7 +6,9 @@ import java.util.List;
 import org.bloblines.utils.Assets;
 import org.bloblines.utils.Assets.Textures;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -73,4 +75,22 @@ public class MenuGroup extends Group {
 		rotationIndex++;
 		updateRotation();
 	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		for (Actor child : getChildren()) {
+			child.setVisible(visible);
+		}
+		super.setVisible(visible);
+	}
+
+	public void keyDown(int keycode) {
+		if (keycode == Keys.RIGHT) {
+			right();
+		}
+		if (keycode == Keys.LEFT) {
+			left();
+		}
+	}
+
 }

@@ -11,11 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 
 public class MenuGroup extends Group {
 
-	private static final int ELEMENTS_ANGLE = 30;
+	private static final int ELEMENTS_ANGLE = 45;
 
 	private static final int ELEMENTS_DISTANCE = 80;
 
 	private static final float ROTATION_DURATION = 0.1f;
+
+	private static final int ICON_SIZE = 32;
 
 	private Assets assets;
 
@@ -32,11 +34,20 @@ public class MenuGroup extends Group {
 
 	public void addElement(String label, Textures t) {
 		MenuElement menuElement = new MenuElement(label, assets.getTexture(t));
-		// Rotation moves object center because we rotate it aroud the bottom left corner, it's not pretty atm so it's disabled
-		// menuElement.setRotation(getChildren().size * -ELEMENTS_ANGLE);
-		menuElement.setWidth(32);
-		menuElement.setHeight(32);
-		menuElement.setCenterPosition(getOriginX() + nextElementVector.x, getOriginY() + nextElementVector.y);
+		// Rotation moves object center because we rotate it aroud the bottom left corner, we need to translate it to a bit
+		float tetaDegrees = getChildren().size * -ELEMENTS_ANGLE;
+		double teta = Math.toRadians(-tetaDegrees);
+		menuElement.setRotation(tetaDegrees);
+		float cx = ICON_SIZE / 2;
+		float cy = ICON_SIZE / 2;
+		float cx2 = (float) (cx * Math.cos(teta) + cy * Math.sin(teta));
+		float cy2 = (float) (-cx * Math.sin(teta) + cy * Math.cos(teta));
+		float tx = cx - cx2;
+		float ty = cy - cy2;
+
+		menuElement.setWidth(ICON_SIZE);
+		menuElement.setHeight(ICON_SIZE);
+		menuElement.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
 		addActor(menuElement);
 		nextElementVector.rotate(-ELEMENTS_ANGLE, 0, 0, 1);
 	}

@@ -94,6 +94,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuGroup.addElement("Travel", Textures.ICON_LOCATION);
 		menuGroup.addElement("Actions", Textures.ICON_BLOB);
 		menuGroup.addElement("Status", Textures.ICON_HEART);
+		stage.addActor(menuGroup.getLabel());
 		menuGroup.setVisible(false);
 
 		// Add menu Icon + Dialog
@@ -252,21 +253,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void renderMenu() {
 		if (menuGroup.isVisible()) {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-			game.bgShapeRenderer.begin(ShapeType.Filled);
-			game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
-			game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			game.bgShapeRenderer.end();
-
-			// Draw a black square to show selected menu
-			game.fgShapeRenderer.begin(ShapeType.Line);
-			game.fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
-			game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 52, 40, 40);
-			game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 51, 42, 42);
-			game.fgShapeRenderer.end();
-			Gdx.gl.glDisable(GL20.GL_BLEND);
+			menuGroup.render();
 		}
 	}
 

@@ -1,6 +1,6 @@
 package org.bloblines.ui.ring;
 
-import org.bloblines.utils.Assets;
+import org.bloblines.Game;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Keys;
@@ -19,7 +19,7 @@ public class MenuGroup extends Group {
 
 	private static final int ICON_SIZE = 32;
 
-	private Assets assets;
+	private Game game;
 
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
@@ -28,12 +28,12 @@ public class MenuGroup extends Group {
 
 	public int rotationIndex = 0;
 
-	public MenuGroup(Assets assets) {
-		this.assets = assets;
+	public MenuGroup(Game game) {
+		this.game = game;
 	}
 
 	public void addElement(String label, Textures t) {
-		MenuElement menuElement = new MenuElement(label, assets.getTexture(t));
+		MenuElement menuElement = new MenuElement(label, game.assets.getTexture(t));
 		// Rotation moves object center because we rotate it aroud the bottom left corner, we need to translate it to a bit
 		float tetaDegrees = getChildren().size * -ELEMENTS_ANGLE;
 		double teta = Math.toRadians(-tetaDegrees);

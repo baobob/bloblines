@@ -20,11 +20,13 @@ public class Game extends com.badlogic.gdx.Game {
 
 	public BlobOverworld world;
 
-	public ShapeRenderer shapeRenderer;
+	public ShapeRenderer bgShapeRenderer;
+	public ShapeRenderer fgShapeRenderer;
 
 	@Override
 	public void create() {
-		shapeRenderer = new ShapeRenderer();
+		bgShapeRenderer = new ShapeRenderer();
+		fgShapeRenderer = new ShapeRenderer();
 
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
 		assets = new Assets();

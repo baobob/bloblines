@@ -83,7 +83,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.addActor(dialog);
 	}
 
-	private MenuGroup menuGroup = new MenuGroup(game.assets);
+	private MenuGroup menuGroup = new MenuGroup(game);
 
 	private void initMenu() {
 		menuGroup.setOrigin(camera.position.x, camera.position.y - 8);
@@ -193,11 +193,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.world.renderer.setView(camera);
 		game.world.renderer.render();
 
-		game.shapeRenderer.setProjectionMatrix(camera.combined);
-		game.shapeRenderer.begin(ShapeType.Filled);
-		game.shapeRenderer.setColor(1, 1, 1, 1);
+		game.bgShapeRenderer.setProjectionMatrix(camera.combined);
+		game.bgShapeRenderer.begin(ShapeType.Filled);
+		game.bgShapeRenderer.setColor(1, 1, 1, 1);
 		renderEventsLinks();
-		game.shapeRenderer.end();
+		game.bgShapeRenderer.end();
 
 		// Render player / events / moving stuff
 		SpriteBatch batch = (SpriteBatch) game.world.renderer.getSpriteBatch();
@@ -206,15 +206,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		renderPlayer(batch);
 		batch.end();
 
-		if (menuGroup.isVisible()) {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			game.shapeRenderer.begin(ShapeType.Filled);
-			game.shapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
-			game.shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			game.shapeRenderer.end();
-			Gdx.gl.glDisable(GL20.GL_BLEND);
-		}
+		renderMenu();
 
 		// Render UI (dialogs / buttons / etc)
 		stage.act(delta);
@@ -246,7 +238,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void renderEventsLinks() {
 		for (Location location : game.world.area.locations.values()) {
 			for (Target target : location.targets) {
-				game.shapeRenderer.rectLine(location.pos.x + 8, location.pos.y + 8, target.destination.pos.x + 8,
+				game.bgShapeRenderer.rectLine(location.pos.x + 8, location.pos.y + 8, target.destination.pos.x + 8,
 						target.destination.pos.y + 8, 8);
 			}
 		}
@@ -256,6 +248,26 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		TextureRegion frame = uiPlayer.getAnimation();
 		batch.draw(frame, uiPlayer.getPos().x, uiPlayer.getPos().y, 16, 16);
 
+	}
+
+	private void renderMenu() {
+		if (menuGroup.isVisible()) {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+			game.bgShapeRenderer.begin(ShapeType.Filled);
+			game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
+			game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			game.bgShapeRenderer.end();
+
+			// Draw a black square to show selected menu
+			game.fgShapeRenderer.begin(ShapeType.Line);
+			game.fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
+			game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 52, 40, 40);
+			game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 51, 42, 42);
+			game.fgShapeRenderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
 	}
 
 	@Override

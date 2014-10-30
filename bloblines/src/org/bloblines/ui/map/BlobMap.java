@@ -8,7 +8,6 @@ import org.bloblines.ui.ring.MenuGroup;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -355,26 +354,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			}
 			return true;
 		}
-		if (menuGroup.isVisible()) {
+		if (currentState == State.MENU) {
 			// Menu should handle this
 			menuGroup.keyDown(keycode);
 			return true;
 		}
-		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
-			uiPlayer.updateAnimation();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		if (menuGroup.isVisible()) {
-			// Menu is visible, we don't care
-			return true;
-		}
-		if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.UP || keycode == Input.Keys.DOWN)
-			uiPlayer.updateAnimation();
 		return false;
 	}
 

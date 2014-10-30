@@ -34,6 +34,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	public UiPlayer uiPlayer;
 
+	public enum State {
+		HELP, MENU, MAP
+	}
+
+	public State currentState;
+
 	public BlobMap(Game game) {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
@@ -47,6 +53,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera.update();
 
 		stage = new Stage(new ScreenViewport());
+
+		currentState = State.HELP;
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
@@ -190,6 +198,15 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		updatePlayer(delta);
 		updateCamera();
 
+		renderBackground();
+		renderForeground();
+
+		// Render UI (dialogs / buttons / etc)
+		stage.act(delta);
+		stage.draw();
+	}
+
+	private void renderBackground() {
 		// Render base Map
 		game.world.renderer.setView(camera);
 		game.world.renderer.render();
@@ -207,11 +224,25 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		renderPlayer(batch);
 		batch.end();
 
-		renderMenu();
+		if (currentState != State.MAP) {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		// Render UI (dialogs / buttons / etc)
-		stage.act(delta);
-		stage.draw();
+			game.bgShapeRenderer.begin(ShapeType.Filled);
+			game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
+			game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			game.bgShapeRenderer.end();
+
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
+	}
+
+	private void renderForeground() {
+		if (currentState == State.MENU) {
+			renderMenu();
+		} else if (currentState == State.HELP) {
+			renderHelp();
+		}
 	}
 
 	private void updatePlayer(float delta) {
@@ -252,15 +283,27 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderMenu() {
-		if (menuGroup.isVisible()) {
-			menuGroup.render();
-		}
+		menuGroup.render();
+	}
+
+	private void renderHelp() {
+		game.batch.begin();
+		getDefaultFont().setScale(3);
+		getDefaultFont().draw(game.batch, "Help (press Enter to return to game)", 50, Gdx.graphics.getHeight() - 50);
+		game.batch.end();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.TAB) {
 			menuGroup.setVisible(!menuGroup.isVisible());
+			currentState = menuGroup.isVisible() ? State.MENU : State.MAP;
+			return true;
+		}
+		if (keycode == Keys.ENTER) {
+			if (currentState == State.HELP) {
+				currentState = State.MAP;
+			}
 			return true;
 		}
 		if (menuGroup.isVisible()) {

@@ -5,7 +5,6 @@ import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -110,13 +109,6 @@ public class MenuGroup extends Group {
 	}
 
 	public void render() {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-		game.bgShapeRenderer.begin(ShapeType.Filled);
-		game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
-		game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		game.bgShapeRenderer.end();
 
 		// Draw a black square to show selected menu
 		game.fgShapeRenderer.begin(ShapeType.Line);
@@ -130,8 +122,6 @@ public class MenuGroup extends Group {
 		game.fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
 		game.fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		game.fgShapeRenderer.end();
-
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	public Label getLabel() {

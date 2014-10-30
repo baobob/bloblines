@@ -18,11 +18,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BlobMap extends BlobScreen implements InputProcessor {
@@ -74,21 +75,22 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void initStartDialog() {
 		// *************************** Start dialog *********************
-		float w = 400;
-		float h = 300;
-		Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
-		String message = "Bienvenue jeune Blob,\n\n"
-				+ "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
-		Label dialogTxt = new Label(message, skin);
-		dialogTxt.setWrap(true);
-		dialog.getContentTable().add(dialogTxt).prefWidth(w);
-		dialog.setModal(true);
-		dialog.setMovable(true);
-		dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
-
-		dialog.setBounds((Gdx.graphics.getWidth() - w) / 2, (Gdx.graphics.getHeight() - h) / 2, w, h);
-		dialog.button("C'est parti !");
-		stage.addActor(dialog);
+		// float w = 400;
+		// float h = 300;
+		// Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
+		// String message = "Bienvenue jeune Blob,\n\n"
+		// +
+		// "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
+		// Label dialogTxt = new Label(message, skin);
+		// dialogTxt.setWrap(true);
+		// dialog.getContentTable().add(dialogTxt).prefWidth(w);
+		// dialog.setModal(true);
+		// dialog.setMovable(true);
+		// dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
+		//
+		// dialog.setBounds((Gdx.graphics.getWidth() - w) / 2, (Gdx.graphics.getHeight() - h) / 2, w, h);
+		// dialog.button("C'est parti !");
+		// stage.addActor(dialog);
 	}
 
 	private MenuGroup menuGroup = new MenuGroup(game);
@@ -104,6 +106,26 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuGroup.addElement("Status", Textures.ICON_HEART);
 		stage.addActor(menuGroup.getLabel());
 		menuGroup.setVisible(false);
+
+		Image helpImage = new Image(game.assets.getTexture(Textures.ICON_BOOK));
+		helpImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 50, 32, 32);
+		helpImage.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				toggleHelp();
+			}
+		});
+		stage.addActor(helpImage);
+
+		Image menuImage = new Image(game.assets.getTexture(Textures.ICON_LOCATION));
+		menuImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 120, 32, 32);
+		menuImage.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				toggleMenu();
+			}
+		});
+		stage.addActor(menuImage);
 
 		// Add menu Icon + Dialog
 		final Table menuParamsTable = new Table(skin);
@@ -229,7 +251,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			game.bgShapeRenderer.begin(ShapeType.Filled);
-			game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.5f);
+			game.bgShapeRenderer.setColor(0.4f, 0.4f, 0.4f, 0.7f);
 			game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			game.bgShapeRenderer.end();
 
@@ -283,26 +305,53 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderMenu() {
+		game.batch.begin();
+		getDefaultFont().setScale(1);
+		getDefaultFont().draw(game.batch, "Menu Screen - Use LEFT and RIGHT to select and ENTER to validate (press TAB to return to game)",
+				50, Gdx.graphics.getHeight() - 50);
+		game.batch.end();
+
 		menuGroup.render();
 	}
 
 	private void renderHelp() {
 		game.batch.begin();
-		getDefaultFont().setScale(3);
-		getDefaultFont().draw(game.batch, "Help (press Enter to return to game)", 50, Gdx.graphics.getHeight() - 50);
+		getDefaultFont().setScale(1);
+		getDefaultFont().draw(game.batch, "Help Screen (press F1 to return to game)", 50, Gdx.graphics.getHeight() - 50);
+
+		getDefaultFont().draw(game.batch, "Help menu (F1) :", Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 25);
+
+		getDefaultFont().draw(game.batch, "Game menu (TAB) :", Gdx.graphics.getWidth() - 195, Gdx.graphics.getHeight() - 95);
+
 		game.batch.end();
+	}
+
+	private void toggleMenu() {
+		menuGroup.setVisible(!menuGroup.isVisible());
+		currentState = currentState == State.MENU ? State.MAP : State.MENU;
+	}
+
+	private void toggleHelp() {
+		currentState = currentState == State.HELP ? State.MAP : State.HELP;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.TAB) {
-			menuGroup.setVisible(!menuGroup.isVisible());
-			currentState = menuGroup.isVisible() ? State.MENU : State.MAP;
+			toggleMenu();
 			return true;
 		}
-		if (keycode == Keys.ENTER) {
-			if (currentState == State.HELP) {
-				currentState = State.MAP;
+		if (keycode == Keys.F1) {
+			toggleHelp();
+			return true;
+		}
+		if (keycode == Keys.ESCAPE) {
+			if (currentState == State.MAP) {
+				Gdx.app.exit();
+			} else if (currentState == State.MENU) {
+				toggleMenu();
+			} else if (currentState == State.HELP) {
+				toggleHelp();
 			}
 			return true;
 		}

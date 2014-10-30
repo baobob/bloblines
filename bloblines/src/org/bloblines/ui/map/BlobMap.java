@@ -20,8 +20,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -30,7 +28,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private OrthographicCamera camera;
 	private Stage stage;
 
-	private Skin skin = getDefaultSkin();
+	private MenuGroup menuGroup;
 
 	public UiPlayer uiPlayer;
 
@@ -53,23 +51,19 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera.update();
 
 		stage = new Stage(new ScreenViewport());
+		initMenu();
+		initIcons();
 
 		currentState = State.HELP;
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
 
-		initUserInterface();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-	}
-
-	private void initUserInterface() {
-		initStartDialog();
-		initMenu();
 	}
 
 	private void initStartDialog() {
@@ -92,9 +86,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// stage.addActor(dialog);
 	}
 
-	private MenuGroup menuGroup = new MenuGroup(game);
-
 	private void initMenu() {
+		menuGroup = new MenuGroup(game);
 		menuGroup.setOrigin(camera.position.x, camera.position.y - 8);
 		stage.addActor(menuGroup);
 
@@ -105,7 +98,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuGroup.addElement("Status", Textures.ICON_HEART);
 		stage.addActor(menuGroup.getLabel());
 		menuGroup.setVisible(false);
+	}
 
+	private void initIcons() {
 		Image helpImage = new Image(game.assets.getTexture(Textures.ICON_BOOK));
 		helpImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 50, 32, 32);
 		helpImage.addListener(new ClickListener() {
@@ -125,90 +120,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			}
 		});
 		stage.addActor(menuImage);
-
-		// Add menu Icon + Dialog
-		final Table menuParamsTable = new Table(skin);
-		menuParamsTable.add("Parametres");
-		menuParamsTable.add("Vous pouvez changer des trucs ici...");
-		menuParamsTable.setBounds(30, 30, 200, 200);
-		menuParamsTable.setVisible(false);
-		stage.addActor(menuParamsTable);
-
-		// menuParamsIcon.addListener(new EventListener() {
-		// @Override
-		// public boolean handle(Event event) {
-		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
-		// menuParamsTable.setVisible(!menuParamsTable.isVisible());
-		// return true;
-		// }
-		// return false;
-		// }
-		// });
-
-		// Add menu Icon + Dialog
-		final Table menuQuestsTable = new Table(skin);
-		menuQuestsTable.add("Quêtes");
-		menuQuestsTable.add("Liste des quêtes à effectuer");
-		menuQuestsTable.setBounds(30, 30, 200, 200);
-		menuQuestsTable.setVisible(false);
-		stage.addActor(menuQuestsTable);
-
-		// menuQuestsIcon.addListener(new EventListener() {
-		// @Override
-		// public boolean handle(Event event) {
-		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
-		// menuQuestsTable.setVisible(!menuQuestsTable.isVisible());
-		// return true;
-		// }
-		// return false;
-		// }
-		// });
-		// menuGroup.addActor(menuQuestsIcon);
-		//
-		// // Add menu Icon + Dialog
-		// final Table menuEventsTable = new Table(skin);
-		// menuEventsTable.add("Evenements");
-		// menuEventsTable.add("Trucs faisables là ou vous êtes actuellement...");
-		// menuEventsTable.setBounds(30, 30, 200, 200);
-		// menuEventsTable.setVisible(false);
-		// stage.addActor(menuEventsTable);
-		//
-		// Image menuEventsIcon = new Image(getTexture(Textures.ICON_LOCATION));
-		// menuEventsIcon.setBounds(20, Gdx.graphics.getHeight() - (100 + 32), 32, 32);
-		// menuEventsIcon.addListener(new EventListener() {
-		// @Override
-		// public boolean handle(Event event) {
-		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
-		// menuEventsTable.setVisible(!menuEventsTable.isVisible());
-		// return true;
-		// }
-		// return false;
-		// }
-		// });
-		// menuGroup.addActor(menuEventsIcon);
-		//
-		// // Add menu Icon + Dialog
-		// final Table menuBlobsTable = new Table(skin);
-		// menuBlobsTable.add("Blobs");
-		// menuBlobsTable.add("Blobs de l'équipe");
-		// menuBlobsTable.setBounds(30, 30, 200, 200);
-		// menuBlobsTable.setVisible(false);
-		// stage.addActor(menuBlobsTable);
-		//
-		// Image menuBlobsIcon = new Image(getTexture(Textures.ICON_BLOB));
-		// menuBlobsIcon.setBounds(20, Gdx.graphics.getHeight() - (140 + 32), 32, 32);
-		// menuBlobsIcon.addListener(new EventListener() {
-		// @Override
-		// public boolean handle(Event event) {
-		// if (((InputEvent) event).getType().equals(Type.touchDown)) {
-		// menuBlobsTable.setVisible(!menuBlobsTable.isVisible());
-		// return true;
-		// }
-		// return false;
-		// }
-		// });
-		// menuGroup.addActor(menuBlobsIcon);
-
 	}
 
 	@Override
@@ -263,6 +174,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			renderMenu();
 		} else if (currentState == State.HELP) {
 			renderHelp();
+		} else {
+			renderEvent();
 		}
 	}
 
@@ -290,9 +203,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void renderEventsLinks() {
 		for (Location location : game.world.area.locations.values()) {
-			for (Target target : location.targets) {
-				game.bgShapeRenderer.rectLine(location.pos.x + 8, location.pos.y + 8, target.destination.pos.x + 8,
-						target.destination.pos.y + 8, 8);
+			if (location.done) {
+				for (Target target : location.targets) {
+					game.bgShapeRenderer.rectLine(location.pos.x + 8, location.pos.y + 8, target.destination.pos.x + 8,
+							target.destination.pos.y + 8, 8);
+				}
 			}
 		}
 	}
@@ -303,13 +218,32 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	}
 
+	private void renderEvent() {
+		float w = 400;
+		float h = 600;
+		// DO NOT INITIALIZE HERE IN RENDER !!! (or there will be a new window at each cycle...)
+		// Dialog dialog = new Dialog("Bienvenue dans Bloblines", game.assets.getSkin(), "default");
+		// String message = "Bienvenue jeune Blob,\n\n"
+		// +
+		// "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
+		// Label dialogTxt = new Label(message, game.assets.getSkin());
+		// dialogTxt.setWrap(true);
+		// dialog.getContentTable().add(dialogTxt).prefWidth(w);
+		// dialog.setModal(true);
+		// dialog.setMovable(true);
+		// dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
+		//
+		// dialog.setBounds(100, 100, w, h);
+		// dialog.button("C'est parti !");
+		// stage.addActor(dialog);
+	}
+
 	private void renderMenu() {
 		game.batch.begin();
 		getDefaultFont().setScale(1);
 		getDefaultFont().draw(game.batch, "Menu Screen - Use LEFT and RIGHT to select and ENTER to validate (press TAB to return to game)",
 				50, Gdx.graphics.getHeight() - 50);
 		game.batch.end();
-
 		menuGroup.render();
 	}
 
@@ -317,11 +251,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.batch.begin();
 		getDefaultFont().setScale(1);
 		getDefaultFont().draw(game.batch, "Help Screen (press F1 to return to game)", 50, Gdx.graphics.getHeight() - 50);
-
 		getDefaultFont().draw(game.batch, "Help menu (F1) :", Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 25);
-
 		getDefaultFont().draw(game.batch, "Game menu (TAB) :", Gdx.graphics.getWidth() - 195, Gdx.graphics.getHeight() - 95);
-
 		game.batch.end();
 	}
 

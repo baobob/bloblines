@@ -6,6 +6,7 @@ import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -148,7 +149,17 @@ public class BlobMenu extends BlobScreen {
 				quitGame();
 			}
 		});
-		Gdx.input.setInputProcessor(stage);
 
+		InputMultiplexer inputs = new InputMultiplexer(stage, this);
+		Gdx.input.setInputProcessor(inputs);
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ENTER) {
+			startGame("Blob Doe");
+			return true;
+		}
+		return super.keyDown(keycode);
 	}
 }

@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -33,8 +34,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	public UiPlayer uiPlayer;
 
 	public enum State {
-		HELP, MENU, MAP
+		HELP, ACTION, MAP
 	}
+
+	private int scrollX = 0;
+	private int scrollY = 0;
 
 	public State currentState;
 
@@ -48,9 +52,11 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 		camera.zoom = 0.2f;
+		camera.position.x = uiPlayer.getPos().x + 8;
+		camera.position.y = uiPlayer.getPos().y + 8;
 		camera.update();
-
 		stage = new Stage(new ScreenViewport());
+
 		initMenu();
 		initIcons();
 
@@ -66,29 +72,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.getViewport().update(width, height, true);
 	}
 
-	private void initStartDialog() {
-		// *************************** Start dialog *********************
-		// float w = 400;
-		// float h = 300;
-		// Dialog dialog = new Dialog("Bienvenue dans Bloblines", skin, "default");
-		// String message = "Bienvenue jeune Blob,\n\n"
-		// +
-		// "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
-		// Label dialogTxt = new Label(message, skin);
-		// dialogTxt.setWrap(true);
-		// dialog.getContentTable().add(dialogTxt).prefWidth(w);
-		// dialog.setModal(true);
-		// dialog.setMovable(true);
-		// dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
-		//
-		// dialog.setBounds((Gdx.graphics.getWidth() - w) / 2, (Gdx.graphics.getHeight() - h) / 2, w, h);
-		// dialog.button("C'est parti !");
-		// stage.addActor(dialog);
-	}
-
 	private void initMenu() {
 		menuGroup = new MenuGroup(game);
-		menuGroup.setOrigin(camera.position.x, camera.position.y - 8);
+		menuGroup.setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.addActor(menuGroup);
 
 		menuGroup.addElement("Parameters", Textures.ICON_PARAMS);
@@ -170,7 +156,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderForeground() {
-		if (currentState == State.MENU) {
+		if (currentState == State.ACTION) {
 			renderMenu();
 		} else if (currentState == State.HELP) {
 			renderHelp();
@@ -186,9 +172,21 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void updateCamera() {
 		// Keep player as centered as possible
-		camera.position.x = uiPlayer.getPos().x + 8;
-		camera.position.y = uiPlayer.getPos().y + 8;
-		camera.update();
+		if (currentState == State.ACTION) {
+			camera.position.x = uiPlayer.getPos().x + 8;
+			camera.position.y = uiPlayer.getPos().y + 8;
+			camera.update();
+		} else if (currentState == State.MAP) {
+			Rectangle view = game.world.renderer.getViewBounds();
+			// TODO : DO NOT USE MAGIC NUMBER FOR MAP BOUNDS
+			if (view.x + scrollX > 0 && view.x + scrollX < 272) {
+				camera.position.x += scrollX;
+			}
+			if (view.y + scrollY > 0 && view.y + scrollY < 240) {
+				camera.position.y += scrollY;
+			}
+			camera.update();
+		}
 	}
 
 	private void renderEvents(SpriteBatch batch) {
@@ -258,7 +256,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void toggleMenu() {
 		menuGroup.setVisible(!menuGroup.isVisible());
-		currentState = currentState == State.MENU ? State.MAP : State.MENU;
+		currentState = currentState == State.ACTION ? State.MAP : State.ACTION;
+		if (currentState == State.ACTION) {
+			camera.position.x = uiPlayer.getPos().x + 8;
+			camera.position.y = uiPlayer.getPos().y + 8;
+			camera.update();
+		}
 	}
 
 	private void toggleHelp() {
@@ -267,30 +270,62 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		boolean handle = false;
 		if (keycode == Keys.TAB) {
 			toggleMenu();
-			return true;
+			handle = true;
 		}
 		if (keycode == Keys.F1) {
 			toggleHelp();
-			return true;
+			handle = true;
 		}
 		if (keycode == Keys.ESCAPE) {
 			if (currentState == State.MAP) {
 				Gdx.app.exit();
-			} else if (currentState == State.MENU) {
+			} else if (currentState == State.ACTION) {
 				toggleMenu();
 			} else if (currentState == State.HELP) {
 				toggleHelp();
 			}
-			return true;
+			handle = true;
 		}
-		if (currentState == State.MENU) {
+		if (currentState == State.ACTION) {
 			// Menu should handle this
 			menuGroup.keyDown(keycode);
-			return true;
+			handle = true;
 		}
-		return false;
+		if (currentState == State.MAP) {
+			if (keycode == Keys.LEFT) {
+				scrollX -= 2;
+			} else if (keycode == Keys.RIGHT) {
+				scrollX += 2;
+			} else if (keycode == Keys.DOWN) {
+				scrollY -= 2;
+			} else if (keycode == Keys.UP) {
+				scrollY += 2;
+			}
+		}
+		if (currentState != State.MAP) {
+			scrollX = 0;
+			scrollY = 0;
+		}
+		return handle;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		if (currentState == State.MAP) {
+			if (keycode == Keys.LEFT) {
+				scrollX += 2;
+			} else if (keycode == Keys.RIGHT) {
+				scrollX -= 2;
+			} else if (keycode == Keys.DOWN) {
+				scrollY += 2;
+			} else if (keycode == Keys.UP) {
+				scrollY -= 2;
+			}
+		}
+		return super.keyUp(keycode);
 	}
 
 	@Override

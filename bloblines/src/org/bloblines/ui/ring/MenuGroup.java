@@ -113,12 +113,12 @@ public class MenuGroup extends Group {
 		// Draw a black square to show selected menu
 		game.fgShapeRenderer.begin(ShapeType.Line);
 		game.fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
-		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 52, 40, 40);
-		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 51, 42, 42);
+		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 61, 40, 40);
+		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 60, 42, 42);
 
 		// draw a line with menu title to show selected menu
 		int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		int lineY = Gdx.graphics.getHeight() / 2 + 140;
+		int lineY = Gdx.graphics.getHeight() / 2 + 150;
 		game.fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
 		game.fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		game.fgShapeRenderer.end();
@@ -126,7 +126,7 @@ public class MenuGroup extends Group {
 
 	public Label getLabel() {
 		int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		int lineY = Gdx.graphics.getHeight() / 2 + 140;
+		int lineY = Gdx.graphics.getHeight() / 2 + 150;
 
 		lbl = new Label(((MenuElement) getChildren().get(0)).label, game.assets.getSkin());
 		lbl.setBounds(lineX + 10, lineY - 10, 300, 50);

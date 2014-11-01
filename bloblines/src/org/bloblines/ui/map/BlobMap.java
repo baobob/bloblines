@@ -73,16 +73,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(game);
+		menuGroup = new MenuGroup(game, MapMenu.class);
 		menuGroup.setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.addActor(menuGroup);
 
-		menuGroup.setElementsCount(5);
-		menuGroup.addElement("Parameters", Textures.ICON_PARAMS);
-		menuGroup.addElement("Journal", Textures.ICON_BOOK);
-		menuGroup.addElement("Travel", Textures.ICON_LOCATION);
-		menuGroup.addElement("Actions", Textures.ICON_BLOB);
-		menuGroup.addElement("Status", Textures.ICON_HEART);
 		stage.addActor(menuGroup.getLabel());
 		menuGroup.setVisible(false);
 	}

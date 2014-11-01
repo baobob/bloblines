@@ -38,8 +38,15 @@ public class MenuGroup extends Group {
 		this.game = game;
 	}
 
-	public void setElementsCount(int count) {
-		elementsAngle = 360 / count;
+	public <T extends RingMenuItem> MenuGroup(Game game, Class<T> cls) {
+		this.game = game;
+
+		RingMenuItem[] items = cls.getEnumConstants();
+		elementsAngle = 360 / items.length;
+
+		for (RingMenuItem item : items) {
+			addElement(item.label(), item.texture());
+		}
 	}
 
 	public void addElement(String label, Textures t) {

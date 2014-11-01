@@ -75,10 +75,10 @@ public class MenuGroup extends Group {
 	 */
 	public void left() {
 		if (rotationIndex == 0) {
-			// We can't rotate left of the first element
-			return;
+			rotationIndex = getChildren().size - 1;
+		} else {
+			rotationIndex--;
 		}
-		rotationIndex--;
 		updateRotation();
 	}
 
@@ -87,10 +87,10 @@ public class MenuGroup extends Group {
 	 */
 	public void right() {
 		if (rotationIndex == getChildren().size - 1) {
-			// We can't rotate right of the last element
-			return;
+			rotationIndex = 0;
+		} else {
+			rotationIndex++;
 		}
-		rotationIndex++;
 		updateRotation();
 	}
 

@@ -77,6 +77,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuGroup.setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.addActor(menuGroup);
 
+		menuGroup.setElementsCount(5);
 		menuGroup.addElement("Parameters", Textures.ICON_PARAMS);
 		menuGroup.addElement("Journal", Textures.ICON_BOOK);
 		menuGroup.addElement("Travel", Textures.ICON_LOCATION);

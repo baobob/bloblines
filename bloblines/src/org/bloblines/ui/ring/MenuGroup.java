@@ -14,8 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class MenuGroup extends Group {
 
-	private static final int ELEMENTS_ANGLE = 35;
-
 	private static final int ELEMENTS_DISTANCE = 80;
 
 	private static final float ROTATION_DURATION = 0.08f;
@@ -26,6 +24,8 @@ public class MenuGroup extends Group {
 
 	/** Menu Label. This not a a menu children cause it shouldn't rotate */
 	private Label lbl;
+
+	private int elementsAngle = 35;
 
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
@@ -38,10 +38,14 @@ public class MenuGroup extends Group {
 		this.game = game;
 	}
 
+	public void setElementsCount(int count) {
+		elementsAngle = 360 / count;
+	}
+
 	public void addElement(String label, Textures t) {
 		MenuElement menuElement = new MenuElement(label, game.assets.getTexture(t));
 		// Rotation moves object center because we rotate it aroud the bottom left corner, we need to translate it to a bit
-		float tetaDegrees = getChildren().size * -ELEMENTS_ANGLE;
+		float tetaDegrees = getChildren().size * -elementsAngle;
 		double teta = Math.toRadians(-tetaDegrees);
 		menuElement.setRotation(tetaDegrees);
 		float cx = ICON_SIZE / 2;
@@ -55,13 +59,13 @@ public class MenuGroup extends Group {
 		menuElement.setHeight(ICON_SIZE);
 		menuElement.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
 		addActor(menuElement);
-		nextElementVector.rotate(-ELEMENTS_ANGLE, 0, 0, 1);
+		nextElementVector.rotate(-elementsAngle, 0, 0, 1);
 	}
 
 	private void updateRotation() {
 		RotateToAction rotation = new RotateToAction();
 		rotation.setDuration(ROTATION_DURATION);
-		rotation.setRotation(rotationIndex * ELEMENTS_ANGLE);
+		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
 		lbl.setText(((MenuElement) getChildren().get(rotationIndex)).label);
 	}

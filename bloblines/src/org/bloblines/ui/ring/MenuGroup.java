@@ -38,10 +38,9 @@ public class MenuGroup extends Group {
 		this.game = game;
 	}
 
-	public <T extends RingMenuItem> MenuGroup(Game game, Class<T> cls) {
+	public MenuGroup(Game game, RingMenuItem[] items) {
 		this.game = game;
 
-		RingMenuItem[] items = cls.getEnumConstants();
 		elementsAngle = 360 / items.length;
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 

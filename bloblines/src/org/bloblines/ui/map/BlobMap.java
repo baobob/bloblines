@@ -73,7 +73,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(game, MapMenu.class);
+		menuGroup = new MenuGroup(game, MapMenu.values());
 		stage.addActor(menuGroup);
 
 		stage.addActor(menuGroup.getLabel());

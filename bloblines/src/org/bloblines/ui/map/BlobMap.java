@@ -74,7 +74,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void initMenu() {
 		menuGroup = new MenuGroup(game, MapMenu.class);
-		menuGroup.setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.addActor(menuGroup);
 
 		stage.addActor(menuGroup.getLabel());

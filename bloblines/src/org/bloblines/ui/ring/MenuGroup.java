@@ -43,6 +43,7 @@ public class MenuGroup extends Group {
 
 		RingMenuItem[] items = cls.getEnumConstants();
 		elementsAngle = 360 / items.length;
+		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		for (RingMenuItem item : items) {
 			addElement(item.label(), item.texture());

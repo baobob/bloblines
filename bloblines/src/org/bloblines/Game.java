@@ -4,7 +4,6 @@ import org.bloblines.data.game.Player;
 import org.bloblines.ui.BlobMenu;
 import org.bloblines.ui.map.BlobOverworld;
 import org.bloblines.utils.Assets;
-import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -38,7 +37,7 @@ public class Game extends com.badlogic.gdx.Game {
 
 	public void start(String playerName) {
 		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
-		player = new Player(playerName, new XY(world.area.locations.get("Start").pos));
+		player = new Player(playerName, world.area.locations.get("Start"));
 	}
 
 	@Override

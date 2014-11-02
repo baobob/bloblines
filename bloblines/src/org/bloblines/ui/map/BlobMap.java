@@ -76,9 +76,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(MenuHelper.getMapMenu());
+		menuGroup = new MenuGroup(game, MenuHelper.getMapMenu());
 		stage.addActor(menuGroup);
-
 		stage.addActor(menuGroup.getLabel());
 		menuGroup.setVisible(false);
 	}
@@ -290,7 +289,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			if (currentState == State.MAP) {
 				Gdx.app.exit();
 			} else if (currentState == State.ACTION) {
-				switchMode(State.ACTION);
+				if (!menuGroup.keyDown(keycode)) {
+					switchMode(State.ACTION);
+				}
 			} else if (currentState == State.HELP) {
 				switchMode(State.HELP);
 			}
@@ -298,8 +299,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		}
 		if (currentState == State.ACTION) {
 			// Menu should handle this
-			menuGroup.keyDown(keycode);
-			handle = true;
+			handle = menuGroup.keyDown(keycode);
 		}
 		if (currentState == State.MAP) {
 			if (keycode == Keys.LEFT) {

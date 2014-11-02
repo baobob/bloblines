@@ -14,4 +14,12 @@ public class MenuElement extends Image {
 		this.label = label;
 	}
 
+	public boolean keyDown(int keycode, Game game) {
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " - " + label;
+	}
 }

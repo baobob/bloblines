@@ -1,5 +1,7 @@
 package org.bloblines.ui.ring;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bloblines.Game;
@@ -27,6 +29,7 @@ public class MenuGroup extends Group {
 
 	private int elementsAngle = 35;
 
+	private Game game;
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
 	 */
@@ -34,10 +37,35 @@ public class MenuGroup extends Group {
 
 	public int rotationIndex = 0;
 
-	public MenuGroup(List<MenuElement> items) {
+	private List<List<MenuElement>> menuStack = new ArrayList<List<MenuElement>>();
+
+	public MenuGroup(Game game, List<MenuElement> items) {
+		this.game = game;
+		openMenu(items);
+	}
+
+	public void openMenu(List<MenuElement> items) {
+		if (items == null) {
+			System.err.println("openMenu called with null parameter");
+			return;
+		}
+		if (getChildren().size > 0) {
+			menuStack.add(Arrays.asList((MenuElement[]) getChildren().toArray(MenuElement.class)));
+			getChildren().clear();
+		}
+		setMenuElements(items);
+	}
+
+	public void closeMenu() {
+		// Remove last
+		getChildren().clear();
+		setMenuElements(menuStack.get(menuStack.size() - 1));
+		menuStack.remove(menuStack.size() - 1);
+	}
+
+	private void setMenuElements(List<MenuElement> items) {
 		elementsAngle = 360 / items.size();
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-
 		for (MenuElement item : items) {
 			addElement(item);
 		}
@@ -67,7 +95,11 @@ public class MenuGroup extends Group {
 		rotation.setDuration(ROTATION_DURATION);
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
-		lbl.setText(((MenuElement) getChildren().get(rotationIndex)).label);
+		lbl.setText(getCurrentItem().label);
+	}
+
+	private MenuElement getCurrentItem() {
+		return (MenuElement) getChildren().get(rotationIndex);
 	}
 
 	/**
@@ -103,13 +135,23 @@ public class MenuGroup extends Group {
 		super.setVisible(visible);
 	}
 
-	public void keyDown(int keycode) {
+	public boolean keyDown(int keycode) {
 		if (keycode == Keys.RIGHT) {
 			right();
+			return true;
 		}
 		if (keycode == Keys.LEFT) {
 			left();
+			return true;
 		}
+		if (keycode == Keys.ESCAPE) {
+			if (menuStack.size() > 0) {
+				closeMenu();
+				return true;
+			}
+			return false;
+		}
+		return getCurrentItem().keyDown(keycode, game);
 	}
 
 	public void render(ShapeRenderer fgShapeRenderer) {

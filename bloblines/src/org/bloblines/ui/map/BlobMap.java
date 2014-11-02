@@ -42,6 +42,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	public State currentState;
 
+	private long mapOpeningTime = System.currentTimeMillis();
+
 	public BlobMap(Game game) {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
@@ -60,7 +62,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		initMenu();
 		initIcons();
 
-		currentState = State.HELP;
+		currentState = State.MAP;
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
@@ -150,6 +152,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderForeground() {
+		if (System.currentTimeMillis() - mapOpeningTime < 5000) {
+			game.batch.begin();
+			getDefaultFont().setScale(1);
+			getDefaultFont().draw(game.batch, "Press F1 to display HELP", 50, Gdx.graphics.getHeight() - 50);
+			getDefaultFont().draw(game.batch, "Press TAB to switch to ACTION mode", 50, Gdx.graphics.getHeight() - 100);
+			game.batch.end();
+		}
 		if (currentState == State.ACTION) {
 			renderMenu();
 		} else if (currentState == State.HELP) {
@@ -242,7 +251,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void renderHelp() {
 		game.batch.begin();
 		getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.batch, "Help Screen (press F1 to return to game)", 50, Gdx.graphics.getHeight() - 50);
 		getDefaultFont().draw(game.batch, "Help menu (F1) :", Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 25);
 		getDefaultFont().draw(game.batch, "Game menu (TAB) :", Gdx.graphics.getWidth() - 195, Gdx.graphics.getHeight() - 95);
 		game.batch.end();

@@ -86,7 +86,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		helpImage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				toggleHelp();
+				switchMode(State.HELP);
 			}
 		});
 		stage.addActor(helpImage);
@@ -96,7 +96,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		menuImage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				toggleMenu();
+				switchMode(State.ACTION);
 			}
 		});
 		stage.addActor(menuImage);
@@ -248,9 +248,17 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.batch.end();
 	}
 
-	private void toggleMenu() {
-		menuGroup.setVisible(!menuGroup.isVisible());
-		currentState = currentState == State.ACTION ? State.MAP : State.ACTION;
+	private void switchMode(State switchState) {
+		if (currentState == State.HELP && switchState == State.HELP || currentState == State.ACTION && switchState == State.ACTION) {
+			menuGroup.setVisible(false);
+			currentState = State.MAP;
+		} else if (switchState == State.HELP) {
+			menuGroup.setVisible(false);
+			currentState = State.HELP;
+		} else if (switchState == State.ACTION) {
+			menuGroup.setVisible(true);
+			currentState = State.ACTION;
+		}
 		if (currentState == State.ACTION) {
 			camera.position.x = uiPlayer.getPos().x + 8;
 			camera.position.y = uiPlayer.getPos().y + 8;
@@ -258,28 +266,24 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		}
 	}
 
-	private void toggleHelp() {
-		currentState = currentState == State.HELP ? State.MAP : State.HELP;
-	}
-
 	@Override
 	public boolean keyDown(int keycode) {
 		boolean handle = false;
 		if (keycode == Keys.TAB) {
-			toggleMenu();
+			switchMode(State.ACTION);
 			handle = true;
 		}
 		if (keycode == Keys.F1) {
-			toggleHelp();
+			switchMode(State.HELP);
 			handle = true;
 		}
 		if (keycode == Keys.ESCAPE) {
 			if (currentState == State.MAP) {
 				Gdx.app.exit();
 			} else if (currentState == State.ACTION) {
-				toggleMenu();
+				switchMode(State.ACTION);
 			} else if (currentState == State.HELP) {
-				toggleHelp();
+				switchMode(State.HELP);
 			}
 			handle = true;
 		}

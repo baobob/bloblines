@@ -11,14 +11,14 @@ import org.bloblines.utils.Assets.Textures;
 
 public class MenuHelper {
 
-	public static List<MenuElement> getMapMenu(Assets assets) {
+	public static List<MenuElement> getMapMenu() {
 		// @formatter:off
 		return Arrays.asList(new MenuElement[] { 
-			new MenuElement("Parameters", assets.getTexture(Textures.ICON_PARAMS)),
-			new MenuElement("Journal", assets.getTexture(Textures.ICON_BOOK)),
-			new MenuElement("Travel", assets.getTexture(Textures.ICON_LOCATION)),
-			new MenuElement("Actions", assets.getTexture(Textures.ICON_BLOB)),
-			new MenuElement("Status", assets.getTexture(Textures.ICON_HEART)),
+			new MenuElement("Parameters", Textures.ICON_PARAMS),
+			new MenuElement("Journal", Textures.ICON_BOOK),
+			new MenuElement("Travel", Textures.ICON_LOCATION),
+			new MenuElement("Actions", Textures.ICON_BLOB),
+			new MenuElement("Status", Textures.ICON_HEART),
 		});
 		// @formatter:on
 	}
@@ -26,7 +26,7 @@ public class MenuHelper {
 	public static List<MenuElement> getLocationMenu(Assets assets, Location location) {
 		List<MenuElement> items = new ArrayList<MenuElement>();
 		for (Target t : location.targets) {
-			items.add(new MenuElement(t.destination.name, assets.getTexture(Textures.ICON_LOCATION)));
+			items.add(new MenuElement(t.destination.name, Textures.ICON_LOCATION));
 		}
 		return items;
 	}

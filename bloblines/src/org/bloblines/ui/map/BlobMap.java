@@ -76,7 +76,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(game, MenuHelper.getMapMenu(game.assets));
+		menuGroup = new MenuGroup(MenuHelper.getMapMenu());
 		stage.addActor(menuGroup);
 
 		stage.addActor(menuGroup.getLabel());
@@ -84,7 +84,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initIcons() {
-		Image helpImage = new Image(game.assets.getTexture(Textures.ICON_BOOK));
+		Image helpImage = new Image(Game.assets.getTexture(Textures.ICON_BOOK));
 		helpImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 50, 32, 32);
 		helpImage.addListener(new ClickListener() {
 			@Override
@@ -94,7 +94,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		});
 		stage.addActor(helpImage);
 
-		Image menuImage = new Image(game.assets.getTexture(Textures.ICON_LOCATION));
+		Image menuImage = new Image(Game.assets.getTexture(Textures.ICON_LOCATION));
 		menuImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 120, 32, 32);
 		menuImage.addListener(new ClickListener() {
 			@Override
@@ -246,7 +246,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		getDefaultFont().draw(game.batch, "Menu Screen - Use LEFT and RIGHT to select and ENTER to validate (press TAB to return to game)",
 				50, Gdx.graphics.getHeight() - 50);
 		game.batch.end();
-		menuGroup.render();
+		menuGroup.render(game.fgShapeRenderer);
 	}
 
 	private void renderHelp() {

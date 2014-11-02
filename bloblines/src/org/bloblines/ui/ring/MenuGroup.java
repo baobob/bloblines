@@ -6,6 +6,7 @@ import org.bloblines.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,8 +22,6 @@ public class MenuGroup extends Group {
 
 	private static final int ICON_SIZE = 32;
 
-	private Game game;
-
 	/** Menu Label. This not a a menu children cause it shouldn't rotate */
 	private Label lbl;
 
@@ -35,13 +34,7 @@ public class MenuGroup extends Group {
 
 	public int rotationIndex = 0;
 
-	public MenuGroup(Game game) {
-		this.game = game;
-	}
-
-	public MenuGroup(Game game, List<MenuElement> items) {
-		this.game = game;
-
+	public MenuGroup(List<MenuElement> items) {
 		elementsAngle = 360 / items.size();
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
@@ -119,27 +112,27 @@ public class MenuGroup extends Group {
 		}
 	}
 
-	public void render() {
+	public void render(ShapeRenderer fgShapeRenderer) {
 
 		// Draw a black square to show selected menu
-		game.fgShapeRenderer.begin(ShapeType.Line);
-		game.fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
-		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 61, 40, 40);
-		game.fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 60, 42, 42);
+		fgShapeRenderer.begin(ShapeType.Line);
+		fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
+		fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 61, 40, 40);
+		fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 60, 42, 42);
 
 		// draw a line with menu title to show selected menu
 		int lineX = Gdx.graphics.getWidth() / 2 - 220;
 		int lineY = Gdx.graphics.getHeight() / 2 + 150;
-		game.fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
-		game.fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
-		game.fgShapeRenderer.end();
+		fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
+		fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
+		fgShapeRenderer.end();
 	}
 
 	public Label getLabel() {
 		int lineX = Gdx.graphics.getWidth() / 2 - 220;
 		int lineY = Gdx.graphics.getHeight() / 2 + 150;
 
-		lbl = new Label(((MenuElement) getChildren().get(0)).label, game.assets.getSkin());
+		lbl = new Label(((MenuElement) getChildren().get(0)).label, Game.assets.getSkin());
 		lbl.setBounds(lineX + 10, lineY - 10, 300, 50);
 		lbl.setVisible(false);
 		return lbl;

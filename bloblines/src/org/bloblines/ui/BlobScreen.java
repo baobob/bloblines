@@ -18,15 +18,15 @@ public abstract class BlobScreen implements Screen, InputProcessor {
 	}
 
 	protected Texture getTexture(Textures t) {
-		return game.assets.getTexture(t);
+		return Game.assets.getTexture(t);
 	}
 
 	protected BitmapFont getDefaultFont() {
-		return game.assets.getFont();
+		return Game.assets.getFont();
 	}
 
 	protected Skin getDefaultSkin() {
-		return game.assets.getSkin();
+		return Game.assets.getSkin();
 	}
 
 	@Override

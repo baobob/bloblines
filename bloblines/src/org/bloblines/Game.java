@@ -14,7 +14,7 @@ public class Game extends com.badlogic.gdx.Game {
 
 	public SpriteBatch batch;
 
-	public Assets assets;
+	public static Assets assets;
 
 	public Player player;
 
@@ -29,8 +29,8 @@ public class Game extends com.badlogic.gdx.Game {
 		fgShapeRenderer = new ShapeRenderer();
 
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
-		assets = new Assets();
-		assets.finishLoading();
+		Game.assets = new Assets();
+		Game.assets.finishLoading();
 
 		batch = new SpriteBatch();
 		this.setScreen(new BlobMenu(this));
@@ -48,7 +48,7 @@ public class Game extends com.badlogic.gdx.Game {
 
 	@Override
 	public void dispose() {
-		assets.dispose();
+		Game.assets.dispose();
 		batch.dispose();
 	}
 

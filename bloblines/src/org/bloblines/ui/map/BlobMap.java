@@ -5,6 +5,7 @@ import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.ui.ring.MenuGroup;
+import org.bloblines.ui.ring.MenuHelper;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
@@ -75,7 +76,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(game, MapMenu.values());
+		menuGroup = new MenuGroup(game, MenuHelper.getMapMenu(game.assets));
 		stage.addActor(menuGroup);
 
 		stage.addActor(menuGroup.getLabel());

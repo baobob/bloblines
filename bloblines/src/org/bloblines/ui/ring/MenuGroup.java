@@ -1,7 +1,8 @@
 package org.bloblines.ui.ring;
 
+import java.util.List;
+
 import org.bloblines.Game;
-import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -38,23 +39,22 @@ public class MenuGroup extends Group {
 		this.game = game;
 	}
 
-	public MenuGroup(Game game, RingMenuItem[] items) {
+	public MenuGroup(Game game, List<MenuElement> items) {
 		this.game = game;
 
-		elementsAngle = 360 / items.length;
+		elementsAngle = 360 / items.size();
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
-		for (RingMenuItem item : items) {
-			addElement(item.label(), item.texture());
+		for (MenuElement item : items) {
+			addElement(item);
 		}
 	}
 
-	public void addElement(String label, Textures t) {
-		MenuElement menuElement = new MenuElement(label, game.assets.getTexture(t));
+	public void addElement(MenuElement item) {
 		// Rotation moves object center because we rotate it aroud the bottom left corner, we need to translate it to a bit
 		float tetaDegrees = getChildren().size * -elementsAngle;
 		double teta = Math.toRadians(-tetaDegrees);
-		menuElement.setRotation(tetaDegrees);
+		item.setRotation(tetaDegrees);
 		float cx = ICON_SIZE / 2;
 		float cy = ICON_SIZE / 2;
 		float cx2 = (float) (cx * Math.cos(teta) + cy * Math.sin(teta));
@@ -62,10 +62,10 @@ public class MenuGroup extends Group {
 		float tx = cx - cx2;
 		float ty = cy - cy2;
 
-		menuElement.setWidth(ICON_SIZE);
-		menuElement.setHeight(ICON_SIZE);
-		menuElement.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
-		addActor(menuElement);
+		item.setWidth(ICON_SIZE);
+		item.setHeight(ICON_SIZE);
+		item.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
+		addActor(item);
 		nextElementVector.rotate(-elementsAngle, 0, 0, 1);
 	}
 

@@ -13,8 +13,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 public class MenuGroup extends Group {
 
@@ -23,9 +25,6 @@ public class MenuGroup extends Group {
 	private static final float ROTATION_DURATION = 0.08f;
 
 	private static final int ICON_SIZE = 32;
-
-	/** Menu Label. This not a a menu children cause it shouldn't rotate */
-	private Label lbl;
 
 	private int elementsAngle = 35;
 
@@ -37,11 +36,36 @@ public class MenuGroup extends Group {
 
 	public int rotationIndex = 0;
 
+	/** Stack to save parent menus when going into submenus and coming back */
 	private List<List<MenuElement>> menuStack = new ArrayList<List<MenuElement>>();
 
-	public MenuGroup(Game game, List<MenuElement> items) {
+	/** Menu Label. This not a a menu children cause it shouldn't rotate */
+	private Label label;
+	private Window descWindow;
+
+	public MenuGroup(Game game, List<MenuElement> items, Stage stage) {
 		this.game = game;
 		openMenu(items);
+		stage.addActor(this);
+		initMenuComponents(stage);
+	}
+
+	private void initMenuComponents(Stage stage) {
+		int lineX = Gdx.graphics.getWidth() / 2 - 220;
+		int lineY = Gdx.graphics.getHeight() / 2 + 150;
+		label = new Label(((MenuElement) getChildren().get(0)).label, Game.assets.getSkin());
+		label.setBounds(lineX + 10, lineY - 10, 300, 50);
+		label.setVisible(false);
+		stage.addActor(label);
+
+		descWindow = new Window(getCurrentItem().label, Game.assets.getSkin());
+		descWindow.add("Here is a a text, it's pretty cool");
+		descWindow.setWidth(300);
+		descWindow.setHeight(400);
+		descWindow.setPosition(50, 50);
+		descWindow.setMovable(false);
+		descWindow.setVisible(false);
+		stage.addActor(descWindow);
 	}
 
 	public void openMenu(List<MenuElement> items) {
@@ -95,7 +119,7 @@ public class MenuGroup extends Group {
 		rotation.setDuration(ROTATION_DURATION);
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
-		lbl.setText(getCurrentItem().label);
+		label.setText(getCurrentItem().label);
 	}
 
 	private MenuElement getCurrentItem() {
@@ -131,7 +155,8 @@ public class MenuGroup extends Group {
 		for (Actor child : getChildren()) {
 			child.setVisible(visible);
 		}
-		lbl.setVisible(visible);
+		label.setVisible(visible);
+		descWindow.setVisible(visible);
 		super.setVisible(visible);
 	}
 
@@ -168,15 +193,5 @@ public class MenuGroup extends Group {
 		fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
 		fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		fgShapeRenderer.end();
-	}
-
-	public Label getLabel() {
-		int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		int lineY = Gdx.graphics.getHeight() / 2 + 150;
-
-		lbl = new Label(((MenuElement) getChildren().get(0)).label, Game.assets.getSkin());
-		lbl.setBounds(lineX + 10, lineY - 10, 300, 50);
-		lbl.setVisible(false);
-		return lbl;
 	}
 }

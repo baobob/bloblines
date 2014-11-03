@@ -76,9 +76,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void initMenu() {
-		menuGroup = new MenuGroup(game, MenuHelper.getMapMenu());
-		stage.addActor(menuGroup);
-		stage.addActor(menuGroup.getLabel());
+		menuGroup = new MenuGroup(game, MenuHelper.getMapMenu(), stage);
 		menuGroup.setVisible(false);
 	}
 
@@ -163,8 +161,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			renderMenu();
 		} else if (currentState == State.HELP) {
 			renderHelp();
-		} else {
-			renderEvent();
 		}
 	}
 
@@ -217,26 +213,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		TextureRegion frame = uiPlayer.getAnimation();
 		batch.draw(frame, uiPlayer.getPos().x, uiPlayer.getPos().y, 16, 16);
 
-	}
-
-	private void renderEvent() {
-		float w = 400;
-		float h = 600;
-		// DO NOT INITIALIZE HERE IN RENDER !!! (or there will be a new window at each cycle...)
-		// Dialog dialog = new Dialog("Bienvenue dans Bloblines", game.assets.getSkin(), "default");
-		// String message = "Bienvenue jeune Blob,\n\n"
-		// +
-		// "Dans cette incroyable quête, vous devrez faire plein de choses épiques et géniales pour réussir à survivre. Essayez de trouver des compagnons et de l'équipement de meilleure qualité que ce que vous possédez actuellement.";
-		// Label dialogTxt = new Label(message, game.assets.getSkin());
-		// dialogTxt.setWrap(true);
-		// dialog.getContentTable().add(dialogTxt).prefWidth(w);
-		// dialog.setModal(true);
-		// dialog.setMovable(true);
-		// dialog.setColor(0.9f, 0.9f, 0.9f, 0.8f);
-		//
-		// dialog.setBounds(100, 100, w, h);
-		// dialog.button("C'est parti !");
-		// stage.addActor(dialog);
 	}
 
 	private void renderMenu() {

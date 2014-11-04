@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 public class MenuGroup extends Group {
@@ -39,29 +38,21 @@ public class MenuGroup extends Group {
 	/** Stack to save parent menus when going into submenus and coming back */
 	private List<List<MenuElement>> menuStack = new ArrayList<List<MenuElement>>();
 
-	/** Menu Label. This not a a menu children cause it shouldn't rotate */
-	private Label label;
+	/** Description window. This not a a menu children cause it shouldn't rotate */
 	private Window descWindow;
 
 	public MenuGroup(Game game, List<MenuElement> items, Stage stage) {
 		this.game = game;
+		initMenuComponents(stage);
 		openMenu(items);
 		stage.addActor(this);
-		initMenuComponents(stage);
 	}
 
 	private void initMenuComponents(Stage stage) {
-		int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		int lineY = Gdx.graphics.getHeight() / 2 + 150;
-		label = new Label(((MenuElement) getChildren().get(0)).label, Game.assets.getSkin());
-		label.setBounds(lineX + 10, lineY - 10, 300, 50);
-		label.setVisible(false);
-		stage.addActor(label);
-
-		descWindow = new Window(getCurrentItem().label, Game.assets.getSkin());
-		descWindow.add("Here is a a text, it's pretty cool");
-		descWindow.setWidth(300);
-		descWindow.setHeight(400);
+		descWindow = new Window("", Game.assets.getSkin());
+		// descWindow.add("");
+		descWindow.setWidth(320);
+		descWindow.setHeight(600);
 		descWindow.setPosition(50, 50);
 		descWindow.setMovable(false);
 		descWindow.setVisible(false);
@@ -88,11 +79,13 @@ public class MenuGroup extends Group {
 	}
 
 	private void setMenuElements(List<MenuElement> items) {
+		nextElementVector = new Vector3(0, ELEMENTS_DISTANCE, 0);
 		elementsAngle = 360 / items.size();
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		for (MenuElement item : items) {
 			addElement(item);
 		}
+		descWindow.setTitle(getCurrentItem().label);
 	}
 
 	public void addElement(MenuElement item) {
@@ -119,7 +112,7 @@ public class MenuGroup extends Group {
 		rotation.setDuration(ROTATION_DURATION);
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
-		label.setText(getCurrentItem().label);
+		descWindow.setTitle(getCurrentItem().label);
 	}
 
 	private MenuElement getCurrentItem() {
@@ -155,7 +148,7 @@ public class MenuGroup extends Group {
 		for (Actor child : getChildren()) {
 			child.setVisible(visible);
 		}
-		label.setVisible(visible);
+		// label.setVisible(visible);
 		descWindow.setVisible(visible);
 		super.setVisible(visible);
 	}

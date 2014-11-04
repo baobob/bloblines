@@ -19,6 +19,11 @@ public class MenuHelper {
 			public List<MenuElement> getSubMenu(Game game) {
 				return MenuHelper.getLocationActions(game.player.location);
 			}
+
+			@Override
+			public String getDescription() {
+				return "Things you can do at your current location. ";
+			}
 		});
 		// Travel to ... (access to sub menu based on location targets)
 		items.add(new SubMenu("Travel", Textures.ICON_TRAVEL) {
@@ -26,6 +31,12 @@ public class MenuHelper {
 			public List<MenuElement> getSubMenu(Game game) {
 				return MenuHelper.getLocationTargets(game.player.location);
 			}
+
+			@Override
+			public String getDescription() {
+				return "Travel to another location, if you can...";
+			}
+
 		});
 		// Blobs status
 		items.add(new MenuElement("Blobs Status", Textures.ICON_STATUS));

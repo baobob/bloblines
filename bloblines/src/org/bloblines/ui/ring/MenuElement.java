@@ -14,6 +14,10 @@ public class MenuElement extends Image {
 		this.label = label;
 	}
 
+	public String getDescription() {
+		return this.label;
+	}
+
 	public boolean keyDown(int keycode, Game game) {
 		return false;
 	}

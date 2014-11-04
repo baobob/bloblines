@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 public class MenuGroup extends Group {
@@ -50,7 +51,6 @@ public class MenuGroup extends Group {
 
 	private void initMenuComponents(Stage stage) {
 		descWindow = new Window("", Game.assets.getSkin());
-		// descWindow.add("");
 		descWindow.setWidth(320);
 		descWindow.setHeight(600);
 		descWindow.setPosition(50, 50);
@@ -85,7 +85,7 @@ public class MenuGroup extends Group {
 		for (MenuElement item : items) {
 			addElement(item);
 		}
-		descWindow.setTitle(getCurrentItem().label);
+		updateDescWindow();
 	}
 
 	public void addElement(MenuElement item) {
@@ -112,7 +112,14 @@ public class MenuGroup extends Group {
 		rotation.setDuration(ROTATION_DURATION);
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
+		updateDescWindow();
+	}
+
+	private void updateDescWindow() {
 		descWindow.setTitle(getCurrentItem().label);
+		descWindow.clearChildren();
+		Label text = new Label(getCurrentItem().getDescription(), Game.assets.getSkin());
+		descWindow.add(text);
 	}
 
 	private MenuElement getCurrentItem() {

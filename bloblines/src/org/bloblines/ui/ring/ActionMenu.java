@@ -13,6 +13,11 @@ public class ActionMenu extends MenuElement {
 	}
 
 	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
 	public boolean keyDown(int keycode, Game game) {
 		// TODO Auto-generated method stub
 		return super.keyDown(keycode, game);

@@ -14,14 +14,14 @@ public class MenuHelper {
 	public static List<MenuElement> getMapMenu() {
 		List<MenuElement> items = new ArrayList<MenuElement>();
 		// Current location Actions (access to sub menu based on location actions)
-		items.add(new ParentMenu("Current Location", Textures.ICON_CURRENT_ACTION) {
+		items.add(new SubMenu("Current Location", Textures.ICON_CURRENT_ACTION) {
 			@Override
 			public List<MenuElement> getSubMenu(Game game) {
 				return MenuHelper.getLocationActions(game.player.location);
 			}
 		});
 		// Travel to ... (access to sub menu based on location targets)
-		items.add(new ParentMenu("Travel", Textures.ICON_TRAVEL) {
+		items.add(new SubMenu("Travel", Textures.ICON_TRAVEL) {
 			@Override
 			public List<MenuElement> getSubMenu(Game game) {
 				return MenuHelper.getLocationTargets(game.player.location);

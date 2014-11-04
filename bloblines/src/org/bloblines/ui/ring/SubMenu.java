@@ -7,9 +7,9 @@ import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Keys;
 
-public abstract class ParentMenu extends MenuElement {
+public abstract class SubMenu extends MenuElement {
 
-	public ParentMenu(String label, Textures t) {
+	public SubMenu(String label, Textures t) {
 		super(label, t);
 	}
 

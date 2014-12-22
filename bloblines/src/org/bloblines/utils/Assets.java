@@ -12,6 +12,7 @@ public class Assets extends AssetManager {
 	public enum Textures {
 		// @formatter:off
 		SPLASH_SCREEN("img/hourglass.png"), 
+		BATTLE_SCREEN("img/battle.jpg"), 
 		
 		SPRITE_LOCATION("characters/spot.png"), 
 		SPRITE_LOCATION_DONE("characters/spot_done.png"), 

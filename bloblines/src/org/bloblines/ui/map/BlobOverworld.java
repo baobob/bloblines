@@ -37,7 +37,7 @@ public class BlobOverworld {
 			location.description = event.getProperties().get("description", String.class);
 			location.pos = pos;
 
-			location.actions.add(new Action(ActionType.MOVE, "Move"));
+			location.actions.add(new Action(ActionType.SPEAK_TO_NPC, "Speak to the Elder"));
 			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
 			location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
 

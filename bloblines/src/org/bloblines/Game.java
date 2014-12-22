@@ -1,7 +1,9 @@
 package org.bloblines;
 
 import org.bloblines.data.game.Player;
+import org.bloblines.data.map.Action;
 import org.bloblines.ui.BlobMenu;
+import org.bloblines.ui.battle.BlobBattle;
 import org.bloblines.ui.map.BlobOverworld;
 import org.bloblines.utils.Assets;
 
@@ -49,6 +51,25 @@ public class Game extends com.badlogic.gdx.Game {
 	public void dispose() {
 		Game.assets.dispose();
 		batch.dispose();
+	}
+
+	public void launchAction(Action action) {
+		switch (action.type) {
+		case FIGHT:
+			// Store current map state
+			// Start fight screen
+			this.setScreen(new BlobBattle(this, action));
+			break;
+		case SPEAK_TO_NPC:
+			// delegate to BlobMap screen to display NPC conv ? or use a different screen ?
+			break;
+		case SHOP:
+			// Store current map state
+			// Start shop screen
+			break;
+		default:
+			break;
+		}
 	}
 
 }

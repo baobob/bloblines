@@ -48,7 +48,7 @@ public class MenuHelper {
 	public static List<MenuElement> getLocationTargets(Location location) {
 		List<MenuElement> items = new ArrayList<MenuElement>();
 		for (Target t : location.targets) {
-			items.add(new MenuElement(t.destination.name, getTextureNumber(items.size() + 1)));
+			items.add(new TravelMenu(t, getTextureNumber(items.size() + 1)));
 		}
 		return items;
 	}

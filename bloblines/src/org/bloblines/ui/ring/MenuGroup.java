@@ -68,6 +68,7 @@ public class MenuGroup extends Group {
 			menuStack.add(Arrays.asList((MenuElement[]) getChildren().toArray(MenuElement.class)));
 			getChildren().clear();
 		}
+		rotationIndex = 0;
 		setMenuElements(items);
 	}
 

@@ -16,8 +16,10 @@ public abstract class SubMenu extends MenuElement {
 	@Override
 	public boolean keyDown(int keycode, Game game) {
 		if (keycode == Keys.ENTER) {
-			MenuGroup menu = (MenuGroup) getParent();
-			menu.openMenu(getSubMenu(game));
+			List<MenuElement> subMenu = getSubMenu(game);
+			if (subMenu.size() > 0) {
+				getMenu().openMenu(subMenu);
+			}
 			return true;
 		}
 		return false;

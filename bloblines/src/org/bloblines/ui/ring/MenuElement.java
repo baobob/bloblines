@@ -26,4 +26,8 @@ public class MenuElement extends Image {
 	public String toString() {
 		return this.getClass().getSimpleName() + " - " + label;
 	}
+
+	public MenuGroup getMenu() {
+		return (MenuGroup) getParent();
+	}
 }

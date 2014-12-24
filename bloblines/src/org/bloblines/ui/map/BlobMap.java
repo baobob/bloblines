@@ -64,6 +64,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		initIcons();
 
 		currentState = State.MAP;
+		switchMode(State.ACTION);
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);

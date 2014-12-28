@@ -20,7 +20,7 @@ public class TravelMenu extends MenuElement {
 		if (keycode == Keys.ENTER) {
 			game.player.location = target.destination;
 			game.player.pos = target.destination.pos; // TODO player pos should be based on location ?
-			getMenu().openMenu(MenuHelper.getMapMenu());
+			getMenu().openMenu(MenuHelper.getMapMenu(), false);
 			return true;
 		}
 		return false;

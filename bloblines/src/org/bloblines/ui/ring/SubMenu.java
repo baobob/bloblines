@@ -18,7 +18,7 @@ public abstract class SubMenu extends MenuElement {
 		if (keycode == Keys.ENTER) {
 			List<MenuElement> subMenu = getSubMenu(game);
 			if (subMenu.size() > 0) {
-				getMenu().openMenu(subMenu);
+				getMenu().openMenu(subMenu, true);
 			}
 			return true;
 		}

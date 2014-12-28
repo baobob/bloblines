@@ -37,7 +37,7 @@ public class MenuGroup extends Group {
 	public int rotationIndex = 0;
 
 	/** Stack to save parent menus when going into submenus and coming back */
-	private List<List<MenuElement>> menuStack = new ArrayList<List<MenuElement>>();
+	private List<MenuState> menuStack = new ArrayList<MenuState>();
 
 	/** Description window. This not a a menu children cause it shouldn't rotate */
 	private Window descWindow;
@@ -45,7 +45,7 @@ public class MenuGroup extends Group {
 	public MenuGroup(Game game, List<MenuElement> items, Stage stage) {
 		this.game = game;
 		initMenuComponents(stage);
-		openMenu(items);
+		openMenu(items, false);
 		stage.addActor(this);
 	}
 
@@ -59,29 +59,35 @@ public class MenuGroup extends Group {
 		stage.addActor(descWindow);
 	}
 
-	public void openMenu(List<MenuElement> items) {
+	public void openMenu(List<MenuElement> items, boolean saveCurrentState) {
 		if (items == null) {
 			System.err.println("openMenu called with null parameter");
 			return;
 		}
-		if (getChildren().size > 0) {
-			menuStack.add(Arrays.asList((MenuElement[]) getChildren().toArray(MenuElement.class)));
-			getChildren().clear();
+		if (saveCurrentState) {
+			MenuState saveState = new MenuState(Arrays.asList((MenuElement[]) getChildren().toArray(MenuElement.class)), rotationIndex);
+			menuStack.add(saveState);
+		} else {
+			menuStack.clear();
 		}
+		getChildren().clear();
 		rotationIndex = 0;
 		setMenuElements(items);
+		updateRotation();
 	}
 
 	public void closeMenu() {
 		// Remove last
 		getChildren().clear();
-		setMenuElements(menuStack.get(menuStack.size() - 1));
+		MenuState loadState = menuStack.get(menuStack.size() - 1);
+		rotationIndex = loadState.selectedElementIndex;
+		setMenuElements(loadState.elements);
 		menuStack.remove(menuStack.size() - 1);
+		updateRotation();
 	}
 
 	private void setMenuElements(List<MenuElement> items) {
 		nextElementVector = new Vector3(0, ELEMENTS_DISTANCE, 0);
-		elementsAngle = 360 / items.size();
 		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		for (MenuElement item : items) {
 			addElement(item);
@@ -90,7 +96,7 @@ public class MenuGroup extends Group {
 	}
 
 	public void addElement(MenuElement item) {
-		// Rotation moves object center because we rotate it aroud the bottom left corner, we need to translate it to a bit
+		// Rotation moves object center because we rotate it around the bottom left corner, we need to translate it to a bit
 		float tetaDegrees = getChildren().size * -elementsAngle;
 		double teta = Math.toRadians(-tetaDegrees);
 		item.setRotation(tetaDegrees);
@@ -114,6 +120,7 @@ public class MenuGroup extends Group {
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
 		updateDescWindow();
+		updateMap();
 	}
 
 	private void updateDescWindow() {
@@ -121,6 +128,12 @@ public class MenuGroup extends Group {
 		descWindow.clearChildren();
 		Label text = new Label(getCurrentItem().getDescription(), Game.assets.getSkin());
 		descWindow.add(text);
+	}
+
+	private void updateMap() {
+		if (getCurrentItem() instanceof TravelMenu) {
+
+		}
 	}
 
 	private MenuElement getCurrentItem() {
@@ -194,5 +207,15 @@ public class MenuGroup extends Group {
 		fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
 		fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		fgShapeRenderer.end();
+	}
+
+	private class MenuState {
+		public List<MenuElement> elements;
+		public int selectedElementIndex;
+
+		public MenuState(List<MenuElement> elements, int selectedElementIndex) {
+			this.elements = elements;
+			this.selectedElementIndex = selectedElementIndex;
+		}
 	}
 }

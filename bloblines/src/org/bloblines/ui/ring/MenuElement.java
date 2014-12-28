@@ -30,4 +30,6 @@ public class MenuElement extends Image {
 	public MenuGroup getMenu() {
 		return (MenuGroup) getParent();
 	}
+
+	// disabled method for submenus ?
 }

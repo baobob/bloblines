@@ -4,6 +4,7 @@ import org.bloblines.data.game.Player;
 import org.bloblines.data.map.Action;
 import org.bloblines.ui.BlobMenu;
 import org.bloblines.ui.battle.BlobBattle;
+import org.bloblines.ui.manage.BlobStats;
 import org.bloblines.ui.map.BlobOverworld;
 import org.bloblines.utils.Assets;
 
@@ -66,6 +67,10 @@ public class Game extends com.badlogic.gdx.Game {
 		case SHOP:
 			// Store current map state
 			// Start shop screen
+			break;
+		case STATUS:
+			// Open blob status screen
+			this.setScreen(new BlobStats(this));
 			break;
 		default:
 			break;

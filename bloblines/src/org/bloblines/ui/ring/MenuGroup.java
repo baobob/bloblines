@@ -51,9 +51,10 @@ public class MenuGroup extends Group {
 
 	private void initMenuComponents(Stage stage) {
 		descWindow = new Window("", Game.assets.getSkin());
-		descWindow.setWidth(320);
-		descWindow.setHeight(600);
-		descWindow.setPosition(50, 50);
+		int w = 320;
+		descWindow.setWidth(w);
+		descWindow.setHeight(100);
+		descWindow.setPosition((Gdx.graphics.getWidth() - w) / 2, 50);
 		descWindow.setMovable(false);
 		descWindow.setVisible(false);
 		stage.addActor(descWindow);
@@ -202,10 +203,10 @@ public class MenuGroup extends Group {
 		fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 60, 42, 42);
 
 		// draw a line with menu title to show selected menu
-		int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		int lineY = Gdx.graphics.getHeight() / 2 + 150;
-		fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
-		fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
+		// int lineX = Gdx.graphics.getWidth() / 2 - 220;
+		// int lineY = Gdx.graphics.getHeight() / 2 + 150;
+		// fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
+		// fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		fgShapeRenderer.end();
 	}
 

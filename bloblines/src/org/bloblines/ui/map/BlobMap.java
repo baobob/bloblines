@@ -6,7 +6,9 @@ import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.ui.ring.MenuGroup;
 import org.bloblines.ui.ring.MenuHelper;
+import org.bloblines.ui.ring.TravelMenu;
 import org.bloblines.utils.Assets.Textures;
+import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -173,8 +175,22 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void updateCamera() {
 		// Keep player as centered as possible
 		if (currentState == State.ACTION) {
-			camera.position.x = uiPlayer.getPos().x + 8;
-			camera.position.y = uiPlayer.getPos().y + 8;
+			float xDiff = camera.position.x - (uiPlayer.getPos().x + 8);
+			if (xDiff > 0.5) {
+				camera.position.x -= 0.5;
+			} else if (xDiff < -0.5) {
+				camera.position.x += 0.5;
+			} else {
+				camera.position.x = uiPlayer.getPos().x + 8;
+			}
+			float yDiff = camera.position.y - (uiPlayer.getPos().y + 8);
+			if (yDiff > 0.5) {
+				camera.position.y -= 0.5;
+			} else if (yDiff < -0.5) {
+				camera.position.y += 0.5;
+			} else {
+				camera.position.y = uiPlayer.getPos().y + 8;
+			}
 			camera.update();
 		} else if (currentState == State.MAP) {
 			Rectangle view = game.world.renderer.getViewBounds();
@@ -208,6 +224,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				}
 			}
 		}
+		if (menuGroup.getCurrentItem() instanceof TravelMenu) {
+			TravelMenu travelTo = (TravelMenu) menuGroup.getCurrentItem();
+			XY destinationPos = travelTo.target.destination.pos;
+			game.bgShapeRenderer.rectLine(uiPlayer.getPos().x + 8, uiPlayer.getPos().y + 8, destinationPos.x + 8, destinationPos.y + 8, 8);
+		}
+
 	}
 
 	private void renderPlayer(SpriteBatch batch) {

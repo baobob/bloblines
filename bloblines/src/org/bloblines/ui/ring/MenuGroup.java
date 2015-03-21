@@ -121,7 +121,6 @@ public class MenuGroup extends Group {
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
 		updateDescWindow();
-		updateMap();
 	}
 
 	private void updateDescWindow() {
@@ -131,13 +130,7 @@ public class MenuGroup extends Group {
 		descWindow.add(text);
 	}
 
-	private void updateMap() {
-		if (getCurrentItem() instanceof TravelMenu) {
-
-		}
-	}
-
-	private MenuElement getCurrentItem() {
+	public MenuElement getCurrentItem() {
 		return (MenuElement) getChildren().get(rotationIndex);
 	}
 

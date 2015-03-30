@@ -134,6 +134,10 @@ public class MenuGroup extends Group {
 		return (MenuElement) getChildren().get(rotationIndex);
 	}
 
+	public void selectMenuItem(MenuElement item) {
+		item.keyDown(Keys.ENTER, game);
+	}
+
 	/**
 	 * Rotates menu to the left
 	 */

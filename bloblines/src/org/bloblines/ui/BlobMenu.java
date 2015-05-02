@@ -1,7 +1,7 @@
 package org.bloblines.ui;
 
 import org.bloblines.Game;
-import org.bloblines.ui.map.BlobMap;
+import org.bloblines.ui.map.BlobWorld;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
@@ -56,7 +56,7 @@ public class BlobMenu extends BlobScreen {
 
 	private final void startGame(String playerName) {
 		game.start(playerName);
-		game.setScreen(new BlobMap(game));
+		game.setScreen(new BlobWorld(game));
 		dispose();
 	}
 

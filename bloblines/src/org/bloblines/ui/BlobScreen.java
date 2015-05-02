@@ -3,6 +3,8 @@ package org.bloblines.ui;
 import org.bloblines.Game;
 import org.bloblines.utils.Assets.Textures;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -73,7 +75,9 @@ public abstract class BlobScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		if (Keys.ESCAPE == keycode) {
+			Gdx.app.exit();
+		}
 		return false;
 	}
 

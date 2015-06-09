@@ -42,7 +42,7 @@ public class BlobStats extends BlobScreen {
 	}
 
 	private void initWindow() {
-		statusWindow = new Window("Blobs Status", Game.assets.getSkin());
+		statusWindow = new Window("Blobs Status", getDefaultSkin());
 		int margin = 50;
 		int w = Gdx.graphics.getWidth() - margin;
 		int h = Gdx.graphics.getHeight() - 2 * margin;
@@ -63,7 +63,7 @@ public class BlobStats extends BlobScreen {
 		});
 
 		// Display blobs
-		Skin s = Game.assets.getSkin();
+		Skin s = getDefaultSkin();
 		for (Blob b : game.player.blobs) {
 
 			Table blobTable = new Table(s);

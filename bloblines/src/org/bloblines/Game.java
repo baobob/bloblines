@@ -33,6 +33,7 @@ public class Game extends com.badlogic.gdx.Game {
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
 		Game.assets = new Assets();
 		Game.assets.finishLoading();
+		Game.assets.postLoad();
 
 		batch = new SpriteBatch();
 		this.setScreen(new BlobMenu(this));
@@ -40,7 +41,7 @@ public class Game extends com.badlogic.gdx.Game {
 
 	public void start(String playerName) {
 		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
-		player = new Player(playerName, world.area.locations.get("Start"));
+		player = new Player(playerName, world.area.locationsByName.get("Start"));
 	}
 
 	@Override
@@ -76,5 +77,4 @@ public class Game extends com.badlogic.gdx.Game {
 			break;
 		}
 	}
-
 }

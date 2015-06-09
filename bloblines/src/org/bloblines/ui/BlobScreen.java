@@ -9,14 +9,19 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public abstract class BlobScreen implements Screen, InputProcessor {
 
 	protected Game game;
 
+	protected Stage stage;
+
 	public BlobScreen(Game game) {
 		this.game = game;
+		this.stage = new Stage(new ScreenViewport());
 	}
 
 	protected Texture getTexture(Textures t) {
@@ -24,7 +29,11 @@ public abstract class BlobScreen implements Screen, InputProcessor {
 	}
 
 	protected BitmapFont getDefaultFont() {
-		return Game.assets.getFont();
+		return Game.assets.getFontSmall();
+	}
+
+	protected BitmapFont getBiggerFont() {
+		return Game.assets.getFontBig();
 	}
 
 	protected Skin getDefaultSkin() {

@@ -19,6 +19,8 @@ public class BlobOverworld {
 
 	public Area area;
 
+	public static final int TILE_WIDTH = 16;
+
 	public BlobOverworld(TiledMap map) {
 		renderer = new OrthogonalTiledMapRenderer(map);
 		area = new Area();
@@ -41,7 +43,7 @@ public class BlobOverworld {
 			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
 			location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
 
-			area.locations.put(location.name, location);
+			area.addLocation(location);
 		}
 
 		initLocationLinks(map);
@@ -49,13 +51,13 @@ public class BlobOverworld {
 
 	private void initLocationLinks(TiledMap map) {
 		for (MapObject event : map.getLayers().get("Locations").getObjects()) {
-			Location location = area.locations.get(event.getName());
+			Location location = area.locationsByName.get(event.getName());
 			String neighbours = event.getProperties().get("neighbours", String.class);
 			if (neighbours == null)
 				continue;
 
 			for (String neighbour : neighbours.split(",")) {
-				Location targetLocation = area.locations.get(neighbour.trim());
+				Location targetLocation = area.locationsByName.get(neighbour.trim());
 				if (targetLocation == null) {
 					System.err.printf("Cannot find the target location %s in location %s", neighbour.trim(), location.name);
 				} else {

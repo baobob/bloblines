@@ -29,6 +29,9 @@ public class UiPlayer {
 	private int moving = 0x0000;
 	private int currentAnimation = MOVE_DOWN;
 
+	public static int HEIGHT = 16;
+	public static int WIDTH = 16;
+
 	public UiPlayer(Player p) {
 		player = p;
 		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
@@ -102,5 +105,9 @@ public class UiPlayer {
 
 	public XY getPos() {
 		return player.pos;
+	}
+
+	public XY getCenter() {
+		return new XY(player.pos.x + WIDTH / 2, player.pos.y + HEIGHT / 2);
 	}
 }

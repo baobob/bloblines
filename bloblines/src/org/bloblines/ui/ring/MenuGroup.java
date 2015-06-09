@@ -110,7 +110,7 @@ public class MenuGroup extends Group {
 
 		item.setWidth(ICON_SIZE);
 		item.setHeight(ICON_SIZE);
-		item.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
+		// item.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
 		addActor(item);
 		nextElementVector.rotate(-elementsAngle, 0, 0, 1);
 	}
@@ -124,7 +124,7 @@ public class MenuGroup extends Group {
 	}
 
 	private void updateDescWindow() {
-		descWindow.setTitle(getCurrentItem().label);
+		descWindow.setName(getCurrentItem().label);
 		descWindow.clearChildren();
 		Label text = new Label(getCurrentItem().getDescription(), Game.assets.getSkin());
 		descWindow.add(text);

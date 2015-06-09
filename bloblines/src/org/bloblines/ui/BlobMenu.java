@@ -1,14 +1,13 @@
 package org.bloblines.ui;
 
 import org.bloblines.Game;
-import org.bloblines.ui.map.BlobWorld;
+import org.bloblines.ui.map.BlobMap;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,11 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BlobMenu extends BlobScreen {
-
-	private Stage stage;
 
 	private int btnYPos = 280;
 	private int btnXPos = 50;
@@ -31,14 +27,8 @@ public class BlobMenu extends BlobScreen {
 	private TextButton btnOptions;
 	private TextButton btnQuit;
 
-	OrthographicCamera camera;
-
 	public BlobMenu(Game b) {
 		super(b);
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1024, 768);
-
-		stage = new Stage(new ScreenViewport(camera));
 
 		btnStart = initTextButton("Start new game", stage);
 		btnContinue = initTextButton("Continue", stage);
@@ -56,7 +46,7 @@ public class BlobMenu extends BlobScreen {
 
 	private final void startGame(String playerName) {
 		game.start(playerName);
-		game.setScreen(new BlobWorld(game));
+		game.setScreen(new BlobMap(game));
 		dispose();
 	}
 
@@ -69,13 +59,13 @@ public class BlobMenu extends BlobScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		camera.update();
+		// camera.update();
 
 		game.batch.begin();
 		game.batch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
-		getDefaultFont().setScale(3);
-		getDefaultFont().draw(game.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
-		getDefaultFont().setScale(1);
+		// getDefaultFont().setScale(3);
+		getBiggerFont().draw(game.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
+		// getDefaultFont().setScale(1);
 		getDefaultFont().draw(game.batch, "Press Enter to quickstart as Blob Doe", 80, Gdx.graphics.getHeight() - 120);
 
 		game.batch.end();

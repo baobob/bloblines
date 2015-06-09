@@ -1,13 +1,19 @@
 package org.bloblines.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class Assets extends AssetManager {
 
-	private BitmapFont font = null;
+	private BitmapFont fontSmall = null;
+	private BitmapFont fontBig = null;
 
 	public enum Textures {
 		// @formatter:off
@@ -53,23 +59,41 @@ public class Assets extends AssetManager {
 
 	public Assets() {
 		// Use LibGDX's default Arial font.
-		font = new BitmapFont();
+		loadFont();
 
 		for (Textures t : Textures.values()) {
 			load(t.path, Texture.class);
 		}
 
-		load("skins/ui.json", Skin.class);
-		// skin = new Skin(Gdx.files.internal("skins/ui.json"));
+		load("skins/uiskin.json", Skin.class);
 
 	}
 
-	public BitmapFont getFont() {
-		return font;
+	public void postLoad() {
+		getSkin().get(LabelStyle.class).font = fontSmall;
+		getSkin().get(TextButtonStyle.class).font = fontSmall;
+	}
+
+	private void loadFont() {
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 22;
+		fontSmall = generator.generateFont(parameter); // font size 12 pixels
+		parameter.size = 48;
+		fontBig = generator.generateFont(parameter); // font size 36 pixels
+		generator.dispose(); // don't forget to dispose to avoid memory leaks!
+	}
+
+	public BitmapFont getFontSmall() {
+		return fontSmall;
+	}
+
+	public BitmapFont getFontBig() {
+		return fontBig;
 	}
 
 	public Skin getSkin() {
-		return get("skins/ui.json", Skin.class);
+		return get("skins/uiskin.json", Skin.class);
 	}
 
 	public Texture getTexture(Textures t) {
@@ -78,7 +102,8 @@ public class Assets extends AssetManager {
 
 	@Override
 	public synchronized void dispose() {
-		font.dispose();
+		fontSmall.dispose();
+		fontBig.dispose();
 		super.dispose();
 	}
 

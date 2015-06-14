@@ -77,7 +77,7 @@ public class Assets extends AssetManager {
 	private void loadFont() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/arial.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 22;
+		parameter.size = 18;
 		fontSmall = generator.generateFont(parameter); // font size 12 pixels
 		parameter.size = 48;
 		fontBig = generator.generateFont(parameter); // font size 36 pixels

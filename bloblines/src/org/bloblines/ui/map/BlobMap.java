@@ -5,6 +5,7 @@ import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
+import org.bloblines.ui.manage.BlobStats;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
@@ -37,9 +38,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	public UiPlayer uiPlayer;
 
-	// public enum State {
-	// HELP, ACTION, MAP
-	// }
+	private int debugHeight;
 
 	private float moveMapX = 0;
 	private float moveMapY = 0;
@@ -89,24 +88,25 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	private void initIcons() {
 		Image helpImage = new Image(Game.assets.getTexture(Textures.ICON_BOOK));
-		helpImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 50, 32, 32);
+		helpImage.setBounds(Gdx.graphics.getWidth() / 2 - 30, Gdx.graphics.getHeight() - 40, 32, 32);
 		helpImage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// switchMode(State.HELP);
+				// Display Help ?
 			}
 		});
 		stage.addActor(helpImage);
 
-		Image menuImage = new Image(Game.assets.getTexture(Textures.ICON_LOCATION));
-		menuImage.setBounds(Gdx.graphics.getWidth() - 50, Gdx.graphics.getHeight() - 120, 32, 32);
+		Image menuImage = new Image(Game.assets.getTexture(Textures.ICON_STATUS));
+		menuImage.setBounds(Gdx.graphics.getWidth() / 2 + 30, Gdx.graphics.getHeight() - 40, 32, 32);
 		menuImage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// switchMode(State.ACTION);
+				game.setScreen(new BlobStats(game));
 			}
 		});
 		stage.addActor(menuImage);
+
 	}
 
 	@Override
@@ -148,17 +148,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		// if (currentState != State.MAP) {
 		// Gdx.gl.glEnable(GL20.GL_BLEND);
 		// Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		//
 		// game.bgShapeRenderer.begin(ShapeType.Filled);
-		// game.bgShapeRenderer.setColor(0.4f, 0.4f, 0.4f, 0.7f);
+		// game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.7f);
 		// game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		// game.bgShapeRenderer.end();
-		//
 		// Gdx.gl.glDisable(GL20.GL_BLEND);
-		// }
 	}
-
-	int debugHeight;
 
 	private void renderForeground() {
 		game.batch.begin();
@@ -311,7 +306,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private Window getContextMenu(Location location, int x, int y) {
 		Window menu = new Window(location.name, getDefaultSkin());
 		menu.setWidth(160);
-		menu.setHeight(220);
+		menu.setHeight(240);
 		menu.clearChildren();
 		if (location.pos.equals(uiPlayer.getPos())) {
 			// Current location contextual menu
@@ -336,7 +331,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 					}
 				});
 				l.setWrap(true);
-				menu.add(l).width(150);
+				menu.add(l).width(150).padBottom(10);
 				menu.row();
 			}
 		} else {

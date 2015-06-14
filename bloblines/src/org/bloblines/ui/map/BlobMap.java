@@ -10,6 +10,7 @@ import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -65,7 +66,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera.position.y = uiPlayer.getCenter().y;
 		camera.update();
 
-		initMenu();
 		initIcons();
 
 		// currentState = State.MAP;
@@ -79,11 +79,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-	}
-
-	private void initMenu() {
-		// menuGroup = new MenuGroup(game, MenuHelper.getMapMenu(), stage);
-		// menuGroup.setVisible(false);
 	}
 
 	private void initIcons() {
@@ -182,26 +177,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void updateCamera() {
-		// Keep player as centered as possible
-		// if (currentState == State.ACTION) {
-		// float xDiff = camera.position.x - (uiPlayer.getPos().x + 8);
-		// if (xDiff > 0.5) {
-		// camera.position.x -= 0.5;
-		// } else if (xDiff < -0.5) {
-		// camera.position.x += 0.5;
-		// } else {
-		// camera.position.x = uiPlayer.getPos().x + 8;
-		// }
-		// float yDiff = camera.position.y - (uiPlayer.getPos().y + 8);
-		// if (yDiff > 0.5) {
-		// camera.position.y -= 0.5;
-		// } else if (yDiff < -0.5) {
-		// camera.position.y += 0.5;
-		// } else {
-		// camera.position.y = uiPlayer.getPos().y + 8;
-		// }
-		// camera.update();
-		// } else if (currentState == State.MAP) {
 		Rectangle view = game.world.renderer.getViewBounds();
 		// TODO : DO NOT USE MAGIC NUMBER FOR MAP BOUNDS
 		if (view.x + moveMapX > 0 && view.x + view.width + moveMapX < 480) {
@@ -213,13 +188,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		moveMapX = 0;
 		moveMapY = 0;
 		camera.update();
-		// }
 	}
 
 	private void renderEvents(SpriteBatch batch) {
 		for (Location location : game.world.area.locations) {
 			Texture t = getTexture(Textures.SPRITE_LOCATION);
-			if (location.done) {
+			if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
 				t = getTexture(Textures.SPRITE_LOCATION_DONE);
 			}
 			batch.draw(t, location.pos.x, location.pos.y);
@@ -230,16 +204,17 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		for (Location location : game.world.area.locations) {
 			// if (location.done) {
 			for (Target target : location.targets) {
-				game.bgShapeRenderer.rectLine(location.pos.x, location.pos.y, target.destination.pos.x, target.destination.pos.y, 5);
+				float x1 = location.pos.x + 8;
+				float y1 = location.pos.y + 8;
+				float x2 = target.destination.pos.x + 8;
+				float y2 = target.destination.pos.y + 8;
+
+				// If distance between mouse cursor and link < 10 -> change color ?
+
+				game.bgShapeRenderer.rectLine(x1, y1, x2, y2, 5);
 			}
 			// }
 		}
-		// if (menuGroup.getCurrentItem() instanceof TravelMenu) {
-		// TravelMenu travelTo = (TravelMenu) menuGroup.getCurrentItem();
-		// XY destinationPos = travelTo.target.destination.pos;
-		// game.bgShapeRenderer.rectLine(uiPlayer.getPos().x + 8, uiPlayer.getPos().y + 8, destinationPos.x + 8, destinationPos.y + 8, 8);
-		// }
-
 	}
 
 	private void renderPlayer(SpriteBatch batch) {
@@ -311,37 +286,24 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		if (location.pos.equals(uiPlayer.getPos())) {
 			// Current location contextual menu
 			for (Action a : location.actions) {
-				Label l = new Label(a.description, getDefaultSkin());
-				l.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						event.setBubbles(false);
-					}
-
-					@Override
-					public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-						((Label) event.getTarget()).setColor(Color.RED);
-						event.setBubbles(false);
-					}
-
-					@Override
-					public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-						((Label) event.getTarget()).setColor(Color.WHITE);
-						event.setBubbles(false);
-					}
-				});
-				l.setWrap(true);
+				MenuLabel l = new MenuLabel(a.description);
 				menu.add(l).width(150).padBottom(10);
 				menu.row();
 			}
 		} else {
 			// Distant location
-			Label info = new Label("Information", getDefaultSkin());
-			menu.add(info);
+			MenuLabel info = new MenuLabel("Information");
+			menu.add(info).width(150).padBottom(10);
 			menu.row();
-			Label move = new Label("Move here", getDefaultSkin());
-			menu.add(move);
-			menu.row();
+
+			for (Target t : location.targets) {
+				if (t.destination.pos.equals(uiPlayer.getPos())) {
+					MenuLabel move = new TravelMenu(location);
+					menu.add(move).width(150).padBottom(10);
+					menu.row();
+				}
+			}
+
 		}
 		menu.setPosition(x, Gdx.graphics.getHeight() - y - menu.getHeight());
 		menu.addListener(new ClickListener() {
@@ -352,6 +314,45 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			}
 		});
 		return menu;
+	}
+
+	public class MenuLabel extends Label {
+
+		public MenuLabel(CharSequence text) {
+			super(text, getDefaultSkin());
+			addListener(new ClickListener() {
+				@Override
+				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+					((Label) event.getTarget()).setColor(Color.RED);
+					event.setBubbles(false);
+				}
+
+				@Override
+				public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+					((Label) event.getTarget()).setColor(Color.WHITE);
+					event.setBubbles(false);
+				}
+			});
+			setWrap(true);
+		}
+	}
+
+	public class TravelMenu extends MenuLabel {
+		public Location destination;
+
+		public TravelMenu(Location d) {
+			super("Move here");
+			destination = d;
+			addListener(new ClickListener(Input.Buttons.LEFT) {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					game.player.location = destination;
+					game.player.pos = destination.pos;
+					contextMenu.remove();
+					event.setBubbles(false);
+				}
+			});
+		}
 	}
 
 	/**
@@ -447,6 +448,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			if (prevMouseX > 0 && prevMouseY > 0) {
 				moveMapX += (prevMouseX - screenX) / 2;
 				moveMapY += (screenY - prevMouseY) / 2;
+				if (contextMenu != null) {
+					contextMenu.remove();
+				}
 			}
 			prevMouseX = screenX;
 			prevMouseY = screenY;

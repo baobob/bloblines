@@ -1,5 +1,8 @@
 package org.bloblines.ui.map;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bloblines.Game;
 import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Location;
@@ -201,19 +204,45 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderEventsLinks() {
+		Set<Location> doneLocations = new HashSet<>();
 		for (Location location : game.world.area.locations) {
 			// if (location.done) {
 			for (Target target : location.targets) {
+				if (doneLocations.contains(target.destination)) {
+					continue;
+				}
 				float x1 = location.pos.x + 8;
 				float y1 = location.pos.y + 8;
 				float x2 = target.destination.pos.x + 8;
 				float y2 = target.destination.pos.y + 8;
 
-				// If distance between mouse cursor and link < 10 -> change color ?
+				// Compute distance between mouse cursor and link
+				// Link equation
+				float a = y2 - y1;
+				float b = x1 - x2;
+				float c = -(b * y1 + a * x1);
 
+				// Mouse coordinates in Map projection
+				Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+				float xm = mousePos.x;
+				float ym = mousePos.y;
+
+				// Distance Mouse - Link
+				double distance = Math.abs(a * xm + b * ym + c) / Math.sqrt(a * a + b * b);
+
+				// Link lenght - we need to ensure mouse is "between" the 2 locations of the link and not along the line but far away from
+				// the link
+				double length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+				double d1 = Math.sqrt((x1 - xm) * (x1 - xm) + (y1 - ym) * (y1 - ym));
+				double d2 = Math.sqrt((x2 - xm) * (x2 - xm) + (y2 - ym) * (y2 - ym));
+
+				if (distance < 3 && (d1 < length) && (d2 < length)) {
+					game.bgShapeRenderer.setColor(Color.RED);
+				}
 				game.bgShapeRenderer.rectLine(x1, y1, x2, y2, 5);
+				game.bgShapeRenderer.setColor(Color.WHITE);
 			}
-			// }
+			doneLocations.add(location);
 		}
 	}
 

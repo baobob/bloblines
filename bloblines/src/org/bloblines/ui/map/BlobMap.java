@@ -286,7 +286,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		if (location.pos.equals(uiPlayer.getPos())) {
 			// Current location contextual menu
 			for (Action a : location.actions) {
-				MenuLabel l = new MenuLabel(a.description);
+				ActionMenu l = new ActionMenu(a);
 				menu.add(l).width(150).padBottom(10);
 				menu.row();
 			}
@@ -334,6 +334,23 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				}
 			});
 			setWrap(true);
+		}
+	}
+
+	public class ActionMenu extends MenuLabel {
+		public Action action;
+
+		public ActionMenu(Action a) {
+			super(a.description);
+			action = a;
+			addListener(new ClickListener(Input.Buttons.LEFT) {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					contextMenu.remove();
+					event.setBubbles(false);
+					game.launchAction(action);
+				}
+			});
 		}
 	}
 

@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bloblines.Game;
+import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
-import org.bloblines.ui.manage.BlobStats;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
@@ -29,8 +29,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -43,6 +43,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	public UiPlayer uiPlayer;
 
 	private int debugHeight;
+	private boolean showDebugPanel = false;
 
 	private float moveMapX = 0;
 	private float moveMapY = 0;
@@ -52,6 +53,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	/** Current context menu */
 	private Window contextMenu = null;
+
+	/** Status window */
+	private Window statusWindow = null;
 
 	// public State currentState;
 
@@ -69,10 +73,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera.position.y = uiPlayer.getCenter().y;
 		camera.update();
 
-		initIcons();
-
-		// currentState = State.MAP;
-		// switchMode(State.ACTION);
+		initStatusWindow();
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
@@ -84,28 +85,62 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.getViewport().update(width, height, true);
 	}
 
-	private void initIcons() {
-		Image helpImage = new Image(Game.assets.getTexture(Textures.ICON_BOOK));
-		helpImage.setBounds(Gdx.graphics.getWidth() / 2 - 30, Gdx.graphics.getHeight() - 40, 32, 32);
-		helpImage.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				// Display Help ?
-			}
-		});
-		stage.addActor(helpImage);
+	private void initStatusWindow() {
+		statusWindow = new Window("Blobs Status", getDefaultSkin());
+		int margin = 50;
+		int w = 300;
+		statusWindow.setWidth(w);
+		statusWindow.setMovable(false);
+		stage.addActor(statusWindow);
 
-		Image menuImage = new Image(Game.assets.getTexture(Textures.ICON_STATUS));
-		menuImage.setBounds(Gdx.graphics.getWidth() / 2 + 30, Gdx.graphics.getHeight() - 40, 32, 32);
-		menuImage.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new BlobStats(game));
-			}
-		});
-		stage.addActor(menuImage);
+		// Display blobs
+		for (Blob b : game.player.blobs) {
+
+			Table blobTable = new Table(getDefaultSkin());
+			blobTable.setColor(0.5f, 0.3f, 0.8f, 0.7f);
+			blobTable.add("Name").width(120);
+			blobTable.add(b.name).width(220);
+			blobTable.row();
+			blobTable.add("Age").width(120);
+			blobTable.add(String.valueOf(b.age)).width(220);
+			blobTable.row();
+			blobTable.add("Life").width(120);
+			blobTable.add(b.lifeCurrent + "/" + b.lifeMax).width(220);
+			blobTable.setWidth(w - 2 * margin);
+			statusWindow.add(blobTable);
+			statusWindow.add("").expandX();
+			statusWindow.row();
+			statusWindow.add("").height(50);
+			statusWindow.row();
+		}
+		statusWindow.setHeight(120 * game.player.blobs.size());
+		statusWindow.add("").expandY();
+		statusWindow.setPosition(margin, Gdx.graphics.getHeight() - margin - statusWindow.getHeight());
 
 	}
+
+	// private void initIcons() {
+	// Image helpImage = new Image(Game.assets.getTexture(Textures.ICON_BOOK));
+	// helpImage.setBounds(Gdx.graphics.getWidth() / 2 - 30, Gdx.graphics.getHeight() - 40, 32, 32);
+	// helpImage.addListener(new ClickListener() {
+	// @Override
+	// public void clicked(InputEvent event, float x, float y) {
+	// // Display Help ?
+	// }
+	// });
+	// stage.addActor(helpImage);
+	//
+	// Image menuImage = new Image(Game.assets.getTexture(Textures.ICON_STATUS));
+	// menuImage.setBounds(Gdx.graphics.getWidth() / 2 + 30, Gdx.graphics.getHeight() - 40, 32, 32);
+	// menuImage.addListener(new ClickListener() {
+	// @Override
+	// public void clicked(InputEvent event, float x, float y) {
+	// game.setScreen(new BlobStats(game));
+	// }
+	// });
+	// stage.addActor(menuImage);
+	//
+	// }
 
 	@Override
 	public void render(float delta) {
@@ -154,13 +189,16 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderForeground() {
-		game.batch.begin();
-		// getDefaultFont().setScale(1f);
-		debugHeight = Gdx.graphics.getHeight() - 40;
-		debug("camera position: " + camera.position);
-		debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
-		debug("map coords: " + getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()));
-		game.batch.end();
+		if (showDebugPanel) {
+			// TODO : Use a Scene2D Window instead of game batch
+			game.batch.begin();
+			// getDefaultFont().setScale(1f);
+			debugHeight = Gdx.graphics.getHeight() - 40;
+			debug("camera position: " + camera.position);
+			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
+			debug("map coords: " + getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()));
+			game.batch.end();
+		}
 		// }
 		// if (currentState == State.ACTION) {
 		// renderMenu();
@@ -236,8 +274,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				double d1 = Math.sqrt((x1 - xm) * (x1 - xm) + (y1 - ym) * (y1 - ym));
 				double d2 = Math.sqrt((x2 - xm) * (x2 - xm) + (y2 - ym) * (y2 - ym));
 
-				if (distance < 3 && (d1 < length) && (d2 < length)) {
-					game.bgShapeRenderer.setColor(Color.RED);
+				// We need to ensure mouse is not hovering one of the locations
+				XY mouseCoords = getMapCoordinates(Gdx.input.getX(), Gdx.input.getY());
+
+				if (distance < 3 && (d1 < length) && (d2 < length) && !mouseCoords.equals(location.getCoords())
+						&& !mouseCoords.equals(target.destination.getCoords())) {
+					game.bgShapeRenderer.setColor(0, 0.5f, 0, 0);
 				}
 				game.bgShapeRenderer.rectLine(x1, y1, x2, y2, 5);
 				game.bgShapeRenderer.setColor(Color.WHITE);
@@ -260,32 +302,6 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.batch.end();
 		// menuGroup.render(game.fgShapeRenderer);
 	}
-
-	private void renderHelp() {
-		game.batch.begin();
-		// getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.batch, "Help menu (F1) :", Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 25);
-		getDefaultFont().draw(game.batch, "Game menu (TAB) :", Gdx.graphics.getWidth() - 195, Gdx.graphics.getHeight() - 95);
-		game.batch.end();
-	}
-
-	// private void switchMode(State switchState) {
-	// if (currentState == State.HELP && switchState == State.HELP || currentState == State.ACTION && switchState == State.ACTION) {
-	// // menuGroup.setVisible(false);
-	// currentState = State.MAP;
-	// } else if (switchState == State.HELP) {
-	// // menuGroup.setVisible(false);
-	// currentState = State.HELP;
-	// } else if (switchState == State.ACTION) {
-	// // menuGroup.setVisible(true);
-	// currentState = State.ACTION;
-	// }
-	// if (currentState == State.ACTION) {
-	// camera.position.x = uiPlayer.getPos().x + 8;
-	// camera.position.y = uiPlayer.getPos().y + 8;
-	// camera.update();
-	// }
-	// }
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -430,13 +446,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		boolean handle = false;
-		if (keycode == Keys.TAB) {
-			// switchMode(State.ACTION);
-			handle = true;
-		}
 		if (keycode == Keys.F1) {
-			// switchMode(State.HELP);
-			handle = true;
+			showDebugPanel = !showDebugPanel;
 		}
 		if (keycode == Keys.ESCAPE) {
 			// if (currentState == State.MAP) {

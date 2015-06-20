@@ -98,14 +98,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 			Table blobTable = new Table(getDefaultSkin());
 			blobTable.setColor(0.5f, 0.3f, 0.8f, 0.7f);
-			blobTable.add("Name").width(120);
-			blobTable.add(b.name).width(220);
-			blobTable.row();
-			blobTable.add("Age").width(120);
-			blobTable.add(String.valueOf(b.age)).width(220);
-			blobTable.row();
-			blobTable.add("Life").width(120);
-			blobTable.add(b.lifeCurrent + "/" + b.lifeMax).width(220);
+			addStat("Name", b.name, blobTable);
+			addStat("Age", String.valueOf(b.age), blobTable);
+			addStat("Life", b.lifeCurrent + "/" + b.lifeMax, blobTable);
 			blobTable.setWidth(w - 2 * margin);
 			statusWindow.add(blobTable);
 			statusWindow.add("").expandX();
@@ -117,6 +112,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		statusWindow.add("").expandY();
 		statusWindow.setPosition(margin, Gdx.graphics.getHeight() - margin - statusWindow.getHeight());
 
+	}
+
+	private void addStat(String name, String value, Table t) {
+		t.add(name).width(120);
+		t.add(value).width(220);
+		t.row();
 	}
 
 	// private void initIcons() {

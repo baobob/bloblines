@@ -1,6 +1,10 @@
 package org.bloblines.ui.battle;
 
 import org.bloblines.Game;
+import org.bloblines.data.battle.Battle;
+import org.bloblines.data.battle.Environment;
+import org.bloblines.data.battle.Party;
+import org.bloblines.data.game.Monster;
 import org.bloblines.data.map.Action;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.ui.map.BlobMap;
@@ -31,6 +35,8 @@ public class BlobBattle extends BlobScreen {
 		super(b);
 		this.action = action;
 
+		Battle battle = doBattle();
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1024, 768);
 
@@ -47,6 +53,26 @@ public class BlobBattle extends BlobScreen {
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
+
+	}
+
+	private Battle doBattle() {
+		Party p1 = new Party(game.player.name);
+		p1.characters.addAll(game.player.blobs);
+
+		Party p2 = new Party("Enemies");
+		p2.characters.add(new Monster());
+		p2.characters.add(new Monster());
+
+		Environment env = new Environment();
+
+		/**
+		 * Start a 1 round battle
+		 */
+		Battle b = new Battle(p1, p2, env);
+		b.process(1);
+
+		return b;
 	}
 
 	@Override

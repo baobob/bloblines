@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/gdx-natives.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gdx.jar" sourcepath="lib/gdx-sources.jar"/>
+	<classpathentry kind="lib" path="lib/as3delaunay.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

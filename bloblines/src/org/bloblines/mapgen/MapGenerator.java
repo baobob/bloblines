@@ -32,7 +32,7 @@ public class MapGenerator {
 	/**
 	 * Random number generator based on seed parameter
 	 */
-	private Random random = null;
+	public Random random = null;
 
 	/** seed for Random number generator. Given as an argument to constructor */
 	public long seed;
@@ -55,13 +55,13 @@ public class MapGenerator {
 		this.locations = events;
 	}
 
-	public Area generate() {
+	public Area generate(String name) {
 		// Underlying Voronoi graph
 		voronoi = new Voronoi(locations, width, height, random, null);
 		// Relax to have a smoother graph
 		voronoi = lloydRelaxation(voronoi, LLOYD_RELAXATIONS);
 
-		Area area = new Area(voronoi);
+		Area area = new Area(voronoi, name);
 		area.riseMountains(random);
 		area.setBiomes(SEA_LEVEL);
 		area.setRoads();

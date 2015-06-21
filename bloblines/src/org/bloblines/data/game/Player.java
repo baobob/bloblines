@@ -3,6 +3,7 @@ package org.bloblines.data.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
 import org.bloblines.utils.XY;
 
@@ -12,13 +13,14 @@ public class Player {
 	public List<Blob> blobs;
 	public Location location;
 	public XY pos;
-	public String area;
+	public Area area;
 
-	public Player(String playerName, Location startPos) {
-		name = playerName;
-		location = startPos;
-		pos = new XY(location.pos);
-		blobs = new ArrayList<>();
+	public Player(String playerName, Area area, Location startPos) {
+		this.name = playerName;
+		this.area = area;
+		this.location = startPos;
+		this.pos = new XY(location.pos);
+		this.blobs = new ArrayList<>();
 		Blob b1 = new Blob();
 		b1.name = "Bobby";
 		b1.age = 32;
@@ -29,8 +31,8 @@ public class Player {
 		b2.age = 27;
 		b2.lifeCurrent = 51;
 		b2.lifeMax = 52;
-		blobs.add(b1);
-		blobs.add(b2);
+		this.blobs.add(b1);
+		this.blobs.add(b2);
 	}
 
 	@Override

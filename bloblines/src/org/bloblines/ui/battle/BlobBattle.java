@@ -82,14 +82,14 @@ public class BlobBattle extends BlobScreen {
 
 		camera.update();
 
-		game.batch.begin();
-		game.batch.draw(getTexture(Textures.BATTLE_SCREEN), 200, 50);
+		game.spriteBatch.begin();
+		game.spriteBatch.draw(getTexture(Textures.BATTLE_SCREEN), 200, 50);
 		// getDefaultFont().setScale(3);
-		getBiggerFont().draw(game.batch, "Fight !", 50, Gdx.graphics.getHeight() - 50);
+		getBiggerFont().draw(game.spriteBatch, "Fight !", 50, Gdx.graphics.getHeight() - 50);
 		// getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.batch, "You fight for your life. Or fortune. Or glory. Or something else, probably worthless. ", 80,
+		getDefaultFont().draw(game.spriteBatch, "You fight for your life. Or fortune. Or glory. Or something else, probably worthless. ", 80,
 				Gdx.graphics.getHeight() - 120);
-		game.batch.end();
+		game.spriteBatch.end();
 
 		stage.act(delta);
 		stage.draw();

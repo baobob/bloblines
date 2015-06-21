@@ -61,14 +61,14 @@ public class BlobMenu extends BlobScreen {
 
 		// camera.update();
 
-		game.batch.begin();
-		game.batch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
+		game.spriteBatch.begin();
+		game.spriteBatch.draw(getTexture(Textures.SPLASH_SCREEN), 250, -85);
 		// getDefaultFont().setScale(3);
-		getBiggerFont().draw(game.batch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
+		getBiggerFont().draw(game.spriteBatch, "Bloblines", 50, Gdx.graphics.getHeight() - 50);
 		// getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.batch, "Press Enter to quickstart as Blob Doe", 80, Gdx.graphics.getHeight() - 120);
+		getDefaultFont().draw(game.spriteBatch, "Press Enter to quickstart as Blob Doe", 80, Gdx.graphics.getHeight() - 120);
 
-		game.batch.end();
+		game.spriteBatch.end();
 
 		stage.act(delta);
 		stage.draw();

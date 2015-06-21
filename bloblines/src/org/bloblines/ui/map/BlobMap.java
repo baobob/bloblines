@@ -6,6 +6,7 @@ import java.util.Set;
 import org.bloblines.Game;
 import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Action;
+import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
@@ -22,10 +23,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -51,6 +51,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private float prevMouseY = 0;
 	private boolean moveMap = false;
 
+	/** Current area */
+	private Area area;
+
 	/** Current context menu */
 	private Window contextMenu = null;
 
@@ -59,16 +62,24 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 
 	// public State currentState;
 
+	private Sprite mapSprite;
+
 	public BlobMap(Game game) {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
+		area = game.player.area;
+
+		mapSprite = new Sprite(new Texture(area.pixmap));
+		mapSprite.setPosition(0, 0);
+		mapSprite.setSize((float) area.width, (float) area.height);
+		mapSprite.flip(false, true);
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
-		camera.zoom = 0.2f;
+		camera.zoom = 1f;
 		camera.position.x = uiPlayer.getCenter().x;
 		camera.position.y = uiPlayer.getCenter().y;
 		camera.update();
@@ -162,22 +173,22 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderBackground() {
-		// Render base Map
-		game.world.renderer.setView(camera);
-		game.world.renderer.render();
-
-		game.bgShapeRenderer.setProjectionMatrix(camera.combined);
-		game.bgShapeRenderer.begin(ShapeType.Filled);
-		game.bgShapeRenderer.setColor(1, 1, 1, 1);
-		renderEventsLinks();
-		game.bgShapeRenderer.end();
+		// game.shapeRenderer.setProjectionMatrix(camera.combined);
+		// game.shapeRenderer.begin(ShapeType.Filled);
+		// // Render base Map
+		// // for ()
+		// game.shapeRenderer.setColor(1, 1, 1, 1);
+		// // renderEventsLinks();
+		// game.shapeRenderer.end();
 
 		// Render player / events / moving stuff
-		SpriteBatch batch = (SpriteBatch) game.world.renderer.getBatch();
-		batch.begin();
-		renderEvents(batch);
-		renderPlayer(batch);
-		batch.end();
+		// SpriteBatch batch = (SpriteBatch) game.world.renderer.getBatch();
+		game.spriteBatch.setProjectionMatrix(camera.combined);
+		game.spriteBatch.begin();
+		mapSprite.draw(game.spriteBatch);
+		renderEvents(game.spriteBatch);
+		renderPlayer(game.spriteBatch);
+		game.spriteBatch.end();
 
 		// if (currentState != State.MAP) {
 		// Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -192,13 +203,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	private void renderForeground() {
 		if (showDebugPanel) {
 			// TODO : Use a Scene2D Window instead of game batch
-			game.batch.begin();
+			game.spriteBatch.begin();
 			// getDefaultFont().setScale(1f);
 			debugHeight = Gdx.graphics.getHeight() - 40;
 			debug("camera position: " + camera.position);
 			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
 			debug("map coords: " + getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()));
-			game.batch.end();
+			game.spriteBatch.end();
 		}
 		// }
 		// if (currentState == State.ACTION) {
@@ -209,7 +220,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void debug(String message) {
-		getDefaultFont().draw(game.batch, message, 50, debugHeight);
+		getDefaultFont().draw(game.spriteBatch, message, 50, debugHeight);
 		debugHeight -= 30;
 	}
 
@@ -219,32 +230,35 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void updateCamera() {
-		Rectangle view = game.world.renderer.getViewBounds();
+		double width = area.width;
+		double height = area.height;
 		// TODO : DO NOT USE MAGIC NUMBER FOR MAP BOUNDS
-		if (view.x + moveMapX > 0 && view.x + view.width + moveMapX < 480) {
-			camera.position.x += moveMapX;
-		}
-		if (view.y + moveMapY > 0 && view.y + view.height + moveMapY < 480) {
-			camera.position.y += moveMapY;
-		}
+		// if (width + moveMapX > 0 && view.x + view.width + moveMapX < 480) {
+		camera.position.x += moveMapX;
+		// }
+		// if (view.y + moveMapY > 0 && view.y + view.height + moveMapY < 480) {
+		camera.position.y += moveMapY;
+		// }
 		moveMapX = 0;
 		moveMapY = 0;
 		camera.update();
 	}
 
 	private void renderEvents(SpriteBatch batch) {
-		for (Location location : game.world.area.locations) {
+		for (Location location : area.locations) {
 			Texture t = getTexture(Textures.SPRITE_LOCATION);
-			if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
-				t = getTexture(Textures.SPRITE_LOCATION_DONE);
-			}
-			batch.draw(t, location.pos.x, location.pos.y);
+			// if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
+			// t = getTexture(Textures.SPRITE_LOCATION_DONE);
+			// }
+			batch.draw(t, location.pos.x - t.getWidth() / 2, location.pos.y - t.getHeight() / 2);
+			// System.out.println("x:" + location.pos.x + " y:" + location.pos.y);
+			// break;
 		}
 	}
 
 	private void renderEventsLinks() {
 		Set<Location> doneLocations = new HashSet<>();
-		for (Location location : game.world.area.locations) {
+		for (Location location : area.locations) {
 			// if (location.done) {
 			for (Target target : location.targets) {
 				if (doneLocations.contains(target.destination)) {
@@ -278,12 +292,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				// We need to ensure mouse is not hovering one of the locations
 				XY mouseCoords = getMapCoordinates(Gdx.input.getX(), Gdx.input.getY());
 
-				if (distance < 3 && (d1 < length) && (d2 < length) && !mouseCoords.equals(location.getCoords())
-						&& !mouseCoords.equals(target.destination.getCoords())) {
-					game.bgShapeRenderer.setColor(0, 0.5f, 0, 0);
-				}
-				game.bgShapeRenderer.rectLine(x1, y1, x2, y2, 5);
-				game.bgShapeRenderer.setColor(Color.WHITE);
+				// if (distance < 3 && (d1 < length) && (d2 < length) && !mouseCoords.equals(location.getCoords())
+				// && !mouseCoords.equals(target.destination.getCoords())) {
+				// game.shapeRenderer.setColor(0, 0.5f, 0, 0);
+				// }
+				game.shapeRenderer.rectLine(x1, y1, x2, y2, 5);
+				game.shapeRenderer.setColor(Color.WHITE);
 			}
 			doneLocations.add(location);
 		}
@@ -296,11 +310,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderMenu() {
-		game.batch.begin();
+		game.spriteBatch.begin();
 		// getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.batch, "Menu Screen - Use LEFT and RIGHT to select and ENTER to validate (press TAB to return to game)",
-				50, Gdx.graphics.getHeight() - 50);
-		game.batch.end();
+		getDefaultFont().draw(game.spriteBatch,
+				"Menu Screen - Use LEFT and RIGHT to select and ENTER to validate (press TAB to return to game)", 50,
+				Gdx.graphics.getHeight() - 50);
+		game.spriteBatch.end();
 		// menuGroup.render(game.fgShapeRenderer);
 	}
 
@@ -315,7 +330,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				contextMenu.remove();
 			}
 			XY coords = getMapCoordinates(screenX, screenY);
-			Location l = game.world.area.locationsByPos.get(coords);
+			Location l = area.locationsByPos.get(coords);
 			if (l != null) {
 				contextMenu = getContextMenu(l, screenX, screenY);
 				stage.addActor(contextMenu);
@@ -519,9 +534,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		if (amount < 0) {
-			// camera.zoom /= 1.1f;
+			camera.zoom /= 1.1f;
 		} else {
-			// camera.zoom *= 1.1f;
+			camera.zoom *= 1.1f;
 		}
 		// System.out.println(camera.zoom);
 		return true;

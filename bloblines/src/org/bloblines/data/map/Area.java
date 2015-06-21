@@ -11,6 +11,9 @@ import java.util.Set;
 
 import org.bloblines.utils.XY;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.hoten.delaunay.geom.Point;
 import com.hoten.delaunay.geom.Rectangle;
 import com.hoten.delaunay.voronoi.nodename.as3delaunay.Edge;
@@ -18,7 +21,7 @@ import com.hoten.delaunay.voronoi.nodename.as3delaunay.LineSegment;
 import com.hoten.delaunay.voronoi.nodename.as3delaunay.Voronoi;
 
 public class Area {
-	public Set<Location> locations = new HashSet<>();
+	public List<Location> locations = new ArrayList<>();
 	public Map<String, Location> locationsByName = new HashMap<>();
 	public Map<XY, Location> locationsByPos = new HashMap<>();
 
@@ -68,12 +71,19 @@ public class Area {
 	 * ************************************** New Graph Structure based on Voronoi *********************************************
 	 * ************************************************************************************************************************/
 
+	public String name;
+
 	public double width;
 	public double height;
 
 	public Set<Border> borders = new HashSet<>();
 
-	public Area(Voronoi v) {
+	public Location startLocation = null;
+
+	public Pixmap pixmap;
+
+	public Area(Voronoi v, String name) {
+		this.name = name;
 		Rectangle r = v.get_plotBounds();
 		width = r.width;
 		height = r.height;
@@ -112,14 +122,7 @@ public class Area {
 		Collections.sort(elevations);
 		Collections.reverse(elevations);
 
-		int mountainIndex = random.nextInt(locations.size());
-		Location topMountain = null;
-		for (Location location : locations) {
-			if (mountainIndex-- == 0) {
-				topMountain = location;
-				break;
-			}
-		}
+		Location topMountain = locations.get(random.nextInt(locations.size()));
 		List<Location> locationsToRise = new ArrayList<>();
 		locationsToRise.add(topMountain);
 		while (locationsToRise.size() > 0) {
@@ -170,6 +173,48 @@ public class Area {
 					b.passable = false;
 				}
 			}
+		}
+	}
+
+	public void setRandomStart(Random random) {
+		while (startLocation == null || startLocation.biome != Biome.GRASSLAND) {
+			startLocation = locations.get(random.nextInt(locations.size()));
+		}
+	}
+
+	public void buildPixmap() {
+		pixmap = new Pixmap((int) width, (int) height, Format.RGBA8888);
+		for (Location l : locations) {
+			pixmap.setColor(l.biome.getColor());
+			List<XY> corners = l.getCorners();
+			int x1 = (int) corners.get(0).x;
+			int y1 = (int) corners.get(0).y;
+
+			int x2 = (int) corners.get(1).x;
+			int y2 = (int) corners.get(1).y;
+
+			int x3 = (int) corners.get(2).x;
+			int y3 = (int) corners.get(2).y;
+
+			pixmap.fillTriangle(x1, y1, x2, y2, x3, y3);
+
+			for (int i = 3; i < corners.size(); i++) {
+				x2 = x3;
+				y2 = y3;
+				x3 = (int) corners.get(i).x;
+				y3 = (int) corners.get(i).y;
+				pixmap.fillTriangle(x1, y1, x2, y2, x3, y3);
+			}
+
+			pixmap.setColor(Color.RED);
+			for (Border border : borders) {
+				pixmap.drawLine((int) border.leftCorner.x, (int) border.leftCorner.y, (int) border.rightCorner.x,
+						(int) border.rightCorner.y);
+			}
+
+			pixmap.setColor(Color.BLACK);
+			pixmap.fillCircle((int) l.pos.x, (int) l.pos.y, 10);
+
 		}
 	}
 }

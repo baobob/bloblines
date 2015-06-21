@@ -14,7 +14,7 @@ public class MapGeneratorTest {
 
 	public static void main(String[] args) throws IOException {
 		MapGenerator generator = new MapGenerator(SEED, WIDTH, HEIGHT, EVENTS);
-		Area a = generator.generate();
+		Area a = generator.generate("Map #" + SEED);
 		generator.show(a);
 	}
 }

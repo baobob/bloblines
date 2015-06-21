@@ -23,9 +23,9 @@ public class Location {
 	public String description;
 	public XY pos;
 
-	public XY getCoords() {
-		return new XY(pos.x / 16, pos.y / 16);
-	}
+	// public XY getCoords() {
+	// return new XY(pos.x / 16, pos.y / 16);
+	// }
 
 	@Override
 	public int hashCode() {

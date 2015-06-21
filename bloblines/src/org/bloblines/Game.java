@@ -2,44 +2,43 @@ package org.bloblines;
 
 import org.bloblines.data.game.Player;
 import org.bloblines.data.map.Action;
+import org.bloblines.data.map.World;
 import org.bloblines.ui.BlobMenu;
 import org.bloblines.ui.battle.BlobBattle;
 import org.bloblines.ui.manage.BlobStats;
-import org.bloblines.ui.map.BlobOverworld;
 import org.bloblines.utils.Assets;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 public class Game extends com.badlogic.gdx.Game {
 
-	public SpriteBatch batch;
+	public SpriteBatch spriteBatch;
 
 	public static Assets assets;
 
 	public Player player;
 
-	public BlobOverworld world;
+	public World world;
 
-	public ShapeRenderer bgShapeRenderer;
+	public ShapeRenderer shapeRenderer;
 
 	@Override
 	public void create() {
-		bgShapeRenderer = new ShapeRenderer();
+		shapeRenderer = new ShapeRenderer();
 
 		// Force assets loading. We can do something with a pretty progress bar when it gets too long.
 		Game.assets = new Assets();
 		Game.assets.finishLoading();
 		Game.assets.postLoad();
 
-		batch = new SpriteBatch();
+		spriteBatch = new SpriteBatch();
 		this.setScreen(new BlobMenu(this));
 	}
 
 	public void start(String playerName) {
-		world = new BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
-		player = new Player(playerName, world.area.locationsByName.get("Start"));
+		world = new World(); // BlobOverworld(new TmxMapLoader().load("world/world1.tmx"));
+		player = new Player(playerName, world.startArea, world.startArea.startLocation);
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class Game extends com.badlogic.gdx.Game {
 	@Override
 	public void dispose() {
 		Game.assets.dispose();
-		batch.dispose();
+		spriteBatch.dispose();
 	}
 
 	public void launchAction(Action action) {

@@ -12,6 +12,7 @@ public class Player {
 	public List<Blob> blobs;
 	public Location location;
 	public XY pos;
+	public String area;
 
 	public Player(String playerName, Location startPos) {
 		name = playerName;

@@ -43,7 +43,7 @@ public class BlobOverworld {
 			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
 			location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
 
-			area.addLocation(location);
+			area.addLocationDeprecated(location);
 		}
 
 		initLocationLinks(map);

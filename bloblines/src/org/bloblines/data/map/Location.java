@@ -1,6 +1,10 @@
 package org.bloblines.data.map;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bloblines.utils.XY;
@@ -46,6 +50,61 @@ public class Location {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	/***************************************************************************************************************************
+	 * ************************************** New Graph Structure based on Voronoi *********************************************
+	 * ************************************************************************************************************************/
+
+	public Set<Border> borders = new HashSet<Border>();
+	public Map<Border, Location> neighbors = new HashMap<>();
+
+	/** Elevation between 1 and 100. 0 is not initialized */
+	public int elevation = 0;
+	public boolean reachable = true;
+
+	public Biome biome = null;
+
+	/** corners of the Location zone. Use method to initialize AFTER we get all borders */
+	private List<XY> corners = null;
+
+	public void addBorder(Border b) {
+		borders.add(b);
+		if (b.left.equals(this)) {
+			neighbors.put(b, b.right);
+		} else {
+			neighbors.put(b, b.left);
+		}
+	}
+
+	public List<XY> getCorners() {
+		if (corners == null) {
+			corners = new ArrayList<>();
+			List<Border> unorderedBorders = new ArrayList<>(borders);
+			while (unorderedBorders.size() > 0) {
+				Border b = unorderedBorders.remove(0);
+				if (corners.size() == 0) {
+					corners.add(b.leftCorner);
+					corners.add(b.rightCorner);
+				} else if (b.leftCorner.equals(corners.get(corners.size() - 1))) {
+					corners.add(b.rightCorner);
+				} else if (b.rightCorner.equals(corners.get(corners.size() - 1))) {
+					corners.add(b.leftCorner);
+				} else if (b.leftCorner.equals(corners.get(0))) {
+					corners.add(0, b.rightCorner);
+				} else if (b.rightCorner.equals(corners.get(0))) {
+					corners.add(0, b.leftCorner);
+				} else {
+					unorderedBorders.add(b);
+				}
+			}
+		}
+		return corners;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 
 }

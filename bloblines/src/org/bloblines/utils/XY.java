@@ -1,5 +1,7 @@
 package org.bloblines.utils;
 
+import com.hoten.delaunay.geom.Point;
+
 public class XY {
 
 	public float x;
@@ -13,6 +15,11 @@ public class XY {
 	public XY(XY xy) {
 		this.x = xy.x;
 		this.y = xy.y;
+	}
+
+	public XY(Point p) {
+		this.x = (float) p.x;
+		this.y = (float) p.y;
 	}
 
 	@Override

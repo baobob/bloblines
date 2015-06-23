@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
@@ -29,8 +30,8 @@ public class UiPlayer {
 	private int moving = 0x0000;
 	private int currentAnimation = MOVE_DOWN;
 
-	public static int HEIGHT = 16;
-	public static int WIDTH = 16;
+	public static int HEIGHT = 64;
+	public static int WIDTH = 64;
 
 	public UiPlayer(Player p) {
 		player = p;
@@ -108,6 +109,11 @@ public class UiPlayer {
 	}
 
 	public XY getCenter() {
-		return new XY(player.pos.x + WIDTH / 2, player.pos.y + HEIGHT / 2);
+		return new XY(player.pos.x - WIDTH / 2, player.pos.y - HEIGHT / 2);
+	}
+
+	public void render(SpriteBatch batch) {
+		TextureRegion frame = getAnimation();
+		batch.draw(frame, player.pos.x - WIDTH / 2, player.pos.y - HEIGHT / 4, UiPlayer.WIDTH, UiPlayer.HEIGHT);
 	}
 }

@@ -20,8 +20,9 @@ public class Assets extends AssetManager {
 		SPLASH_SCREEN("img/hourglass.png"), 
 		BATTLE_SCREEN("img/battle.jpg"), 
 		
-		SPRITE_LOCATION("characters/spot.png"), 
+		SPRITE_LOCATION("characters/location.png"), 
 		SPRITE_LOCATION_DONE("characters/spot_done.png"), 
+		SPRITE_PATH("characters/path.png"), 
 		
 		ICON_BOOK("icons/book.png"), 
 		ICON_LOCATION("icons/map.png"), 

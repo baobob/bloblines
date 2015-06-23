@@ -1,12 +1,14 @@
 package org.bloblines.ui.map;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bloblines.Game;
 import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Area;
+import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
@@ -25,7 +27,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -186,8 +187,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 		game.spriteBatch.begin();
 		mapSprite.draw(game.spriteBatch);
-		renderEvents(game.spriteBatch);
-		renderPlayer(game.spriteBatch);
+		renderEventsLinks(game.spriteBatch);
+		renderLocations(game.spriteBatch);
+		uiPlayer.render(game.spriteBatch);
 		game.spriteBatch.end();
 
 		// if (currentState != State.MAP) {
@@ -244,30 +246,39 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		camera.update();
 	}
 
-	private void renderEvents(SpriteBatch batch) {
+	private void renderLocations(SpriteBatch batch) {
 		for (Location location : area.locations) {
+			if (!location.reachable) {
+				continue;
+			}
 			Texture t = getTexture(Textures.SPRITE_LOCATION);
 			// if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
 			// t = getTexture(Textures.SPRITE_LOCATION_DONE);
 			// }
-			batch.draw(t, location.pos.x - t.getWidth() / 2, location.pos.y - t.getHeight() / 2);
+			int width = 64;
+			int height = width * t.getHeight() / t.getWidth();
+			batch.draw(t, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
 			// System.out.println("x:" + location.pos.x + " y:" + location.pos.y);
 			// break;
 		}
 	}
 
-	private void renderEventsLinks() {
+	private void renderEventsLinks(SpriteBatch batch) {
 		Set<Location> doneLocations = new HashSet<>();
 		for (Location location : area.locations) {
 			// if (location.done) {
-			for (Target target : location.targets) {
-				if (doneLocations.contains(target.destination)) {
+			for (Entry<Border, Location> e : location.neighbors.entrySet()) {
+				if (doneLocations.contains(e.getValue())) {
 					continue;
 				}
-				float x1 = location.pos.x + 8;
-				float y1 = location.pos.y + 8;
-				float x2 = target.destination.pos.x + 8;
-				float y2 = target.destination.pos.y + 8;
+				if (!e.getKey().passable) {
+					doneLocations.add(e.getValue());
+					continue;
+				}
+				float x1 = location.pos.x;
+				float y1 = location.pos.y;
+				float x2 = e.getValue().pos.x;
+				float y2 = e.getValue().pos.y;
 
 				// Compute distance between mouse cursor and link
 				// Link equation
@@ -296,17 +307,22 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				// && !mouseCoords.equals(target.destination.getCoords())) {
 				// game.shapeRenderer.setColor(0, 0.5f, 0, 0);
 				// }
-				game.shapeRenderer.rectLine(x1, y1, x2, y2, 5);
-				game.shapeRenderer.setColor(Color.WHITE);
+
+				Texture t = getTexture(Textures.SPRITE_PATH);
+				float m = (y2 - y1) / (x2 - x1);
+				if (x1 <= x2) {
+					batch.draw(t, x1, y1, 0, 0, (float) length, 20, 1, 1, (float) Math.toDegrees(Math.atan(m)), 0, 0, t.getWidth(),
+							t.getHeight(), false, false);
+				} else {
+					batch.draw(t, x2, y2, 0, 0, (float) length, 20, 1, 1, (float) Math.toDegrees(Math.atan(m)), 0, 0, t.getWidth(),
+							t.getHeight(), false, false);
+				}
+
+				// game.shapeRenderer.rectLine(x1, y1, x2, y2, 5);
+				// game.shapeRenderer.setColor(Color.WHITE);
 			}
 			doneLocations.add(location);
 		}
-	}
-
-	private void renderPlayer(SpriteBatch batch) {
-		TextureRegion frame = uiPlayer.getAnimation();
-		batch.draw(frame, uiPlayer.getPos().x, uiPlayer.getPos().y, 16, 16);
-
 	}
 
 	private void renderMenu() {

@@ -206,14 +206,15 @@ public class Area {
 				pixmap.fillTriangle(x1, y1, x2, y2, x3, y3);
 			}
 
-			pixmap.setColor(Color.RED);
+			pixmap.setColor(Color.BLACK);
 			for (Border border : borders) {
+				// TODO : use 2 triangles to create a thick line
 				pixmap.drawLine((int) border.leftCorner.x, (int) border.leftCorner.y, (int) border.rightCorner.x,
 						(int) border.rightCorner.y);
 			}
 
-			pixmap.setColor(Color.BLACK);
-			pixmap.fillCircle((int) l.pos.x, (int) l.pos.y, 10);
+			// pixmap.setColor(Color.BLACK);
+			// pixmap.fillCircle((int) l.pos.x, (int) l.pos.y, 10);
 
 		}
 	}

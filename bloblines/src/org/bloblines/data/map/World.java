@@ -15,7 +15,7 @@ public class World {
 	private static final long SEED = 38;
 	private static final int WIDTH = 4096;
 	private static final int HEIGHT = 3072;
-	private static final int EVENTS = 100;
+	private static final int EVENTS = 200;
 
 	public Map<String, Area> areas = new HashMap<>();
 

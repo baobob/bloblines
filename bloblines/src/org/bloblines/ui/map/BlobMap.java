@@ -1,6 +1,8 @@
 package org.bloblines.ui.map;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -27,6 +29,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -172,8 +175,23 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			mouseOverLocation = true;
 		}
 
-		renderBackground();
-		renderForeground();
+		game.spriteBatch.setProjectionMatrix(camera.combined);
+		game.spriteBatch.begin();
+		mapSprite.draw(game.spriteBatch);
+		renderPaths(game.spriteBatch);
+		renderLocations(game.spriteBatch);
+		uiPlayer.render(game.spriteBatch);
+
+		if (showDebugPanel) {
+			// TODO : Use a Scene2D Window instead of game batch
+			// getDefaultFont().setScale(1f);
+			debugHeight = Gdx.graphics.getHeight() - 40;
+			debug("camera position: " + camera.position.x + "/" + camera.position.y);
+			debug("camera zoom: " + camera.zoom);
+			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
+		}
+
+		game.spriteBatch.end();
 
 		// Render UI (dialogs / buttons / etc)
 		stage.act(delta);
@@ -209,56 +227,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		return closestLocation;
 	}
 
-	private void renderBackground() {
-		// game.shapeRenderer.setProjectionMatrix(camera.combined);
-		// game.shapeRenderer.begin(ShapeType.Filled);
-		// // Render base Map
-		// // for ()
-		// game.shapeRenderer.setColor(1, 1, 1, 1);
-		// // renderEventsLinks();
-		// game.shapeRenderer.end();
-
-		// Render player / events / moving stuff
-		// SpriteBatch batch = (SpriteBatch) game.world.renderer.getBatch();
-		game.spriteBatch.setProjectionMatrix(camera.combined);
-		game.spriteBatch.begin();
-		mapSprite.draw(game.spriteBatch);
-		renderEventsLinks(game.spriteBatch);
-		renderLocations(game.spriteBatch);
-		uiPlayer.render(game.spriteBatch);
-		game.spriteBatch.end();
-
-		// if (currentState != State.MAP) {
-		// Gdx.gl.glEnable(GL20.GL_BLEND);
-		// Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		// game.bgShapeRenderer.begin(ShapeType.Filled);
-		// game.bgShapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.7f);
-		// game.bgShapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		// game.bgShapeRenderer.end();
-		// Gdx.gl.glDisable(GL20.GL_BLEND);
-	}
-
-	private void renderForeground() {
-		if (showDebugPanel) {
-			// TODO : Use a Scene2D Window instead of game batch
-			game.spriteBatch.begin();
-			// getDefaultFont().setScale(1f);
-			debugHeight = Gdx.graphics.getHeight() - 40;
-			debug("camera position: " + camera.position);
-			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
-			debug("map coords: " + getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()));
-			game.spriteBatch.end();
-		}
-		// }
-		// if (currentState == State.ACTION) {
-		// renderMenu();
-		// } else if (currentState == State.HELP) {
-		// renderHelp();
-		// }
-	}
-
 	private void debug(String message) {
-		getDefaultFont().draw(game.spriteBatch, message, 50, debugHeight);
+		Vector3 debugPos = camera.unproject(new Vector3(50, debugHeight, 0));
+		getDefaultFont().draw(game.spriteBatch, message, debugPos.x, debugPos.y);
 		debugHeight -= 30;
 	}
 
@@ -268,15 +239,20 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void updateCamera() {
-		double width = area.width;
-		double height = area.height;
-		// TODO : DO NOT USE MAGIC NUMBER FOR MAP BOUNDS
-		// if (width + moveMapX > 0 && view.x + view.width + moveMapX < 480) {
+		int w2 = Gdx.graphics.getWidth() / 2;
+		int h2 = Gdx.graphics.getHeight() / 2;
 		camera.position.x += moveMapX;
-		// }
-		// if (view.y + moveMapY > 0 && view.y + view.height + moveMapY < 480) {
+		if (camera.position.x - w2 <= 0) {
+			camera.position.x = w2;
+		} else if (camera.position.x + w2 >= area.width) {
+			camera.position.x = (float) (area.width - w2);
+		}
 		camera.position.y += moveMapY;
-		// }
+		if (camera.position.y - h2 <= 0) {
+			camera.position.y = h2;
+		} else if (camera.position.y + h2 >= area.height) {
+			camera.position.y = (float) (area.height - h2);
+		}
 		moveMapX = 0;
 		moveMapY = 0;
 		camera.update();
@@ -305,19 +281,18 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		}
 	}
 
-	private void renderEventsLinks(SpriteBatch batch) {
-		Texture t = getTexture(Textures.SPRITE_PATH);
-		// Texture textureSelected = getTexture(Textures.SPRITE_PATH_SELECTED);
+	private void renderPaths(SpriteBatch batch) {
+		Texture texture = getTexture(Textures.SPRITE_PATH);
+		Texture textureSelected = getTexture(Textures.SPRITE_PATH_SELECTED);
 
-		Set<Location> doneLocations = new HashSet<>();
+		Map<Location, Set<Location>> doneLocations = new HashMap<>();
 		for (Location location : area.locations) {
 			// if (location.done) {
 			for (Entry<Border, Location> e : location.neighbors.entrySet()) {
-				if (doneLocations.contains(e.getValue())) {
+				if (!e.getKey().isPassable()) {
 					continue;
 				}
-				if (!e.getKey().passable) {
-					doneLocations.add(e.getValue());
+				if (doneLocations.get(location) != null && doneLocations.get(location).contains((e.getValue()))) {
 					continue;
 				}
 				float x1 = location.pos.x;
@@ -345,27 +320,42 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				double d1 = Math.sqrt((x1 - xm) * (x1 - xm) + (y1 - ym) * (y1 - ym));
 				double d2 = Math.sqrt((x2 - xm) * (x2 - xm) + (y2 - ym) * (y2 - ym));
 
-				// We need to ensure mouse is not hovering one of the locations
-				XY mouseCoords = new XY(xm, ym);
-
-				// Texture t = texture;
-				// if (distance < 10 && (d1 < length) && (d2 < length)) {
-				// t = textureSelected;
-				// }
+				Texture t = texture;
+				if (distance < 10 && (d1 < length) && (d2 < length) && !mouseOverLocation) {
+					t = textureSelected;
+				}
 
 				float m = (y2 - y1) / (x2 - x1);
-				if (x1 <= x2) {
-					batch.draw(t, x1, y1, 0, 0, (float) length, 20, 1, 1, (float) Math.toDegrees(Math.atan(m)), 0, 0, t.getWidth(),
-							t.getHeight(), false, false);
-				} else {
-					batch.draw(t, x2, y2, 0, 0, (float) length, 20, 1, 1, (float) Math.toDegrees(Math.atan(m)), 0, 0, t.getWidth(),
-							t.getHeight(), false, false);
+				float angle = (float) Math.toDegrees(Math.atan(m));
+
+				Vector2 centerVector = new Vector2(0, -10);
+				centerVector = centerVector.rotate(angle);
+				float x = x1;
+				float y = y1;
+				if (x2 < x1) {
+					x = x2;
+					y = y2;
 				}
+				x += centerVector.x;
+				y += centerVector.y;
+
+				// if (x1 <= x2) {
+				batch.draw(t, x, y, 0, 0, (float) length, 20, 1, 1, angle, 0, 0, t.getWidth(), t.getHeight(), false, false);
+				// } else {
+				// batch.draw(t, x2, y2, 0, 0, (float) length, 20, 1, 1, angle, 0, 0, t.getWidth(), t.getHeight(), false, false);
+				// }
 
 				// game.shapeRenderer.rectLine(x1, y1, x2, y2, 5);
 				// game.shapeRenderer.setColor(Color.WHITE);
+				if (doneLocations.get(location) == null) {
+					doneLocations.put(location, new HashSet<Location>());
+				}
+				if (doneLocations.get(e.getValue()) == null) {
+					doneLocations.put(e.getValue(), new HashSet<Location>());
+				}
+				doneLocations.get(location).add(e.getValue());
+				doneLocations.get(e.getValue()).add(location);
 			}
-			doneLocations.add(location);
 		}
 	}
 
@@ -577,8 +567,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if (moveMap) {
 			if (prevMouseX > 0 && prevMouseY > 0) {
-				moveMapX += (prevMouseX - screenX) / 2;
-				moveMapY += (screenY - prevMouseY) / 2;
+				moveMapX += (prevMouseX - screenX) * camera.zoom / 2;
+				moveMapY += (screenY - prevMouseY) * camera.zoom / 2;
 				if (contextMenu != null) {
 					contextMenu.remove();
 				}

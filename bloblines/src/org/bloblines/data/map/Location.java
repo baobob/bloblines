@@ -64,6 +64,7 @@ public class Location {
 	public boolean reachable = true;
 
 	public Biome biome = null;
+	public int passablePaths = 0;
 
 	/** corners of the Location zone. Use method to initialize AFTER we get all borders */
 	private List<XY> corners = null;
@@ -74,6 +75,9 @@ public class Location {
 			neighbors.put(b, b.right);
 		} else {
 			neighbors.put(b, b.left);
+		}
+		if (b.isPassable()) {
+			passablePaths++;
 		}
 	}
 

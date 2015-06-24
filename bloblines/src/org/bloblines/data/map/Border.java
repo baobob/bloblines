@@ -9,7 +9,7 @@ import org.bloblines.utils.XY;
  */
 public class Border {
 
-	public boolean passable = true;
+	private boolean passable = true;
 
 	public Location left;
 	public Location right;
@@ -24,6 +24,27 @@ public class Border {
 		this.right = right;
 		this.leftCorner = leftCorner;
 		this.rightCorner = rightCorner;
+	}
+
+	public Location other(Location l) {
+		if (l.equals(left)) {
+			return right;
+		} else if (l.equals(right)) {
+			return left;
+		}
+		return null;
+	}
+
+	public void notPassable() {
+		if (passable) {
+			passable = false;
+			left.passablePaths--;
+			right.passablePaths--;
+		}
+	}
+
+	public boolean isPassable() {
+		return passable;
 	}
 
 	@Override

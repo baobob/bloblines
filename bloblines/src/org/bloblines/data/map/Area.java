@@ -165,13 +165,28 @@ public class Area {
 		}
 	}
 
-	public void setRoads() {
+	public void setRoads(Random random) {
 		for (Location l : locations) {
 			if (l.biome == Biome.OCEAN || l.biome == Biome.MOUNTAIN) {
 				l.reachable = false;
 				for (Border b : l.borders) {
-					b.passable = false;
+					b.notPassable();
 				}
+			}
+		}
+		for (Location l : locations) {
+			if (l.passablePaths == 0) {
+				continue;
+			}
+			// We will randomly remove some roads
+			int roadsToRemove = random.nextInt(l.passablePaths);
+			List<Border> borders = new ArrayList<>(l.borders);
+			while (roadsToRemove > 0) {
+				Border randomBorder = borders.get(random.nextInt(borders.size()));
+				if (l.passablePaths > 1 && randomBorder.other(l).passablePaths > 1) {
+					randomBorder.notPassable();
+				}
+				roadsToRemove--;
 			}
 		}
 	}

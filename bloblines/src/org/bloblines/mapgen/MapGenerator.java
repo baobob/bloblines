@@ -64,7 +64,7 @@ public class MapGenerator {
 		Area area = new Area(voronoi, name);
 		area.riseMountains(random);
 		area.setBiomes(SEA_LEVEL);
-		area.setRoads();
+		area.setRoads(random);
 		return area;
 	}
 
@@ -93,7 +93,7 @@ public class MapGenerator {
 
 		graphics.setColor(Color.BLACK);
 		for (Border border : area.borders) {
-			if (border.passable) {
+			if (border.isPassable()) {
 				graphics.drawLine((int) border.left.pos.x, (int) border.left.pos.y, (int) border.right.pos.x, (int) border.right.pos.y);
 			}
 		}

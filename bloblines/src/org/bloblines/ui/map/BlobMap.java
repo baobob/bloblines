@@ -55,6 +55,9 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	/** Current area */
 	private Area area;
 
+	private Location mouseClosestLocation;
+	private boolean mouseOverLocation;
+
 	/** Current context menu */
 	private Window contextMenu = null;
 
@@ -163,6 +166,12 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		updatePlayer(delta);
 		updateCamera();
 
+		mouseOverLocation = false;
+		mouseClosestLocation = closestLocation();
+		if (getMousePos().distance(mouseClosestLocation.pos) < 32) {
+			mouseOverLocation = true;
+		}
+
 		renderBackground();
 		renderForeground();
 
@@ -171,6 +180,33 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 		stage.draw();
 
 		// System.out.println("camera position: " + camera.position);
+	}
+
+	private XY getMousePos() {
+		Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+		float xm = mousePos.x;
+		float ym = mousePos.y;
+		return new XY(xm, ym);
+	}
+
+	private Location closestLocation() {
+		XY mouse = getMousePos();
+		Location closestLocation = area.locations.get(0);
+		double d = mouse.distance(closestLocation.pos);
+		boolean changed = true;
+		while (changed) {
+			changed = false;
+			for (Location l : closestLocation.neighbors.values()) {
+				double distance = mouse.distance(l.pos);
+				if (distance < d) {
+					d = distance;
+					closestLocation = l;
+					changed = true;
+					break;
+				}
+			}
+		}
+		return closestLocation;
 	}
 
 	private void renderBackground() {
@@ -247,23 +283,32 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderLocations(SpriteBatch batch) {
+		Texture texture = getTexture(Textures.SPRITE_LOCATION);
+		Texture textureSelected = getTexture(Textures.SPRITE_LOCATION_SELECTED);
 		for (Location location : area.locations) {
 			if (!location.reachable) {
 				continue;
 			}
-			Texture t = getTexture(Textures.SPRITE_LOCATION);
 			// if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
 			// t = getTexture(Textures.SPRITE_LOCATION_DONE);
 			// }
 			int width = 64;
-			int height = width * t.getHeight() / t.getWidth();
-			batch.draw(t, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
+			int height = width * texture.getHeight() / texture.getWidth();
+
+			if (location.equals(mouseClosestLocation) && mouseOverLocation) {
+				batch.draw(texture, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
+			} else {
+				batch.draw(textureSelected, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
+			}
 			// System.out.println("x:" + location.pos.x + " y:" + location.pos.y);
 			// break;
 		}
 	}
 
 	private void renderEventsLinks(SpriteBatch batch) {
+		Texture t = getTexture(Textures.SPRITE_PATH);
+		// Texture textureSelected = getTexture(Textures.SPRITE_PATH_SELECTED);
+
 		Set<Location> doneLocations = new HashSet<>();
 		for (Location location : area.locations) {
 			// if (location.done) {
@@ -301,14 +346,13 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 				double d2 = Math.sqrt((x2 - xm) * (x2 - xm) + (y2 - ym) * (y2 - ym));
 
 				// We need to ensure mouse is not hovering one of the locations
-				XY mouseCoords = getMapCoordinates(Gdx.input.getX(), Gdx.input.getY());
+				XY mouseCoords = new XY(xm, ym);
 
-				// if (distance < 3 && (d1 < length) && (d2 < length) && !mouseCoords.equals(location.getCoords())
-				// && !mouseCoords.equals(target.destination.getCoords())) {
-				// game.shapeRenderer.setColor(0, 0.5f, 0, 0);
+				// Texture t = texture;
+				// if (distance < 10 && (d1 < length) && (d2 < length)) {
+				// t = textureSelected;
 				// }
 
-				Texture t = getTexture(Textures.SPRITE_PATH);
 				float m = (y2 - y1) / (x2 - x1);
 				if (x1 <= x2) {
 					batch.draw(t, x1, y1, 0, 0, (float) length, 20, 1, 1, (float) Math.toDegrees(Math.atan(m)), 0, 0, t.getWidth(),
@@ -345,10 +389,8 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			if (contextMenu != null) {
 				contextMenu.remove();
 			}
-			XY coords = getMapCoordinates(screenX, screenY);
-			Location l = area.locationsByPos.get(coords);
-			if (l != null) {
-				contextMenu = getContextMenu(l, screenX, screenY);
+			if (mouseOverLocation) {
+				contextMenu = getContextMenu(mouseClosestLocation, screenX, screenY);
 				stage.addActor(contextMenu);
 			}
 		}

@@ -22,6 +22,10 @@ public class XY {
 		this.y = (float) p.y;
 	}
 
+	public double distance(XY other) {
+		return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
+	}
+
 	@Override
 	public String toString() {
 		return x + "/" + y;

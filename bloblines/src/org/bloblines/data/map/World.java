@@ -12,7 +12,7 @@ import org.bloblines.mapgen.MapGenerator;
 public class World {
 
 	/** Test purposes values */
-	private static final long SEED = 38;
+	private static final long SEED = 57;
 	private static final int WIDTH = 4096;
 	private static final int HEIGHT = 3072;
 	private static final int EVENTS = 200;

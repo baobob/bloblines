@@ -21,8 +21,10 @@ public class Assets extends AssetManager {
 		BATTLE_SCREEN("img/battle.jpg"), 
 		
 		SPRITE_LOCATION("characters/location.png"), 
+		SPRITE_LOCATION_SELECTED("characters/location_selected.png"), 
 		SPRITE_LOCATION_DONE("characters/spot_done.png"), 
 		SPRITE_PATH("characters/path.png"), 
+		SPRITE_PATH_SELECTED("characters/path_selected.png"), 
 		
 		ICON_BOOK("icons/book.png"), 
 		ICON_LOCATION("icons/map.png"), 

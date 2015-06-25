@@ -197,6 +197,27 @@ public class Area {
 		}
 	}
 
+	public void addQuests(Random random) {
+		for (Location l : locations) {
+			Action a = new Action(ActionType.FIGHT, "Random encouter - " + l.biome);
+			l.actions.add(a);
+			if (random.nextInt(5) == 0) {
+				Action shopAction = new Action(ActionType.SHOP, "Enter Shop");
+				l.actions.add(shopAction);
+			}
+			if (random.nextInt(5) == 0) {
+				String npc = "farmer";
+				if (l.biome == Biome.BEACH) {
+					npc = "surfer";
+				} else if (l.biome == Biome.HILL) {
+					npc = "dwarf";
+				}
+				Action npcAction = new Action(ActionType.SPEAK_TO_NPC, "Talk to travelling " + npc);
+				l.actions.add(npcAction);
+			}
+		}
+	}
+
 	public void buildPixmap() {
 		pixmap = new Pixmap((int) width, (int) height, Format.RGBA8888);
 		for (Location l : locations) {

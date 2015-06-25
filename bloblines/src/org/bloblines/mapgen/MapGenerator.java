@@ -65,6 +65,7 @@ public class MapGenerator {
 		area.riseMountains(random);
 		area.setBiomes(SEA_LEVEL);
 		area.setRoads(random);
+		area.addQuests(random);
 		return area;
 	}
 

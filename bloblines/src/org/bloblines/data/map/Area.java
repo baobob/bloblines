@@ -169,7 +169,7 @@ public class Area {
 		for (Location l : locations) {
 			if (l.biome == Biome.OCEAN || l.biome == Biome.MOUNTAIN) {
 				l.reachable = false;
-				for (Border b : l.borders) {
+				for (Border b : l.borders.values()) {
 					b.notPassable();
 				}
 			}
@@ -180,7 +180,7 @@ public class Area {
 			}
 			// We will randomly remove some roads
 			int roadsToRemove = random.nextInt(l.passablePaths);
-			List<Border> borders = new ArrayList<>(l.borders);
+			List<Border> borders = new ArrayList<>(l.borders.values());
 			while (roadsToRemove > 0) {
 				Border randomBorder = borders.get(random.nextInt(borders.size()));
 				if (l.passablePaths > 1 && randomBorder.other(l).passablePaths > 1) {

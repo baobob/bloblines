@@ -56,8 +56,9 @@ public class Location {
 	 * ************************************** New Graph Structure based on Voronoi *********************************************
 	 * ************************************************************************************************************************/
 
-	public Set<Border> borders = new HashSet<Border>();
+	// public Set<Border> borders = new HashSet<Border>();
 	public Map<Border, Location> neighbors = new HashMap<>();
+	public Map<Location, Border> borders = new HashMap<>();
 
 	/** Elevation between 1 and 100. 0 is not initialized */
 	public int elevation = 0;
@@ -70,11 +71,12 @@ public class Location {
 	private List<XY> corners = null;
 
 	public void addBorder(Border b) {
-		borders.add(b);
 		if (b.left.equals(this)) {
 			neighbors.put(b, b.right);
+			borders.put(b.right, b);
 		} else {
 			neighbors.put(b, b.left);
+			borders.put(b.left, b);
 		}
 		if (b.isPassable()) {
 			passablePaths++;
@@ -84,7 +86,7 @@ public class Location {
 	public List<XY> getCorners() {
 		if (corners == null) {
 			corners = new ArrayList<>();
-			List<Border> unorderedBorders = new ArrayList<>(borders);
+			List<Border> unorderedBorders = new ArrayList<>(borders.values());
 			while (unorderedBorders.size() > 0) {
 				Border b = unorderedBorders.remove(0);
 				if (corners.size() == 0) {

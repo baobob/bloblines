@@ -12,7 +12,6 @@ import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
-import org.bloblines.data.map.Target;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
@@ -189,6 +188,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			debug("camera position: " + camera.position.x + "/" + camera.position.y);
 			debug("camera zoom: " + camera.zoom);
 			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
+			debug((int) (1.0f / delta) + " FPS");
 		}
 
 		game.spriteBatch.end();
@@ -405,12 +405,10 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			menu.add(info).width(150).padBottom(10);
 			menu.row();
 
-			for (Target t : location.targets) {
-				if (t.destination.pos.equals(uiPlayer.getPos())) {
-					MenuLabel move = new TravelMenu(location);
-					menu.add(move).width(150).padBottom(10);
-					menu.row();
-				}
+			if (location.neighbors.values().contains(game.player.location) && game.player.location.borders.get(location).isPassable()) {
+				MenuLabel move = new TravelMenu(location);
+				menu.add(move).width(150).padBottom(10);
+				menu.row();
 			}
 
 		}

@@ -3,6 +3,7 @@ package org.bloblines.ui.battle;
 import org.bloblines.Game;
 import org.bloblines.data.battle.Battle;
 import org.bloblines.data.battle.Environment;
+import org.bloblines.data.battle.Log;
 import org.bloblines.data.battle.Party;
 import org.bloblines.data.game.Monster;
 import org.bloblines.data.map.Action;
@@ -16,31 +17,45 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BlobBattle extends BlobScreen {
 
 	public Action action;
 
-	private Stage stage;
-
 	private OrthographicCamera camera;
 
 	private TextButton btnBack;
+
+	private Battle battle;
 
 	public BlobBattle(Game b, Action action) {
 		super(b);
 		this.action = action;
 
-		Battle battle = doBattle();
+		battle = doBattle();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1024, 768);
 
-		stage = new Stage(new ScreenViewport(camera));
+		Table logTable = new Table();
+		for (Log log : battle.logs) {
+			logTable.add(new Label(log.message, getDefaultSkin()));
+			logTable.row();
+		}
+
+		ScrollPane scrollPane = new ScrollPane(logTable, getDefaultSkin());
+		Table scrollContainer = new Table();
+		scrollContainer.setWidth(800);
+		scrollContainer.setHeight(400);
+		scrollContainer.setX((Gdx.graphics.getWidth() - scrollContainer.getWidth()) / 2);
+		scrollContainer.add(scrollPane).fill().expand();
+		stage.addActor(scrollContainer);
+
 		btnBack = new TextButton("Back to Map", getDefaultSkin(), "default");
 		btnBack.setBounds(600, 550, 200, 25);
 		stage.addActor(btnBack);
@@ -53,6 +68,7 @@ public class BlobBattle extends BlobScreen {
 
 		InputMultiplexer inputs = new InputMultiplexer(stage, this);
 		Gdx.input.setInputProcessor(inputs);
+		stage.setScrollFocus(scrollPane);
 
 	}
 
@@ -87,8 +103,8 @@ public class BlobBattle extends BlobScreen {
 		// getDefaultFont().setScale(3);
 		getBiggerFont().draw(game.spriteBatch, "Fight !", 50, Gdx.graphics.getHeight() - 50);
 		// getDefaultFont().setScale(1);
-		getDefaultFont().draw(game.spriteBatch, "You fight for your life. Or fortune. Or glory. Or something else, probably worthless. ", 80,
-				Gdx.graphics.getHeight() - 120);
+		getDefaultFont().draw(game.spriteBatch, "You fight for your life. Or fortune. Or glory. Or something else, probably worthless. ",
+				80, Gdx.graphics.getHeight() - 120);
 		game.spriteBatch.end();
 
 		stage.act(delta);
@@ -102,7 +118,7 @@ public class BlobBattle extends BlobScreen {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Keys.ENTER) {
+		if (keycode == Keys.ENTER || keycode == Keys.ESCAPE) {
 			backToMap();
 			return true;
 		}

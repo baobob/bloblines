@@ -1,7 +1,12 @@
 package org.bloblines.data.battle;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import org.bloblines.data.battle.Character.Attributes;
+import org.bloblines.data.battle.Log.Type;
 
 /**
  * A battle is a fight between 2 parties. Usually, the player party and a group of enemy. Battle system should work with 2 Non playable
@@ -93,20 +98,24 @@ public class Battle {
 	 * @param rounds
 	 */
 	public void process(int rounds) {
+		logs.add(new Log(Type.INFO, "Start of Battle"));
 		// TODO battle passive effects
 
 		// Process turns
 		for (int i = 1; i <= rounds; i++) {
 			// TODO turn effects
+			logs.add(new Log(Type.INFO, "Round " + i));
 
 			Character character = getNextCharacter(true);
 			while (character != null) {
+				logs.add(new Log(Type.INFO, "Next character: " + character.name));
 				// for each character
 				// TODO onCharacter effect
 
 				Skill skill = character.getFirstSkill();
 				// TODO use skill
-
+				logs.add(new Log(Type.INFO, character.name + " uses skill " + skill.name));
+				character.firstSkillDone = true;
 				// TODO postCharacter effect
 				character = getNextCharacter(true);
 			}
@@ -118,17 +127,35 @@ public class Battle {
 
 				Skill skill = character.getSecondSkill();
 				// TODO use skill
+				logs.add(new Log(Type.INFO, character.name + " uses skill " + skill.name));
+				character.secondSkillDone = true;
 
 				// TODO postCharacter effect
 				character = getNextCharacter(false);
 			}
 		}
 
+		logs.add(new Log(Type.INFO, "End of Battle"));
 		computeWinner();
 	}
 
 	private Character getNextCharacter(boolean firstSkill) {
-		return null;
+		List<Character> remainingChars = new ArrayList<>();
+		for (Character c : characters) {
+			if (firstSkill && !c.firstSkillDone) {
+				remainingChars.add(c);
+			}
+		}
+		if (remainingChars.size() == 0) {
+			return null;
+		}
+		Collections.sort(remainingChars, new Comparator<Character>() {
+			@Override
+			public int compare(Character c0, Character c1) {
+				return c1.getAttribute(Attributes.SPEED) - c0.getAttribute(Attributes.SPEED);
+			}
+		});
+		return remainingChars.get(0);
 	}
 
 	private void computeWinner() {

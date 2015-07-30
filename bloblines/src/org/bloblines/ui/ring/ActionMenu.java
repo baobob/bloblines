@@ -1,7 +1,7 @@
 package org.bloblines.ui.ring;
 
 import org.bloblines.Game;
-import org.bloblines.data.map.Action;
+import org.bloblines.data.action.Action;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Keys;

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bloblines.Game;
-import org.bloblines.data.map.Action;
-import org.bloblines.data.map.ActionType;
+import org.bloblines.data.action.Action;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
 import org.bloblines.utils.Assets.Textures;
@@ -40,7 +39,7 @@ public class MenuHelper {
 
 		});
 		// Blobs status
-		items.add(new ActionMenu(new Action(ActionType.STATUS, "Manage your blobs"), Textures.ICON_STATUS, "Blobs Status"));
+		// items.add(new ActionMenu(new Action(ActionType.STATUS, "Manage your blobs"), Textures.ICON_STATUS, "Blobs Status"));
 		// Quest log
 		items.add(new MenuElement("Quest Log", Textures.ICON_QUEST_LOG));
 		return items;

@@ -1,12 +1,20 @@
 package org.bloblines.data.battle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bloblines.data.game.Status;
 
 public abstract class Character {
 
+	private static int characterId = 1;
+
+	/** Character Name */
 	public String name;
-	public int lifeMax;
-	public int lifeCurrent;
+
+	private int id = characterId++;
+
+	protected Map<Attributes, Integer> attributes = new HashMap<>();
 
 	public Status status = Status.OK;
 
@@ -14,7 +22,7 @@ public abstract class Character {
 	public boolean secondSkillDone = false;
 
 	public enum Attributes {
-		SPEED, STRENGTH, INTELLIGENCE, WISDOM
+		HP, CURRENT_HP, SPEED, CURRENT_SPEED, STRENGTH, CURRENT_STRENGTH, INTELLIGENCE, CURRENT_INTELLIGENCE, WISDOM, CURRENT_WISDOM
 	}
 
 	/**
@@ -33,5 +41,38 @@ public abstract class Character {
 	 */
 	public abstract Skill getSecondSkill();
 
-	public abstract int getAttribute(Attributes attr);
+	public int getAttribute(Attributes attr) {
+		return attributes.get(attr);
+	}
+
+	public void setAttribute(Attributes attr, int value) {
+		attributes.put(attr, value);
+	}
+
+	public int changeAttribute(Attributes attr, int value) {
+		attributes.put(attr, Integer.max(attributes.get(attr) + value, 0));
+		return attributes.get(attr);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Character other = (Character) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
 }

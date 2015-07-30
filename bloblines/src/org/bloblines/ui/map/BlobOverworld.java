@@ -1,7 +1,5 @@
 package org.bloblines.ui.map;
 
-import org.bloblines.data.map.Action;
-import org.bloblines.data.map.ActionType;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
 import org.bloblines.data.map.Target;
@@ -39,9 +37,9 @@ public class BlobOverworld {
 			location.description = event.getProperties().get("description", String.class);
 			location.pos = pos;
 
-			location.actions.add(new Action(ActionType.SPEAK_TO_NPC, "Speak to the Elder"));
-			location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
-			location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
+			// location.actions.add(new Action(ActionType.SPEAK_TO_NPC, "Speak to the Elder"));
+			// location.actions.add(new Action(ActionType.FIGHT, "Find an evil radish to fight"));
+			// location.actions.add(new Action(ActionType.SHOP, "Talk to the traveling merchant"));
 
 			area.addLocationDeprecated(location);
 		}

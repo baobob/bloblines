@@ -2,11 +2,7 @@ package org.bloblines.ui.battle;
 
 import org.bloblines.Game;
 import org.bloblines.data.battle.Battle;
-import org.bloblines.data.battle.Environment;
 import org.bloblines.data.battle.Log;
-import org.bloblines.data.battle.Party;
-import org.bloblines.data.game.Monster;
-import org.bloblines.data.map.Action;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.ui.map.BlobMap;
 import org.bloblines.utils.Assets.Textures;
@@ -15,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -25,23 +20,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class BlobBattle extends BlobScreen {
 
-	public Action action;
-
-	private OrthographicCamera camera;
-
 	private TextButton btnBack;
 
 	private Battle battle;
 
-	public BlobBattle(Game b, Action action) {
+	public BlobBattle(Game b, Battle battle) {
 		super(b);
-		this.action = action;
 
-		battle = doBattle();
+		this.battle = battle;
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1024, 768);
+		/** Process a 1 round battle */
+		battle.process(1);
 
+		initUI();
+
+		InputMultiplexer inputs = new InputMultiplexer(stage, this);
+		Gdx.input.setInputProcessor(inputs);
+
+	}
+
+	private void initUI() {
 		Table logTable = new Table();
 		for (Log log : battle.logs) {
 			logTable.add(new Label(log.message, getDefaultSkin()));
@@ -65,30 +63,8 @@ public class BlobBattle extends BlobScreen {
 				backToMap();
 			}
 		});
-
-		InputMultiplexer inputs = new InputMultiplexer(stage, this);
-		Gdx.input.setInputProcessor(inputs);
 		stage.setScrollFocus(scrollPane);
 
-	}
-
-	private Battle doBattle() {
-		Party p1 = new Party(game.player.name);
-		p1.characters.addAll(game.player.blobs);
-
-		Party p2 = new Party("Enemies");
-		p2.characters.add(new Monster());
-		p2.characters.add(new Monster());
-
-		Environment env = new Environment();
-
-		/**
-		 * Start a 1 round battle
-		 */
-		Battle b = new Battle(p1, p2, env);
-		b.process(1);
-
-		return b;
 	}
 
 	@Override
@@ -96,7 +72,7 @@ public class BlobBattle extends BlobScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		camera.update();
+		// camera.update();
 
 		game.spriteBatch.begin();
 		game.spriteBatch.draw(getTexture(Textures.BATTLE_SCREEN), 200, 50);

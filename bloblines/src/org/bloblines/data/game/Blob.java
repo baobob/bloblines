@@ -11,18 +11,20 @@ public class Blob extends Character {
 	@Override
 	public Skill getFirstSkill() {
 		Skill attack = new Skill();
-		attack.name = "Attack skill";
+		attack.name = "Attack skill based on Strength";
 		attack.target = Target.HIGH_HP;
 		attack.value = 3;
+		attack.attribute = Attributes.STRENGTH;
 		return attack;
 	}
 
 	@Override
 	public Skill getSecondSkill() {
 		Skill fire = new Skill();
-		fire.name = "Fire skill";
+		fire.name = "Fire skill based on Intelligence";
 		fire.target = Target.LOW_HP;
 		fire.value = 5;
+		fire.attribute = Attributes.INTELLIGENCE;
 		return fire;
 	}
 

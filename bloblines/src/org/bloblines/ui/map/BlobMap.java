@@ -7,8 +7,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bloblines.Game;
+import org.bloblines.data.action.Action;
+import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.game.Blob;
-import org.bloblines.data.map.Action;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
@@ -117,7 +118,7 @@ public class BlobMap extends BlobScreen implements InputProcessor {
 			blobTable.setColor(0.5f, 0.3f, 0.8f, 0.7f);
 			addStat("Name", b.name, blobTable);
 			addStat("Age", String.valueOf(b.age), blobTable);
-			addStat("Life", b.lifeCurrent + "/" + b.lifeMax, blobTable);
+			addStat("Life", b.getAttribute(Attributes.CURRENT_HP) + "/" + b.getAttribute(Attributes.HP), blobTable);
 			blobTable.setWidth(w - 2 * margin);
 			statusWindow.add(blobTable);
 			statusWindow.add("").expandX();

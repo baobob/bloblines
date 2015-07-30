@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.battle.Log.Type;
+import org.bloblines.data.game.Status;
 
 /**
  * A battle is a fight between 2 parties. Usually, the player party and a group of enemy. Battle system should work with 2 Non playable
@@ -113,7 +114,7 @@ public class Battle {
 				// TODO onCharacter effect
 
 				Skill skill = character.getFirstSkill();
-				// TODO use skill
+				doSomething(character, skill);
 				logs.add(new Log(Type.INFO, character.name + " uses skill " + skill.name));
 				character.firstSkillDone = true;
 				// TODO postCharacter effect
@@ -139,10 +140,65 @@ public class Battle {
 		computeWinner();
 	}
 
+	private void doSomething(Character currentCharacter, Skill skill) {
+		Party allies = party1;
+		Party enemies = party2;
+		if (!party1.characters.contains(currentCharacter)) {
+			allies = party2;
+			enemies = party1;
+		}
+
+		List<Character> targets = new ArrayList<>();
+		switch (skill.target) {
+		case ALL:
+			targets = characters;
+			break;
+		case HIGH_HP:
+			sortCharacters(enemies.characters, Attributes.HP, false);
+			targets.add(enemies.characters.get(0));
+			break;
+		case HIGH_SPEED:
+			sortCharacters(enemies.characters, Attributes.SPEED, false);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_HP:
+			sortCharacters(enemies.characters, Attributes.HP, true);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_SPEED:
+			sortCharacters(enemies.characters, Attributes.SPEED, true);
+			targets.add(enemies.characters.get(0));
+			break;
+		default:
+			break;
+		}
+
+		int damage = skill.value * currentCharacter.getAttribute(skill.attribute);
+		for (Character c : targets) {
+			logs.add(new Log(Type.DAMAGE, "Character " + c.name + " took " + damage + " damage."));
+			if (c.changeAttribute(Attributes.HP, -damage) == 0) {
+				logs.add(new Log(Type.INFO, "Character " + c.name + " is now dead. "));
+				c.status = Status.DEAD;
+			}
+		}
+	}
+
+	private void sortCharacters(List<Character> chars, final Attributes attr, boolean ascending) {
+		Collections.sort(chars, new Comparator<Character>() {
+			@Override
+			public int compare(Character c0, Character c1) {
+				return c1.getAttribute(attr) - c0.getAttribute(attr);
+			}
+		});
+	}
+
 	private Character getNextCharacter(boolean firstSkill) {
 		List<Character> remainingChars = new ArrayList<>();
 		for (Character c : characters) {
-			if (firstSkill && !c.firstSkillDone) {
+			if (c.status == Status.DEAD || c.status == Status.SLEEP || c.status == Status.STUN) {
+				continue;
+			}
+			if (firstSkill && !c.firstSkillDone || !firstSkill && !c.secondSkillDone) {
 				remainingChars.add(c);
 			}
 		}

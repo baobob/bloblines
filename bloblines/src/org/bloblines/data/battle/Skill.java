@@ -1,5 +1,7 @@
 package org.bloblines.data.battle;
 
+import org.bloblines.data.battle.Character.Attributes;
+
 public class Skill {
 
 	public String name;
@@ -10,5 +12,5 @@ public class Skill {
 
 	public Target target;
 	public int value;
-
+	public Attributes attribute;
 }

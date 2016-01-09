@@ -28,9 +28,4 @@ public class Blob extends Character {
 		return fire;
 	}
 
-	@Override
-	public int getAttribute(Attributes attr) {
-		return 10;
-	}
-
 }

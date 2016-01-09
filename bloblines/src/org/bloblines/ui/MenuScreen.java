@@ -1,7 +1,7 @@
 package org.bloblines.ui;
 
 import org.bloblines.Game;
-import org.bloblines.ui.map.BlobMap;
+import org.bloblines.ui.map.MapScreen;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class BlobMenu extends BlobScreen {
+public class MenuScreen extends BlobScreen {
 
 	private int btnYPos = 280;
 	private int btnXPos = 50;
@@ -27,7 +27,7 @@ public class BlobMenu extends BlobScreen {
 	private TextButton btnOptions;
 	private TextButton btnQuit;
 
-	public BlobMenu(Game b) {
+	public MenuScreen(Game b) {
 		super(b);
 
 		btnStart = initTextButton("Start new game", stage);
@@ -46,7 +46,7 @@ public class BlobMenu extends BlobScreen {
 
 	private final void startGame(String playerName) {
 		game.start(playerName);
-		game.setScreen(new BlobMap(game));
+		game.setScreen(new MapScreen(game));
 		dispose();
 	}
 

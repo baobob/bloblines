@@ -99,23 +99,23 @@ public class Battle {
 	 * @param rounds
 	 */
 	public void process(int rounds) {
-		logs.add(new Log(Type.INFO, "Start of Battle"));
+		logs.add(new Log(Type.BATTLE_INFO, "Start of Battle"));
 		// TODO battle passive effects
 
 		// Process turns
 		for (int i = 1; i <= rounds; i++) {
 			// TODO turn effects
-			logs.add(new Log(Type.INFO, "Round " + i));
+			logs.add(new Log(Type.BATTLE_INFO, "Round " + i));
 
 			Character character = getNextCharacter(true);
 			while (character != null) {
-				logs.add(new Log(Type.INFO, "Next character: " + character.name));
+				logs.add(new Log(Type.BATTLE_INFO, "Next character: " + character.name));
 				// for each character
 				// TODO onCharacter effect
 
 				Skill skill = character.getFirstSkill();
 				doSomething(character, skill);
-				logs.add(new Log(Type.INFO, character.name + " uses skill " + skill.name));
+				logs.add(new Log(Type.BATTLE_INFO, character.name + " uses skill " + skill.name));
 				character.firstSkillDone = true;
 				// TODO postCharacter effect
 				character = getNextCharacter(true);
@@ -128,7 +128,7 @@ public class Battle {
 
 				Skill skill = character.getSecondSkill();
 				// TODO use skill
-				logs.add(new Log(Type.INFO, character.name + " uses skill " + skill.name));
+				logs.add(new Log(Type.BATTLE_INFO, character.name + " uses skill " + skill.name));
 				character.secondSkillDone = true;
 
 				// TODO postCharacter effect
@@ -136,7 +136,7 @@ public class Battle {
 			}
 		}
 
-		logs.add(new Log(Type.INFO, "End of Battle"));
+		logs.add(new Log(Type.BATTLE_INFO, "End of Battle"));
 		computeWinner();
 	}
 
@@ -154,44 +154,54 @@ public class Battle {
 			targets = characters;
 			break;
 		case HIGH_HP:
-			sortCharacters(enemies.characters, Attributes.HP, false);
-			targets.add(enemies.characters.get(0));
-			break;
-		case HIGH_SPEED:
-			sortCharacters(enemies.characters, Attributes.SPEED, false);
-			targets.add(enemies.characters.get(0));
-			break;
-		case LOW_HP:
 			sortCharacters(enemies.characters, Attributes.HP, true);
 			targets.add(enemies.characters.get(0));
 			break;
-		case LOW_SPEED:
+		case HIGH_SPEED:
 			sortCharacters(enemies.characters, Attributes.SPEED, true);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_HP:
+			sortCharacters(enemies.characters, Attributes.HP, false);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_SPEED:
+			sortCharacters(enemies.characters, Attributes.SPEED, false);
 			targets.add(enemies.characters.get(0));
 			break;
 		default:
 			break;
 		}
 
-		int damage = skill.value * currentCharacter.getAttribute(skill.attribute);
+		int damage = skill.value * currentCharacter.getAttributeCurrent(skill.attribute);
 		for (Character c : targets) {
 			logs.add(new Log(Type.DAMAGE, "Character " + c.name + " took " + damage + " damage."));
-			if (c.changeAttribute(Attributes.HP, -damage) == 0) {
-				logs.add(new Log(Type.INFO, "Character " + c.name + " is now dead. "));
+			if (c.changeAttributeCurrent(Attributes.HP, -damage) == 0) {
+				logs.add(new Log(Type.BATTLE_INFO, "Character " + c.name + " is now dead. "));
 				c.status = Status.DEAD;
 			}
 		}
 	}
 
-	private void sortCharacters(List<Character> chars, final Attributes attr, boolean ascending) {
+	private void sortCharacters(List<Character> chars, final Attributes attr, boolean descending) {
 		Collections.sort(chars, new Comparator<Character>() {
 			@Override
 			public int compare(Character c0, Character c1) {
-				return c1.getAttribute(attr) - c0.getAttribute(attr);
+				return c1.getAttributeCurrent(attr) - c0.getAttributeCurrent(attr);
 			}
 		});
+		if (descending) {
+			Collections.reverse(chars);
+		}
 	}
 
+	/**
+	 * Gets next character to play
+	 * 
+	 * @param firstSkill
+	 *            <code>true</code> if we want next character to play its first skill, <code>false</code> otherwise
+	 * @return Next character to play, null if there is none
+	 */
 	private Character getNextCharacter(boolean firstSkill) {
 		List<Character> remainingChars = new ArrayList<>();
 		for (Character c : characters) {
@@ -205,12 +215,7 @@ public class Battle {
 		if (remainingChars.size() == 0) {
 			return null;
 		}
-		Collections.sort(remainingChars, new Comparator<Character>() {
-			@Override
-			public int compare(Character c0, Character c1) {
-				return c1.getAttribute(Attributes.SPEED) - c0.getAttribute(Attributes.SPEED);
-			}
-		});
+		sortCharacters(remainingChars, Attributes.SPEED, false);
 		return remainingChars.get(0);
 	}
 

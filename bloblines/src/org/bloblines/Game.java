@@ -4,8 +4,8 @@ import org.bloblines.data.action.Action;
 import org.bloblines.data.action.BattleAction;
 import org.bloblines.data.game.Player;
 import org.bloblines.data.map.World;
-import org.bloblines.ui.BlobMenu;
-import org.bloblines.ui.battle.BlobBattle;
+import org.bloblines.ui.MenuScreen;
+import org.bloblines.ui.battle.BattleScreen;
 import org.bloblines.utils.Assets;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,7 +33,7 @@ public class Game extends com.badlogic.gdx.Game {
 		Game.assets.postLoad();
 
 		spriteBatch = new SpriteBatch();
-		this.setScreen(new BlobMenu(this));
+		this.setScreen(new MenuScreen(this));
 	}
 
 	public void start(String playerName) {
@@ -57,7 +57,7 @@ public class Game extends com.badlogic.gdx.Game {
 		case FIGHT:
 			// Store current map state
 			// Start fight screen
-			this.setScreen(new BlobBattle(this, ((BattleAction) action).getBattle(player)));
+			this.setScreen(new BattleScreen(this, ((BattleAction) action).getBattle(player)));
 			break;
 		case SPEAK_TO_NPC:
 			// delegate to BlobMap screen to display NPC conv ? or use a different screen ?

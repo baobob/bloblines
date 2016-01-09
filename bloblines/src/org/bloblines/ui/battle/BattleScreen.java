@@ -3,13 +3,15 @@ package org.bloblines.ui.battle;
 import org.bloblines.Game;
 import org.bloblines.data.battle.Battle;
 import org.bloblines.data.battle.Log;
+import org.bloblines.data.battle.Log.Type;
 import org.bloblines.ui.BlobScreen;
-import org.bloblines.ui.map.BlobMap;
+import org.bloblines.ui.map.MapScreen;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -17,14 +19,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
-public class BlobBattle extends BlobScreen {
+public class BattleScreen extends BlobScreen {
 
 	private TextButton btnBack;
 
 	private Battle battle;
 
-	public BlobBattle(Game b, Battle battle) {
+	public BattleScreen(Game b, Battle battle) {
 		super(b);
 
 		this.battle = battle;
@@ -41,8 +44,14 @@ public class BlobBattle extends BlobScreen {
 
 	private void initUI() {
 		Table logTable = new Table();
+		logTable.align(Align.left);
 		for (Log log : battle.logs) {
-			logTable.add(new Label(log.message, getDefaultSkin()));
+			Label messageLabel = new Label(log.message, getDefaultSkin());
+			if (log.type == Type.BATTLE_INFO) {
+				messageLabel.setColor(Color.ORANGE);
+				messageLabel.setAlignment(Align.left);
+			}
+			logTable.add(messageLabel);
 			logTable.row();
 		}
 
@@ -88,7 +97,7 @@ public class BlobBattle extends BlobScreen {
 	}
 
 	private void backToMap() {
-		game.setScreen(new BlobMap(game));
+		game.setScreen(new MapScreen(game));
 		dispose();
 	}
 

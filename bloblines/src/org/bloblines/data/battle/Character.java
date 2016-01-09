@@ -2,6 +2,7 @@ package org.bloblines.data.battle;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bloblines.data.game.Status;
 
@@ -14,7 +15,9 @@ public abstract class Character {
 
 	private int id = characterId++;
 
-	protected Map<Attributes, Integer> attributes = new HashMap<>();
+	protected Map<Attributes, Integer> attributesBase = new HashMap<>();
+
+	protected Map<Attributes, Integer> attributesCurrent = new HashMap<>();
 
 	public Status status = Status.OK;
 
@@ -22,7 +25,30 @@ public abstract class Character {
 	public boolean secondSkillDone = false;
 
 	public enum Attributes {
-		HP, CURRENT_HP, SPEED, CURRENT_SPEED, STRENGTH, CURRENT_STRENGTH, INTELLIGENCE, CURRENT_INTELLIGENCE, WISDOM, CURRENT_WISDOM
+		HP, SPEED, STRENGTH, INTELLIGENCE, WISDOM
+	}
+
+	/**
+	 * Initializes attributes and set current attributes with base values
+	 * 
+	 * @param hp
+	 *            HP base value
+	 * @param intelligence
+	 *            INTELLIGENCE base value
+	 * @param speed
+	 *            SPEED base value
+	 * @param wisdom
+	 *            WISDOM base value
+	 * @param strength
+	 *            STRENGTH base value
+	 */
+	public void initializeAttributes(Integer hp, Integer intelligence, Integer speed, Integer wisdom, Integer strength) {
+		setAttributeBase(Attributes.HP, hp);
+		setAttributeBase(Attributes.INTELLIGENCE, intelligence);
+		setAttributeBase(Attributes.SPEED, speed);
+		setAttributeBase(Attributes.WISDOM, wisdom);
+		setAttributeBase(Attributes.STRENGTH, strength);
+		initializeCurrentAttributes();
 	}
 
 	/**
@@ -41,17 +67,30 @@ public abstract class Character {
 	 */
 	public abstract Skill getSecondSkill();
 
-	public int getAttribute(Attributes attr) {
-		return attributes.get(attr);
+	public int getAttributeBase(Attributes attr) {
+		return attributesBase.get(attr);
 	}
 
-	public void setAttribute(Attributes attr, int value) {
-		attributes.put(attr, value);
+	public void setAttributeBase(Attributes attr, int value) {
+		attributesBase.put(attr, value);
 	}
 
-	public int changeAttribute(Attributes attr, int value) {
-		attributes.put(attr, Integer.max(attributes.get(attr) + value, 0));
-		return attributes.get(attr);
+	/**
+	 * Initializes current attributes with base values
+	 */
+	public void initializeCurrentAttributes() {
+		for (Entry<Attributes, Integer> attrEntry : attributesBase.entrySet()) {
+			attributesCurrent.put(attrEntry.getKey(), attrEntry.getValue());
+		}
+	}
+
+	public int getAttributeCurrent(Attributes attr) {
+		return attributesCurrent.get(attr);
+	}
+
+	public int changeAttributeCurrent(Attributes attr, int value) {
+		attributesCurrent.put(attr, Integer.max(attributesBase.get(attr) + value, 0));
+		return attributesCurrent.get(attr);
 	}
 
 	@Override

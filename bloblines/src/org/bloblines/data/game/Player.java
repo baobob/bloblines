@@ -3,7 +3,6 @@ package org.bloblines.data.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Location;
 import org.bloblines.utils.XY;
@@ -25,13 +24,12 @@ public class Player {
 		Blob b1 = new Blob();
 		b1.name = "Bobby";
 		b1.age = 1;
-		b1.setAttribute(Attributes.HP, 57);
-		b1.setAttribute(Attributes.CURRENT_HP, 57);
+		b1.initializeAttributes(57, 5, 5, 5, 5);
+
 		Blob b2 = new Blob();
 		b2.name = "Jean-Blob";
 		b2.age = 1;
-		b2.setAttribute(Attributes.HP, 52);
-		b2.setAttribute(Attributes.CURRENT_HP, 52);
+		b2.initializeAttributes(52, 5, 5, 5, 5);
 		this.blobs.add(b1);
 		this.blobs.add(b2);
 	}

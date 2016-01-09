@@ -3,7 +3,7 @@ package org.bloblines.data.battle;
 public class Log {
 
 	public enum Type {
-		INFO, SKILL, DAMAGE, HEAL, PASSIVE
+		BATTLE_INFO, SKILL, DAMAGE, HEAL, PASSIVE
 	}
 
 	public Type type;

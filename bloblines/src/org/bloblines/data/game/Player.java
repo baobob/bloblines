@@ -19,6 +19,7 @@ public class Player {
 		this.name = playerName;
 		this.area = area;
 		this.location = startPos;
+		this.location.discovered = true;
 		this.pos = new XY(location.pos);
 		this.blobs = new ArrayList<>();
 		Blob b1 = new Blob();

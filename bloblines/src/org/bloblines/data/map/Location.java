@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bloblines.data.action.Action;
@@ -24,9 +25,7 @@ public class Location {
 	public String description;
 	public XY pos;
 
-	// public XY getCoords() {
-	// return new XY(pos.x / 16, pos.y / 16);
-	// }
+	public boolean discovered = false;
 
 	@Override
 	public int hashCode() {
@@ -107,6 +106,16 @@ public class Location {
 			}
 		}
 		return corners;
+	}
+
+	public Set<Location> getAccessibleNeighbors() {
+		Set<Location> accessibleLocations = new HashSet<>();
+		for (Entry<Border, Location> e : neighbors.entrySet()) {
+			if (e.getKey().isPassable() && e.getValue().reachable) {
+				accessibleLocations.add(e.getValue());
+			}
+		}
+		return accessibleLocations;
 	}
 
 	@Override

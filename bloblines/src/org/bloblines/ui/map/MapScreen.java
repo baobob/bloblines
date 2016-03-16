@@ -259,13 +259,16 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private void renderLocations(SpriteBatch batch) {
 		Texture texture = getTexture(Textures.SPRITE_LOCATION);
 		Texture textureSelected = getTexture(Textures.SPRITE_LOCATION_SELECTED);
+
+		Set<Location> currentLocations = game.player.location.getAccessibleNeighbors();
+
 		for (Location location : area.locations) {
 			if (!location.reachable) {
 				continue;
 			}
-			// if (location.getCoords().equals(getMapCoordinates(Gdx.input.getX(), Gdx.input.getY()))) {
-			// t = getTexture(Textures.SPRITE_LOCATION_DONE);
-			// }
+			if (!location.discovered && !currentLocations.contains(location)) {
+				continue;
+			}
 			int width = 64;
 			int height = width * texture.getHeight() / texture.getWidth();
 
@@ -274,18 +277,16 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			} else {
 				batch.draw(textureSelected, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
 			}
-			// System.out.println("x:" + location.pos.x + " y:" + location.pos.y);
-			// break;
 		}
 	}
 
 	private void renderPaths(SpriteBatch batch) {
 		Texture texture = getTexture(Textures.SPRITE_PATH);
 		Texture textureSelected = getTexture(Textures.SPRITE_PATH_SELECTED);
+		Set<Location> accessibleNeighbors = game.player.location.getAccessibleNeighbors();
 
 		Map<Location, Set<Location>> doneLocations = new HashMap<>();
 		for (Location location : area.locations) {
-			// if (location.done) {
 			for (Entry<Border, Location> e : location.neighbors.entrySet()) {
 				if (!e.getKey().isPassable()) {
 					continue;
@@ -293,6 +294,12 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				if (doneLocations.get(location) != null && doneLocations.get(location).contains((e.getValue()))) {
 					continue;
 				}
+				Location left = e.getKey().left;
+				Location right = e.getKey().right;
+				if (!(left.discovered || accessibleNeighbors.contains(left)) || !(right.discovered || accessibleNeighbors.contains(right))) {
+					continue;
+				}
+
 				float x1 = location.pos.x;
 				float y1 = location.pos.y;
 				float x2 = e.getValue().pos.x;
@@ -466,6 +473,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				public void clicked(InputEvent event, float x, float y) {
 					game.player.location = destination;
 					game.player.pos = destination.pos;
+					destination.discovered = true;
 					contextMenu.remove();
 					event.setBubbles(false);
 				}

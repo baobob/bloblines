@@ -7,7 +7,6 @@ import org.bloblines.data.game.Player;
 import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,12 +28,14 @@ public class UiPlayer {
 
 	private int moving = 0x0000;
 	private int currentAnimation = MOVE_DOWN;
+	private XY currentUiPos;
 
 	public static int HEIGHT = 64;
 	public static int WIDTH = 64;
 
 	public UiPlayer(Player p) {
 		player = p;
+		currentUiPos = player.pos;
 		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
 
 		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(32, 32);
@@ -53,14 +54,42 @@ public class UiPlayer {
 
 	public void update(float delta) {
 		stateTime += delta;
-		if ((moving & 0xF000) > 0)
-			player.pos.y += 2;
-		if ((moving & 0x0F00) > 0)
-			player.pos.x += 2;
-		if ((moving & 0x00F0) > 0)
-			player.pos.y -= 2;
-		if ((moving & 0x000F) > 0)
-			player.pos.x -= 2;
+		if (player.pos.equals(currentUiPos)) {
+			currentAnimation = MOVE_DOWN;
+			return;
+		}
+		float xDest = player.pos.x;
+		float yDest = player.pos.y;
+		float xCurr = currentUiPos.x;
+		float yCurr = currentUiPos.y;
+
+		float dx = xDest - xCurr;
+		float dy = yDest - yCurr;
+
+		if (Math.abs(dx) > Math.abs(dy)) {
+			if (dx > 0) {
+				currentAnimation = MOVE_RIGHT;
+			} else {
+				currentAnimation = MOVE_LEFT;
+			}
+		} else {
+			if (dy > 0) {
+				currentAnimation = MOVE_UP;
+			} else {
+				currentAnimation = MOVE_DOWN;
+			}
+		}
+
+		double dz = Math.sqrt(dx * dx + dy * dy);
+		if (dz < 3) {
+			currentUiPos = new XY(player.pos);
+			return;
+		}
+		double ax = 3 * dx / dz;
+		double ay = 3 * dy / dz;
+
+		currentUiPos.x += ax;
+		currentUiPos.y += ay;
 	}
 
 	public TextureRegion getAnimation() {
@@ -75,45 +104,16 @@ public class UiPlayer {
 		return new Animation(0.1f, keyFrames);
 	}
 
-	public void updateAnimation() {
-		int up = Gdx.input.isKeyPressed(Keys.UP) ? 0xF000 : 0x0000;
-		int right = Gdx.input.isKeyPressed(Keys.RIGHT) ? 0x0F00 : 0x0000;
-		int down = Gdx.input.isKeyPressed(Keys.DOWN) ? 0x00F0 : 0x0000;
-		int left = Gdx.input.isKeyPressed(Keys.LEFT) ? 0x000F : 0x0000;
-
-		moving = (up | left | down | right);
-
-		if (moving > 0) {
-			if (currentAnimation == MOVE_UP && (moving & up) > 0)
-				return;
-			if (currentAnimation == MOVE_RIGHT && (moving & right) > 0)
-				return;
-			if (currentAnimation == MOVE_DOWN && (moving & down) > 0)
-				return;
-			if (currentAnimation == MOVE_LEFT && (moving & left) > 0)
-				return;
-		}
-		if (up > 0)
-			currentAnimation = MOVE_UP;
-		else if (right > 0)
-			currentAnimation = MOVE_RIGHT;
-		else if (down > 0)
-			currentAnimation = MOVE_DOWN;
-		else if (left > 0)
-			currentAnimation = MOVE_LEFT;
-		// moving = (up || left || down || right);
-	}
-
 	public XY getPos() {
-		return player.pos;
+		return currentUiPos;
 	}
 
 	public XY getCenter() {
-		return new XY(player.pos.x - WIDTH / 2, player.pos.y - HEIGHT / 2);
+		return new XY(currentUiPos.x - WIDTH / 2, currentUiPos.y - HEIGHT / 2);
 	}
 
 	public void render(SpriteBatch batch) {
 		TextureRegion frame = getAnimation();
-		batch.draw(frame, player.pos.x - WIDTH / 2, player.pos.y - HEIGHT / 4, UiPlayer.WIDTH, UiPlayer.HEIGHT);
+		batch.draw(frame, currentUiPos.x - WIDTH / 2, currentUiPos.y - HEIGHT / 4, UiPlayer.WIDTH, UiPlayer.HEIGHT);
 	}
 }

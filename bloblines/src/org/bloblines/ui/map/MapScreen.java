@@ -49,8 +49,6 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private int debugHeight;
 	private boolean showDebugPanel = false;
 
-	private float moveMapX = 0;
-	private float moveMapY = 0;
 	private float prevMouseX = 0;
 	private float prevMouseY = 0;
 	private boolean moveMap = false;
@@ -242,20 +240,19 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private void updateCamera() {
 		int w2 = Gdx.graphics.getWidth() / 2;
 		int h2 = Gdx.graphics.getHeight() / 2;
-		camera.position.x += moveMapX;
+
+		camera.position.x = uiPlayer.getCenter().x;
+		camera.position.y = uiPlayer.getCenter().y;
 		if (camera.position.x - w2 <= 0) {
 			camera.position.x = w2;
 		} else if (camera.position.x + w2 >= area.width) {
 			camera.position.x = (float) (area.width - w2);
 		}
-		camera.position.y += moveMapY;
 		if (camera.position.y - h2 <= 0) {
 			camera.position.y = h2;
 		} else if (camera.position.y + h2 >= area.height) {
 			camera.position.y = (float) (area.height - h2);
 		}
-		moveMapX = 0;
-		moveMapY = 0;
 		camera.update();
 	}
 
@@ -372,10 +369,6 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == Buttons.MIDDLE) {
-			moveMap = true;
-			return true;
-		}
 		if (button == Buttons.LEFT) {
 			if (contextMenu != null) {
 				contextMenu.remove();
@@ -560,32 +553,5 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		// }
 		// }
 		return super.keyUp(keycode);
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (moveMap) {
-			if (prevMouseX > 0 && prevMouseY > 0) {
-				moveMapX += (prevMouseX - screenX) * camera.zoom / 2;
-				moveMapY += (screenY - prevMouseY) * camera.zoom / 2;
-				if (contextMenu != null) {
-					contextMenu.remove();
-				}
-			}
-			prevMouseX = screenX;
-			prevMouseY = screenY;
-		}
-		return super.touchDragged(screenX, screenY, pointer);
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		if (amount < 0) {
-			camera.zoom /= 1.1f;
-		} else {
-			camera.zoom *= 1.1f;
-		}
-		// System.out.println(camera.zoom);
-		return true;
 	}
 }

@@ -1,9 +1,12 @@
 package org.bloblines.data.battle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bloblines.data.game.Atom;
 import org.bloblines.data.game.Status;
 
 public abstract class Character {
@@ -20,6 +23,8 @@ public abstract class Character {
 	protected Map<Attributes, Integer> attributesCurrent = new HashMap<>();
 
 	public Status status = Status.OK;
+
+	public List<Atom> atoms = new ArrayList<>();
 
 	public boolean firstSkillDone = false;
 	public boolean secondSkillDone = false;

@@ -10,10 +10,11 @@ import org.bloblines.utils.XY;
 public class Player {
 
 	public String name;
-	public List<Blob> blobs;
+	public List<Blob> blobs = new ArrayList<Blob>();
 	public Location location;
 	public XY pos;
 	public Area area;
+	public List<Atom> atoms = new ArrayList<>();
 
 	public Player(String playerName, Area area, Location startPos) {
 		this.name = playerName;
@@ -21,7 +22,6 @@ public class Player {
 		this.location = startPos;
 		this.location.discovered = true;
 		this.pos = new XY(location.pos);
-		this.blobs = new ArrayList<>();
 		Blob b1 = new Blob();
 		b1.name = "Bobby";
 		b1.age = 1;

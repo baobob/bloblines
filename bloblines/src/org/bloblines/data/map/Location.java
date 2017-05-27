@@ -1,9 +1,7 @@
 package org.bloblines.data.map;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,7 +29,7 @@ public class Location {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
 		return result;
 	}
 
@@ -44,17 +42,17 @@ public class Location {
 		if (getClass() != obj.getClass())
 			return false;
 		Location other = (Location) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (pos == null) {
+			if (other.pos != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!pos.equals(other.pos))
 			return false;
 		return true;
 	}
 
 	/***************************************************************************************************************************
 	 * ************************************** New Graph Structure based on Voronoi *********************************************
-	 * ************************************************************************************************************************/
+	 ************************************************************************************************************************/
 
 	// public Set<Border> borders = new HashSet<Border>();
 	public Map<Border, Location> neighbors = new HashMap<>();
@@ -67,9 +65,6 @@ public class Location {
 	public Biome biome = null;
 	public int passablePaths = 0;
 
-	/** corners of the Location zone. Use method to initialize AFTER we get all borders */
-	private List<XY> corners = null;
-
 	public void addBorder(Border b) {
 		if (b.left.equals(this)) {
 			neighbors.put(b, b.right);
@@ -81,31 +76,6 @@ public class Location {
 		if (b.isPassable()) {
 			passablePaths++;
 		}
-	}
-
-	public List<XY> getCorners() {
-		if (corners == null) {
-			corners = new ArrayList<>();
-			List<Border> unorderedBorders = new ArrayList<>(borders.values());
-			while (unorderedBorders.size() > 0) {
-				Border b = unorderedBorders.remove(0);
-				if (corners.size() == 0) {
-					corners.add(b.leftCorner);
-					corners.add(b.rightCorner);
-				} else if (b.leftCorner.equals(corners.get(corners.size() - 1))) {
-					corners.add(b.rightCorner);
-				} else if (b.rightCorner.equals(corners.get(corners.size() - 1))) {
-					corners.add(b.leftCorner);
-				} else if (b.leftCorner.equals(corners.get(0))) {
-					corners.add(0, b.rightCorner);
-				} else if (b.rightCorner.equals(corners.get(0))) {
-					corners.add(0, b.leftCorner);
-				} else {
-					unorderedBorders.add(b);
-				}
-			}
-		}
-		return corners;
 	}
 
 	public Set<Location> getAccessibleNeighbors() {

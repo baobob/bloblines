@@ -1,7 +1,5 @@
 package org.bloblines.data.map;
 
-import org.bloblines.utils.XY;
-
 /**
  * A Link object represents the border between 2 locations.
  * 
@@ -14,16 +12,11 @@ public class Border {
 	public Location left;
 	public Location right;
 
-	public XY leftCorner;
-	public XY rightCorner;
-
 	public String type;
 
-	public Border(Location left, Location right, XY leftCorner, XY rightCorner) {
+	public Border(Location left, Location right) {
 		this.left = left;
 		this.right = right;
-		this.leftCorner = leftCorner;
-		this.rightCorner = rightCorner;
 	}
 
 	public Location other(Location l) {
@@ -51,8 +44,8 @@ public class Border {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((leftCorner == null) ? 0 : leftCorner.hashCode());
-		result = prime * result + ((rightCorner == null) ? 0 : rightCorner.hashCode());
+		result = prime * result + ((left == null) ? 0 : left.hashCode());
+		result = prime * result + ((right == null) ? 0 : right.hashCode());
 		return result;
 	}
 
@@ -65,15 +58,15 @@ public class Border {
 		if (getClass() != obj.getClass())
 			return false;
 		Border other = (Border) obj;
-		if (leftCorner == null) {
-			if (other.leftCorner != null)
+		if (left == null) {
+			if (other.left != null)
 				return false;
-		} else if (!leftCorner.equals(other.leftCorner))
+		} else if (!left.equals(other.left))
 			return false;
-		if (rightCorner == null) {
-			if (other.rightCorner != null)
+		if (right == null) {
+			if (other.right != null)
 				return false;
-		} else if (!rightCorner.equals(other.rightCorner))
+		} else if (!right.equals(other.right))
 			return false;
 		return true;
 	}

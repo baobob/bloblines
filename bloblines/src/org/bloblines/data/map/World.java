@@ -3,7 +3,7 @@ package org.bloblines.data.map;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bloblines.mapgen.MapGenerator;
+import org.bloblines.mapgen.HexaMapGenerator;
 
 /**
  * Represents the whole BlobWorld. Currently, it's just a container for the main Area. Maybe we'll use this later when we can move from Area
@@ -12,20 +12,19 @@ import org.bloblines.mapgen.MapGenerator;
 public class World {
 
 	/** Test purposes values */
-	private static final long SEED = 52342;
-	private static final int WIDTH = 4096;
-	private static final int HEIGHT = 3072;
-	private static final int EVENTS = 200;
+	private static final long SEED = 90616;
+	private static final int WIDTH = 25;
+	private static final int HEIGHT = 20;
+	private static final int EVENTS = 30;
 
 	public Map<String, Area> areas = new HashMap<>();
 
 	public Area startArea = null;
 
 	public World() {
-		MapGenerator generator = new MapGenerator(SEED, WIDTH, HEIGHT, EVENTS);
-		startArea = generator.generate("Initial Map");
+		HexaMapGenerator generator = new HexaMapGenerator(SEED, WIDTH, HEIGHT, EVENTS);
+		startArea = generator.generate();
 		areas.put(startArea.name, startArea);
 		startArea.setRandomStart(generator.random);
-		startArea.buildPixmap();
 	}
 }

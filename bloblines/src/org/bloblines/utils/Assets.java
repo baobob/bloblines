@@ -46,7 +46,13 @@ public class Assets extends AssetManager {
 		ICON_6("icons/icons8/48/Alphabet/6-48.png"), 
 		ICON_7("icons/icons8/48/Alphabet/7-48.png"), 
 		ICON_8("icons/icons8/48/Alphabet/8-48.png"), 
-		ICON_9("icons/icons8/48/Alphabet/9-48.png"); 
+		ICON_9("icons/icons8/48/Alphabet/9-48.png"),
+
+		TILE_WATER("world/hexagon/tileWater.png"), 
+		TILE_BEACH("world/hexagon/tileSand.png"), 
+		TILE_GRASS("world/hexagon/tileGrass.png"), 
+		TILE_HILL("world/hexagon/tileDirt_full.png"), 
+		TILE_MOUNTAIN("world/hexagon/tileSnow.png");
 		// @formatter:on
 
 		Textures(String path) {

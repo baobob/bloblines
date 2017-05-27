@@ -14,7 +14,6 @@ import javax.swing.WindowConstants;
 import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
-import org.bloblines.utils.XY;
 
 import com.hoten.delaunay.examples.TestGraphImpl;
 import com.hoten.delaunay.geom.Point;
@@ -61,12 +60,13 @@ public class MapGenerator {
 		// Relax to have a smoother graph
 		voronoi = lloydRelaxation(voronoi, LLOYD_RELAXATIONS);
 
-		Area area = new Area(voronoi, name);
-		area.riseMountains(random);
-		area.setBiomes(SEA_LEVEL);
-		area.setRoads(random);
-		area.addQuests(random);
-		return area;
+		// Area area = new Area(voronoi, name);
+		// area.riseMountains(random);
+		// area.setBiomes(SEA_LEVEL);
+		// area.setRoads(random);
+		// area.addQuests(random);
+		// return area;
+		return null;
 	}
 
 	public void show(Area area) {
@@ -79,9 +79,9 @@ public class MapGenerator {
 			Color color = new Color(biomeColor.r, biomeColor.g, biomeColor.b);
 			graphics.setColor(color);
 			Polygon p = new Polygon();
-			for (XY corner : l.getCorners()) {
-				p.addPoint((int) corner.x, (int) corner.y);
-			}
+			// for (XY corner : l.getCorners()) {
+			// p.addPoint((int) corner.x, (int) corner.y);
+			// }
 			graphics.fillPolygon(p);
 
 			if (l.reachable) {

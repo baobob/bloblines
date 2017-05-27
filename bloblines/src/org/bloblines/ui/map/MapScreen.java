@@ -11,6 +11,7 @@ import org.bloblines.data.action.Action;
 import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Area;
+import org.bloblines.data.map.Biome;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
 import org.bloblines.ui.BlobScreen;
@@ -27,7 +28,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -67,17 +67,10 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 	// public State currentState;
 
-	private Sprite mapSprite;
-
 	public MapScreen(Game game) {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
 		area = game.player.area;
-
-		mapSprite = new Sprite(new Texture(area.pixmap));
-		mapSprite.setPosition(0, 0);
-		mapSprite.setSize((float) area.width, (float) area.height);
-		mapSprite.flip(false, true);
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -175,7 +168,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 		game.spriteBatch.begin();
-		mapSprite.draw(game.spriteBatch);
+		renderMap(game.spriteBatch);
 		renderPaths(game.spriteBatch);
 		renderLocations(game.spriteBatch);
 		uiPlayer.render(game.spriteBatch);
@@ -256,6 +249,38 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		camera.update();
 	}
 
+	private Textures getTileTexture(Biome biome) {
+		if (biome == Biome.OCEAN)
+			return Textures.TILE_WATER;
+		if (biome == Biome.BEACH)
+			return Textures.TILE_BEACH;
+		if (biome == Biome.HILL)
+			return Textures.TILE_HILL;
+		if (biome == Biome.MOUNTAIN)
+			return Textures.TILE_MOUNTAIN;
+		return Textures.TILE_GRASS;
+	}
+
+	private void renderMap(SpriteBatch batch) {
+		for (Location l : area.locations) {
+			// tiles 65 * 89
+			// elevation is 23
+			Texture texture = getTexture(getTileTexture(l.biome));
+			int width = 65 * 2;
+			int height = 49 * 2;
+			int tileHeight = 89 * 2;
+			int elevation = 23 * 2;
+
+			int x = (int) l.pos.x * width;
+			if (l.pos.y % 2 == 0)
+				x -= width / 2;
+			int y = (int) l.pos.y * height + elevation * l.elevation;
+
+			batch.draw(texture, x, y, width, tileHeight);
+			System.out.println(l.pos.x + "/" + l.pos.y);
+		}
+	}
+
 	private void renderLocations(SpriteBatch batch) {
 		Texture texture = getTexture(Textures.SPRITE_LOCATION);
 		Texture textureSelected = getTexture(Textures.SPRITE_LOCATION_SELECTED);
@@ -296,7 +321,8 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				}
 				Location left = e.getKey().left;
 				Location right = e.getKey().right;
-				if (!(left.discovered || accessibleNeighbors.contains(left)) || !(right.discovered || accessibleNeighbors.contains(right))) {
+				if (!(left.discovered || accessibleNeighbors.contains(left))
+						|| !(right.discovered || accessibleNeighbors.contains(right))) {
 					continue;
 				}
 

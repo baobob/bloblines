@@ -13,15 +13,6 @@ import org.bloblines.data.action.Action;
 import org.bloblines.data.action.BattleAction;
 import org.bloblines.utils.XY;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.hoten.delaunay.geom.Point;
-import com.hoten.delaunay.geom.Rectangle;
-import com.hoten.delaunay.voronoi.nodename.as3delaunay.Edge;
-import com.hoten.delaunay.voronoi.nodename.as3delaunay.LineSegment;
-import com.hoten.delaunay.voronoi.nodename.as3delaunay.Voronoi;
-
 public class Area {
 	public List<Location> locations = new ArrayList<>();
 	public Map<String, Location> locationsByName = new HashMap<>();
@@ -71,7 +62,7 @@ public class Area {
 
 	/***************************************************************************************************************************
 	 * ************************************** New Graph Structure based on Voronoi *********************************************
-	 * ************************************************************************************************************************/
+	 ************************************************************************************************************************/
 
 	public String name;
 
@@ -82,35 +73,37 @@ public class Area {
 
 	public Location startLocation = null;
 
-	public Pixmap pixmap;
-
-	public Area(Voronoi v, String name) {
-		this.name = name;
-		Rectangle r = v.get_plotBounds();
-		width = r.width;
-		height = r.height;
-
-		int index = 0;
-
-		for (Point p : v.siteCoords()) {
-			Location location = new Location();
-			location.pos = new XY(p);
-			location.name = "Location #" + index++;
-
-			locationsByPos.put(location.pos, location);
-			locations.add(location);
-			// This initializes some stuff in voronoi graph
-			v.region(p);
+	public void createLocations(int width, int height) {
+		for (int y = height - 1; y >= 0; y--) {
+			for (int x = 0; x < width; x++) {
+				Location location = new Location();
+				location.pos = new XY(x, y);
+				location.name = "Location #" + (x + y * width);
+				locationsByPos.put(location.pos, location);
+				locations.add(location);
+			}
 		}
 
-		for (Edge e : v.edges()) {
-			Location left = locationsByPos.get(new XY(e.get_leftSite().get_coord()));
-			Location right = locationsByPos.get(new XY(e.get_rightSite().get_coord()));
-			LineSegment borderLine = e.voronoiEdge();
-			if (borderLine.p0 != null && borderLine.p1 != null) {
-				Border border = new Border(left, right, new XY(borderLine.p0), new XY(borderLine.p1));
-				left.addBorder(border);
-				right.addBorder(border);
+		for (Location l : locations) {
+			if (l.pos.x < width - 1) {
+				Location rightNeighbor = locationsByPos.get(new XY(l.pos.x + 1, l.pos.y));
+				Border border = new Border(l, rightNeighbor);
+				l.addBorder(border);
+				rightNeighbor.addBorder(border);
+				borders.add(border);
+			}
+			if (l.pos.y < height - 1 && (l.pos.y % 2 == 0 || l.pos.x < width - 1)) {
+				Location bottomRightNeighbor = locationsByPos.get(new XY((l.pos.y % 2 == 0) ? l.pos.x : l.pos.x + 1, l.pos.y + 1));
+				Border border = new Border(l, bottomRightNeighbor);
+				l.addBorder(border);
+				bottomRightNeighbor.addBorder(border);
+				borders.add(border);
+			}
+			if (l.pos.y < height - 1 && (l.pos.y % 2 == 1 || l.pos.x > 0)) {
+				Location bottomLeftNeighbor = locationsByPos.get(new XY((l.pos.y % 2 == 0) ? l.pos.x - 1 : l.pos.x, l.pos.y + 1));
+				Border border = new Border(l, bottomLeftNeighbor);
+				l.addBorder(border);
+				bottomLeftNeighbor.addBorder(border);
 				borders.add(border);
 			}
 		}
@@ -119,7 +112,7 @@ public class Area {
 	public void riseMountains(Random random) {
 		List<Integer> elevations = new ArrayList<>(locations.size());
 		for (int i = 0; i < locations.size(); i++) {
-			elevations.add(1 + random.nextInt(100));
+			elevations.add(1 + random.nextInt(10));
 		}
 		Collections.sort(elevations);
 		Collections.reverse(elevations);
@@ -141,7 +134,7 @@ public class Area {
 		}
 	}
 
-	public void setBiomes(int seaLevel) {
+	public void setBiomes(int seaLevel, int hillLevel, int mountainLevel) {
 		for (Location l : locations) {
 			if (l.elevation <= seaLevel) {
 				l.biome = Biome.OCEAN;
@@ -155,9 +148,9 @@ public class Area {
 					}
 				}
 				if (l.biome == null) {
-					if (l.elevation > 90) {
+					if (l.elevation >= mountainLevel) {
 						l.biome = Biome.MOUNTAIN;
-					} else if (l.elevation > 70) {
+					} else if (l.elevation >= hillLevel) {
 						l.biome = Biome.HILL;
 					} else {
 						l.biome = Biome.GRASSLAND;
@@ -217,43 +210,6 @@ public class Area {
 				Action npcAction = new Action(ActionType.SPEAK_TO_NPC, "Talk to travelling " + npc, l.biome);
 				l.actions.add(npcAction);
 			}
-		}
-	}
-
-	public void buildPixmap() {
-		pixmap = new Pixmap((int) width, (int) height, Format.RGBA8888);
-		for (Location l : locations) {
-			pixmap.setColor(l.biome.getColor());
-			List<XY> corners = l.getCorners();
-			int x1 = (int) corners.get(0).x;
-			int y1 = (int) corners.get(0).y;
-
-			int x2 = (int) corners.get(1).x;
-			int y2 = (int) corners.get(1).y;
-
-			int x3 = (int) corners.get(2).x;
-			int y3 = (int) corners.get(2).y;
-
-			pixmap.fillTriangle(x1, y1, x2, y2, x3, y3);
-
-			for (int i = 3; i < corners.size(); i++) {
-				x2 = x3;
-				y2 = y3;
-				x3 = (int) corners.get(i).x;
-				y3 = (int) corners.get(i).y;
-				pixmap.fillTriangle(x1, y1, x2, y2, x3, y3);
-			}
-
-			pixmap.setColor(Color.BLACK);
-			for (Border border : borders) {
-				// TODO : use 2 triangles to create a thick line
-				pixmap.drawLine((int) border.leftCorner.x, (int) border.leftCorner.y, (int) border.rightCorner.x,
-						(int) border.rightCorner.y);
-			}
-
-			// pixmap.setColor(Color.BLACK);
-			// pixmap.fillCircle((int) l.pos.x, (int) l.pos.y, 10);
-
 		}
 	}
 }

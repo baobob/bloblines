@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bloblines.data.game.Player;
+import org.bloblines.data.map.Location;
 import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +36,7 @@ public class UiPlayer {
 
 	public UiPlayer(Player p) {
 		player = p;
-		currentUiPos = player.pos;
+		currentUiPos = UiLocation.getUiXY(player.location);
 		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
 
 		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(32, 32);
@@ -54,12 +55,14 @@ public class UiPlayer {
 
 	public void update(float delta) {
 		stateTime += delta;
-		if (player.pos.equals(currentUiPos)) {
+		XY dest = UiLocation.getUiXY(player.location);
+		if (dest.equals(currentUiPos)) {
 			currentAnimation = MOVE_DOWN;
 			return;
 		}
-		float xDest = player.pos.x;
-		float yDest = player.pos.y;
+
+		float xDest = dest.x;
+		float yDest = dest.y;
 		float xCurr = currentUiPos.x;
 		float yCurr = currentUiPos.y;
 
@@ -92,6 +95,13 @@ public class UiPlayer {
 		currentUiPos.y += ay;
 	}
 
+	public boolean isAtLocation(Location l) {
+		if (player.location.equals(l)) {
+			return true;
+		}
+		return false;
+	}
+
 	public TextureRegion getAnimation() {
 		return anims.get(currentAnimation).getKeyFrame(stateTime, true);
 	}
@@ -102,10 +112,6 @@ public class UiPlayer {
 			keyFrames.add(r[i][col]);
 		}
 		return new Animation(0.1f, keyFrames);
-	}
-
-	public XY getPos() {
-		return currentUiPos;
 	}
 
 	public XY getCenter() {

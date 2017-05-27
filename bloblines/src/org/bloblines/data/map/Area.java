@@ -14,6 +14,8 @@ import org.bloblines.data.action.BattleAction;
 import org.bloblines.utils.XY;
 
 public class Area {
+	public double width;
+	public double height;
 	public List<Location> locations = new ArrayList<>();
 	public Map<String, Location> locationsByName = new HashMap<>();
 	public Map<XY, Location> locationsByPos = new HashMap<>();
@@ -66,14 +68,13 @@ public class Area {
 
 	public String name;
 
-	public double width;
-	public double height;
-
 	public Set<Border> borders = new HashSet<>();
 
 	public Location startLocation = null;
 
 	public void createLocations(int width, int height) {
+		this.width = width;
+		this.height = height;
 		for (int y = height - 1; y >= 0; y--) {
 			for (int x = 0; x < width; x++) {
 				Location location = new Location();

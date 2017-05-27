@@ -11,7 +11,6 @@ import org.bloblines.data.action.Action;
 import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Area;
-import org.bloblines.data.map.Biome;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
 import org.bloblines.ui.BlobScreen;
@@ -45,6 +44,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	// private MenuGroup menuGroup;
 
 	public UiPlayer uiPlayer;
+	public UiArea uiArea;
 
 	private int debugHeight;
 	private boolean showDebugPanel = false;
@@ -71,7 +71,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		super(game);
 		uiPlayer = new UiPlayer(game.player);
 		area = game.player.area;
-
+		uiArea = new UiArea(area);
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -168,9 +168,8 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 		game.spriteBatch.begin();
-		renderMap(game.spriteBatch);
-		renderPaths(game.spriteBatch);
-		renderLocations(game.spriteBatch);
+		uiArea.render(game.spriteBatch);
+		// renderPaths(game.spriteBatch);
 		uiPlayer.render(game.spriteBatch);
 
 		if (showDebugPanel) {
@@ -238,71 +237,15 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		camera.position.y = uiPlayer.getCenter().y;
 		if (camera.position.x - w2 <= 0) {
 			camera.position.x = w2;
-		} else if (camera.position.x + w2 >= area.width) {
-			camera.position.x = (float) (area.width - w2);
+		} else if (camera.position.x + w2 >= uiArea.width) {
+			camera.position.x = (float) (uiArea.width - w2);
 		}
 		if (camera.position.y - h2 <= 0) {
 			camera.position.y = h2;
-		} else if (camera.position.y + h2 >= area.height) {
-			camera.position.y = (float) (area.height - h2);
+		} else if (camera.position.y + h2 >= uiArea.height) {
+			camera.position.y = (float) (uiArea.height - h2);
 		}
 		camera.update();
-	}
-
-	private Textures getTileTexture(Biome biome) {
-		if (biome == Biome.OCEAN)
-			return Textures.TILE_WATER;
-		if (biome == Biome.BEACH)
-			return Textures.TILE_BEACH;
-		if (biome == Biome.HILL)
-			return Textures.TILE_HILL;
-		if (biome == Biome.MOUNTAIN)
-			return Textures.TILE_MOUNTAIN;
-		return Textures.TILE_GRASS;
-	}
-
-	private void renderMap(SpriteBatch batch) {
-		for (Location l : area.locations) {
-			// tiles 65 * 89
-			// elevation is 23
-			Texture texture = getTexture(getTileTexture(l.biome));
-			int width = 65 * 2;
-			int height = 49 * 2;
-			int tileHeight = 89 * 2;
-			int elevation = 23 * 2;
-
-			int x = (int) l.pos.x * width;
-			if (l.pos.y % 2 == 0)
-				x -= width / 2;
-			int y = (int) l.pos.y * height + elevation * l.elevation;
-
-			batch.draw(texture, x, y, width, tileHeight);
-			System.out.println(l.pos.x + "/" + l.pos.y);
-		}
-	}
-
-	private void renderLocations(SpriteBatch batch) {
-		Texture texture = getTexture(Textures.SPRITE_LOCATION);
-		Texture textureSelected = getTexture(Textures.SPRITE_LOCATION_SELECTED);
-
-		Set<Location> currentLocations = game.player.location.getAccessibleNeighbors();
-
-		for (Location location : area.locations) {
-			if (!location.reachable) {
-				continue;
-			}
-			if (!location.discovered && !currentLocations.contains(location)) {
-				continue;
-			}
-			int width = 64;
-			int height = width * texture.getHeight() / texture.getWidth();
-
-			if (location.equals(mouseClosestLocation) && mouseOverLocation) {
-				batch.draw(texture, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
-			} else {
-				batch.draw(textureSelected, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
-			}
-		}
 	}
 
 	private void renderPaths(SpriteBatch batch) {
@@ -419,7 +362,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		menu.setWidth(160);
 		menu.setHeight(240);
 		menu.clearChildren();
-		if (location.pos.equals(uiPlayer.getPos())) {
+		if (uiPlayer.isAtLocation(location)) {
 			// Current location contextual menu
 			for (Action a : location.actions) {
 				ActionMenu l = new ActionMenu(a);

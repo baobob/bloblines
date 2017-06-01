@@ -14,6 +14,8 @@ import org.bloblines.data.map.Area;
 import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
 import org.bloblines.ui.BlobScreen;
+import org.bloblines.ui.ring.MenuGroup;
+import org.bloblines.ui.ring.MenuHelper;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
@@ -60,7 +62,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private boolean mouseOverLocation;
 
 	/** Current context menu */
-	private Window contextMenu = null;
+	private MenuGroup contextMenu = null;
 
 	/** Status window */
 	private Window statusWindow = null;
@@ -160,14 +162,9 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		updatePlayer(delta);
 		updateCamera();
 
-		mouseOverLocation = false;
-		mouseClosestLocation = closestLocation();
-		if (getMousePos().distance(mouseClosestLocation.pos) < 32) {
-			mouseOverLocation = true;
-		}
-
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 		game.spriteBatch.begin();
+
 		uiArea.render(game.spriteBatch);
 		// renderPaths(game.spriteBatch);
 		uiPlayer.render(game.spriteBatch);
@@ -179,6 +176,8 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			debug("camera position: " + camera.position.x + "/" + camera.position.y);
 			debug("camera zoom: " + camera.zoom);
 			debug("mouse position: " + Gdx.input.getX() + "/" + Gdx.input.getY());
+			if (mouseOverLocation)
+				debug("mouse is over location " + mouseClosestLocation.pos.x + "/" + mouseClosestLocation.pos.y);
 			debug((int) (1.0f / delta) + " FPS");
 		}
 
@@ -201,12 +200,12 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private Location closestLocation() {
 		XY mouse = getMousePos();
 		Location closestLocation = area.locations.get(0);
-		double d = mouse.distance(closestLocation.pos);
+		double d = mouse.distance(UiLocation.getUiLocationCenterXY(closestLocation));
 		boolean changed = true;
 		while (changed) {
 			changed = false;
 			for (Location l : closestLocation.neighbors.values()) {
-				double distance = mouse.distance(l.pos);
+				double distance = mouse.distance(UiLocation.getUiLocationCenterXY(l));
 				if (distance < d) {
 					d = distance;
 					closestLocation = l;
@@ -349,9 +348,12 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			if (contextMenu != null) {
 				contextMenu.remove();
 			}
-			if (mouseOverLocation) {
-				contextMenu = getContextMenu(mouseClosestLocation, screenX, screenY);
-				stage.addActor(contextMenu);
+
+			mouseClosestLocation = closestLocation();
+			if (getMousePos().distance(UiLocation.getUiLocationCenterXY(mouseClosestLocation)) < 32) {
+				XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
+				contextMenu = new MenuGroup(game, MenuHelper.getLocationActions(mouseClosestLocation),
+						camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
 			}
 		}
 		return false;
@@ -448,21 +450,6 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				}
 			});
 		}
-	}
-
-	/**
-	 * Translates screen coordinates into Map coordinates
-	 * 
-	 * @param x
-	 *            screen coordinate X
-	 * @param y
-	 *            screen coordinate Y
-	 * @return translated coordinates based on current camera projection
-	 */
-	private XY getMapCoordinates(int x, int y) {
-		Vector3 screenVector = new Vector3(x, y, 0);
-		Vector3 worldVector = camera.unproject(screenVector).scl(1f / BlobOverworld.TILE_WIDTH);
-		return new XY((int) worldVector.x, (int) worldVector.y);
 	}
 
 	@Override

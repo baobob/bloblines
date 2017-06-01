@@ -24,42 +24,10 @@ public class Area {
 
 	}
 
-	public void addLocationDeprecated(Location l) {
-		l.pos.x = (int) ((int) (l.pos.x / 16)) * 16;
-		l.pos.y = (int) ((int) (l.pos.y / 16)) * 16;
-		locations.add(l);
-		locationsByName.put(l.name, l);
-		locationsByPos.put(new XY(l.pos.x / 16, l.pos.y / 16), l);
-	}
-
 	public void addLocation(Location l) {
 		locations.add(l);
 		locationsByName.put(l.name, l);
 		locationsByPos.put(l.pos, l);
-	}
-
-	public static Area createArea() {
-		Area a = new Area();
-
-		Location l1 = new Location();
-		l1.name = "Location 1";
-		l1.description = "First location of the game";
-		l1.pos = new XY(50, 50);
-		a.addLocationDeprecated(l1);
-
-		Location l2 = new Location();
-		l2.name = "Location 2";
-		l2.description = "Second location of the game";
-		l2.pos = new XY(750, 230);
-		a.addLocationDeprecated(l2);
-
-		Location l3 = new Location();
-		l3.name = "Location 3";
-		l3.description = "Third location of the game";
-		l3.pos = new XY(630, 880);
-		a.addLocationDeprecated(l3);
-
-		return a;
 	}
 
 	/***************************************************************************************************************************
@@ -118,9 +86,11 @@ public class Area {
 		Collections.sort(elevations);
 		Collections.reverse(elevations);
 
-		Location topMountain = locations.get(random.nextInt(locations.size()));
 		List<Location> locationsToRise = new ArrayList<>();
-		locationsToRise.add(topMountain);
+		locationsToRise.add(locations.get(random.nextInt(locations.size())));
+		locationsToRise.add(locations.get(random.nextInt(locations.size())));
+		locationsToRise.add(locations.get(random.nextInt(locations.size())));
+
 		while (locationsToRise.size() > 0) {
 			Location l = locationsToRise.remove(0);
 			if (l.elevation > 0) {
@@ -163,27 +133,34 @@ public class Area {
 
 	public void setRoads(Random random) {
 		for (Location l : locations) {
-			if (l.biome == Biome.OCEAN || l.biome == Biome.MOUNTAIN) {
+			if (l.biome == Biome.OCEAN) {
 				l.reachable = false;
 				for (Border b : l.borders.values()) {
 					b.notPassable();
 				}
 			}
 		}
+
 		for (Location l : locations) {
-			if (l.passablePaths == 0) {
+			if (l.passablePaths < 2) {
 				continue;
 			}
-			// We will randomly remove some roads
-			int roadsToRemove = random.nextInt(l.passablePaths);
-			List<Border> borders = new ArrayList<>(l.borders.values());
-			while (roadsToRemove > 0) {
-				Border randomBorder = borders.get(random.nextInt(borders.size()));
-				if (l.passablePaths > 1 && randomBorder.other(l).passablePaths > 1) {
-					randomBorder.notPassable();
+			if (random.nextBoolean()) {
+				l.reachable = false;
+				for (Border b : l.borders.values()) {
+					b.notPassable();
 				}
-				roadsToRemove--;
 			}
+			// We will randomly remove some roads
+			// int roadsToRemove = random.nextInt(l.passablePaths);
+			// List<Border> borders = new ArrayList<>(l.borders.values());
+			// while (roadsToRemove > 0) {
+			// Border randomBorder = borders.get(random.nextInt(borders.size()));
+			// if (l.passablePaths > 1 && randomBorder.other(l).passablePaths > 1) {
+			// randomBorder.notPassable();
+			// }
+			// roadsToRemove--;
+			// }
 		}
 	}
 

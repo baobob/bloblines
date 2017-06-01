@@ -42,8 +42,9 @@ public class MenuGroup extends Group {
 	/** Description window. This not a a menu children cause it shouldn't rotate */
 	private Window descWindow;
 
-	public MenuGroup(Game game, List<MenuElement> items, Stage stage) {
+	public MenuGroup(Game game, List<MenuElement> items, Vector3 menuPosition, Stage stage) {
 		this.game = game;
+		setPosition(menuPosition.x, menuPosition.y);
 		initMenuComponents(stage);
 		openMenu(items, false);
 		stage.addActor(this);
@@ -89,7 +90,8 @@ public class MenuGroup extends Group {
 
 	private void setMenuElements(List<MenuElement> items) {
 		nextElementVector = new Vector3(0, ELEMENTS_DISTANCE, 0);
-		setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		// setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		// setOrigin(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		for (MenuElement item : items) {
 			addElement(item);
 		}
@@ -110,7 +112,7 @@ public class MenuGroup extends Group {
 
 		item.setWidth(ICON_SIZE);
 		item.setHeight(ICON_SIZE);
-		// item.setCenterPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
+		item.setPosition(getOriginX() + nextElementVector.x + tx, getOriginY() + nextElementVector.y + ty);
 		addActor(item);
 		nextElementVector.rotate(-elementsAngle, 0, 0, 1);
 	}

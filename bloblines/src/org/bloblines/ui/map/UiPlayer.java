@@ -36,7 +36,7 @@ public class UiPlayer {
 
 	public UiPlayer(Player p) {
 		player = p;
-		currentUiPos = UiLocation.getUiXY(player.location);
+		currentUiPos = UiLocation.getUiLocationCenterXY(player.location);
 		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
 
 		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(32, 32);
@@ -55,7 +55,7 @@ public class UiPlayer {
 
 	public void update(float delta) {
 		stateTime += delta;
-		XY dest = UiLocation.getUiXY(player.location);
+		XY dest = UiLocation.getUiLocationCenterXY(player.location);
 		if (dest.equals(currentUiPos)) {
 			currentAnimation = MOVE_DOWN;
 			return;
@@ -85,7 +85,7 @@ public class UiPlayer {
 
 		double dz = Math.sqrt(dx * dx + dy * dy);
 		if (dz < 3) {
-			currentUiPos = new XY(player.pos);
+			currentUiPos = UiLocation.getUiLocationCenterXY(player.location);
 			return;
 		}
 		double ax = 3 * dx / dz;
@@ -120,6 +120,6 @@ public class UiPlayer {
 
 	public void render(SpriteBatch batch) {
 		TextureRegion frame = getAnimation();
-		batch.draw(frame, currentUiPos.x - WIDTH / 2, currentUiPos.y - HEIGHT / 4, UiPlayer.WIDTH, UiPlayer.HEIGHT);
+		batch.draw(frame, currentUiPos.x - WIDTH / 2, currentUiPos.y - HEIGHT / 2, UiPlayer.WIDTH, UiPlayer.HEIGHT);
 	}
 }

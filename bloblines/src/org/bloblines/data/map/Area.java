@@ -81,12 +81,13 @@ public class Area {
 	public void riseMountains(Random random) {
 		List<Integer> elevations = new ArrayList<>(locations.size());
 		for (int i = 0; i < locations.size(); i++) {
-			elevations.add(1 + random.nextInt(10));
+			elevations.add(1 + random.nextInt(9));
 		}
 		Collections.sort(elevations);
 		Collections.reverse(elevations);
 
 		List<Location> locationsToRise = new ArrayList<>();
+		locationsToRise.add(locations.get(random.nextInt(locations.size())));
 		locationsToRise.add(locations.get(random.nextInt(locations.size())));
 		locationsToRise.add(locations.get(random.nextInt(locations.size())));
 		locationsToRise.add(locations.get(random.nextInt(locations.size())));

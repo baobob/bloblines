@@ -25,6 +25,16 @@ public class Location {
 
 	public boolean discovered = false;
 
+	public Map<Border, Location> neighbors = new HashMap<>();
+	public Map<Location, Border> borders = new HashMap<>();
+
+	/** Elevation between 1 and 100. 0 is not initialized */
+	public int elevation = 0;
+	public boolean reachable = true;
+
+	public Biome biome = null;
+	public int passablePaths = 0;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -49,21 +59,6 @@ public class Location {
 			return false;
 		return true;
 	}
-
-	/***************************************************************************************************************************
-	 * ************************************** New Graph Structure based on Voronoi *********************************************
-	 ************************************************************************************************************************/
-
-	// public Set<Border> borders = new HashSet<Border>();
-	public Map<Border, Location> neighbors = new HashMap<>();
-	public Map<Location, Border> borders = new HashMap<>();
-
-	/** Elevation between 1 and 100. 0 is not initialized */
-	public int elevation = 0;
-	public boolean reachable = true;
-
-	public Biome biome = null;
-	public int passablePaths = 0;
 
 	public void addBorder(Border b) {
 		if (b.left.equals(this)) {

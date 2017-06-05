@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bloblines.Game;
+import org.bloblines.data.game.Player;
+import org.bloblines.data.map.Location;
+import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -28,7 +31,8 @@ public class MenuGroup extends Group {
 
 	private int elementsAngle = 35;
 
-	private Game game;
+	public Game game;
+	public Location location;
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
 	 */
@@ -42,11 +46,12 @@ public class MenuGroup extends Group {
 	/** Description window. This not a a menu children cause it shouldn't rotate */
 	private Window descWindow;
 
-	public MenuGroup(Game game, List<MenuElement> items, Vector3 menuPosition, Stage stage) {
+	public MenuGroup(Game game, Location location, Vector3 menuPosition, Stage stage) {
 		this.game = game;
+		this.location = location;
 		setPosition(menuPosition.x, menuPosition.y);
 		initMenuComponents(stage);
-		openMenu(items, false);
+		openMenu(getLocationActions(game.player, location), false);
 		stage.addActor(this);
 	}
 
@@ -207,6 +212,19 @@ public class MenuGroup extends Group {
 		// fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
 		// fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
 		fgShapeRenderer.end();
+	}
+
+	public static List<MenuElement> getLocationActions(Player p, Location location) {
+		List<MenuElement> items = new ArrayList<MenuElement>();
+		items.add(new MenuElement("Location description", Textures.ICON_LOCATION));
+		if (location.equals(p.location)) {
+			// Menu for current location
+			items.add(new CurrentLocationMenu(p, location));
+			items.add(new PlayerMenu(p, location));
+		} else if (p.location.neighbors.values().contains(location) && location.reachable) {
+			items.add(new TravelMenu(location));
+		}
+		return items;
 	}
 
 	private class MenuState {

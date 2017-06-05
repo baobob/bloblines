@@ -31,11 +31,14 @@ public class Assets extends AssetManager {
 		ICON_PARAMS("icons/cog.png"), 
 		ICON_BLOB("icons/drop.png"), 
 		ICON_HEART("icons/heart.png"),
+		ICON_SPEECH("icons/speech-bubble.png"),
 		
 		ICON_STATUS("icons/icons8/48/Food/protein-48.png"),
 		ICON_QUEST_LOG("icons/icons8/48/Business/rules-48.png"),
-		ICON_TRAVEL("icons/icons8/48/Maps/wind_rose-48.png"),
+		ICON_TRAVEL("icons/icons8/48/Maps/treasury_map-48.png"),
 		ICON_CURRENT_ACTION("icons/icons8/48/Maps/map_marker-48.png"),
+		ICON_SWORD("icons/icons8/48/Gaming/minecraft_sword-48.png"), 
+		ICON_SHOP("icons/icons8/48/Business/shop-48.png"),
 		
 		ICON_0("icons/icons8/48/Alphabet/0-48.png"),
 		ICON_1("icons/icons8/48/Alphabet/1-48.png"),

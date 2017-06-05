@@ -11,10 +11,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class UiLocation {
 
-	public static int TILE_WIDTH = 65 * 2;
-	public static int TILE_HEIGHT = 89 * 2;
-	public static int TILE_HEIGHT_DIFF = 49 * 2;
-	public static int TILE_ELEVATION_DIFF = 23 * 2;
+	public static int ZOOM_FACTOR = 2;
+	public static int TILE_WIDTH = 65 * ZOOM_FACTOR;
+	public static int TILE_HEIGHT = 89 * ZOOM_FACTOR;
+	public static int TILE_HEIGHT_DIFF = 49 * ZOOM_FACTOR;
+	public static int TILE_ELEVATION_DIFF = 23 * ZOOM_FACTOR;
 	public static Texture LOCATION_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION);
 	public static int LOCATION_WIDTH = 65;
 	public static int LOCATION_HEIGHT = LOCATION_WIDTH * LOCATION_SPRITE.getHeight() / LOCATION_SPRITE.getWidth();;

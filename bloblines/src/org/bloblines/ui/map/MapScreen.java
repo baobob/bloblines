@@ -15,7 +15,6 @@ import org.bloblines.data.map.Border;
 import org.bloblines.data.map.Location;
 import org.bloblines.ui.BlobScreen;
 import org.bloblines.ui.ring.MenuGroup;
-import org.bloblines.ui.ring.MenuHelper;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
@@ -161,6 +160,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 		updatePlayer(delta);
 		updateCamera();
+		updateMenu();
 
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 		game.spriteBatch.begin();
@@ -197,7 +197,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		return new XY(xm, ym);
 	}
 
-	private Location closestLocation() {
+	private Location mouseOverLocation() {
 		XY mouse = getMousePos();
 		Location closestLocation = area.locations.get(0);
 		double d = mouse.distance(UiLocation.getUiLocationCenterXY(closestLocation));
@@ -214,7 +214,10 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				}
 			}
 		}
-		return closestLocation;
+		if (getMousePos().distance(UiLocation.getUiLocationCenterXY(closestLocation)) < 32) {
+			return closestLocation;
+		}
+		return null;
 	}
 
 	private void debug(String message) {
@@ -245,6 +248,14 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			camera.position.y = (float) (uiArea.height - h2);
 		}
 		camera.update();
+	}
+
+	private void updateMenu() {
+		if (contextMenu != null) {
+			XY menuPosition = UiLocation.getUiLocationCenterXY(contextMenu.location);
+			Vector3 menuPositionProjected = camera.project(new Vector3(menuPosition.x, menuPosition.y, 0));
+			contextMenu.setPosition(menuPositionProjected.x, menuPositionProjected.y);
+		}
 	}
 
 	private void renderPaths(SpriteBatch batch) {
@@ -345,18 +356,24 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (button == Buttons.LEFT) {
-			if (contextMenu != null) {
-				contextMenu.remove();
-			}
-
-			mouseClosestLocation = closestLocation();
-			if (getMousePos().distance(UiLocation.getUiLocationCenterXY(mouseClosestLocation)) < 32) {
-				XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
-				contextMenu = new MenuGroup(game, MenuHelper.getLocationActions(mouseClosestLocation),
-						camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
-			}
+			handleMenu();
+			return true;
 		}
 		return false;
+	}
+
+	private void handleMenu() {
+		if (contextMenu != null) {
+			contextMenu.remove();
+			contextMenu = null;
+		}
+
+		mouseClosestLocation = mouseOverLocation();
+		if (mouseClosestLocation != null) {
+			XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
+			contextMenu = new MenuGroup(game, mouseClosestLocation, camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
+		}
+
 	}
 
 	private Window getContextMenu(Location location, int x, int y) {

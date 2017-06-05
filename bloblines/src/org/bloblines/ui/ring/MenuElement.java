@@ -1,6 +1,7 @@
 package org.bloblines.ui.ring;
 
 import org.bloblines.Game;
+import org.bloblines.data.map.ActionType;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Buttons;
@@ -47,4 +48,45 @@ public class MenuElement extends Image {
 	}
 
 	// disabled method for submenus ?
+
+	public Textures getTexture(ActionType type) {
+		switch (type) {
+		case FIGHT:
+			return Textures.ICON_SWORD;
+		case STATUS:
+			return Textures.ICON_HEART;
+		case SPEAK_TO_NPC:
+			return Textures.ICON_SPEECH;
+		case SHOP:
+			return Textures.ICON_SHOP;
+		}
+		return null;
+	}
+
+	public Textures getTextureNumber(int i) {
+		switch (i) {
+		case 0:
+			return Textures.ICON_0;
+		case 1:
+			return Textures.ICON_1;
+		case 2:
+			return Textures.ICON_2;
+		case 3:
+			return Textures.ICON_3;
+		case 4:
+			return Textures.ICON_4;
+		case 5:
+			return Textures.ICON_5;
+		case 6:
+			return Textures.ICON_6;
+		case 7:
+			return Textures.ICON_7;
+		case 8:
+			return Textures.ICON_8;
+		case 9:
+			return Textures.ICON_9;
+		}
+		return null;
+	}
+
 }

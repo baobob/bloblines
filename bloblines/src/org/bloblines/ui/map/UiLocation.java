@@ -1,8 +1,13 @@
 package org.bloblines.ui.map;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bloblines.Game;
 import org.bloblines.data.map.Biome;
 import org.bloblines.data.map.Location;
+import org.bloblines.data.map.World;
 import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
@@ -14,7 +19,7 @@ public class UiLocation {
 	public static int ZOOM_FACTOR = 2;
 	public static int TILE_WIDTH = 65 * ZOOM_FACTOR;
 	public static int TILE_HEIGHT = 89 * ZOOM_FACTOR;
-	public static int TILE_HEIGHT_DIFF = 49 * ZOOM_FACTOR;
+	public static int TILE_HEIGHT_DIFF = 48 * ZOOM_FACTOR;
 	public static int TILE_ELEVATION_DIFF = 23 * ZOOM_FACTOR;
 	public static Texture LOCATION_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION);
 	public static int LOCATION_WIDTH = 65;
@@ -22,8 +27,50 @@ public class UiLocation {
 
 	public Location location;
 
+	public Map<XY, Textures> randomElements;
+
 	public UiLocation(Location l) {
 		this.location = l;
+		this.randomElements = new HashMap<>();
+		initRandomVisualElements();
+	}
+
+	private void initRandomVisualElements() {
+		switch (location.biome) {
+		case OCEAN:
+			if (World.RANDOM.nextInt(10) < 3) {
+				randomElements.put(new XY(World.RANDOM.nextInt(50) * ZOOM_FACTOR, (35 + World.RANDOM.nextInt(40)) * ZOOM_FACTOR),
+						Textures.TILE_ELT_WAVE);
+			}
+			if (World.RANDOM.nextInt(10) < 2) {
+				randomElements.put(new XY(World.RANDOM.nextInt(50) * ZOOM_FACTOR, (35 + World.RANDOM.nextInt(40)) * ZOOM_FACTOR),
+						Textures.TILE_ELT_WAVE);
+			}
+			break;
+		case BEACH:
+			if (World.RANDOM.nextInt(10) < 3) {
+				randomElements.put(new XY(World.RANDOM.nextInt(50) * ZOOM_FACTOR, (35 + World.RANDOM.nextInt(40)) * ZOOM_FACTOR),
+						Textures.TILE_ELT_SAND_HILL);
+			}
+			if (World.RANDOM.nextInt(10) < 3) {
+				Textures cactusTexture = Textures.TILE_ELT_SAND_CACTUS1;
+				if (World.RANDOM.nextBoolean() && World.RANDOM.nextBoolean()) {
+					cactusTexture = Textures.TILE_ELT_SAND_CACTUS2;
+				} else if (World.RANDOM.nextBoolean()) {
+					cactusTexture = Textures.TILE_ELT_SAND_CACTUS3;
+				}
+				randomElements.put(new XY(World.RANDOM.nextInt(50) * ZOOM_FACTOR, (35 + World.RANDOM.nextInt(40)) * ZOOM_FACTOR),
+						cactusTexture);
+			}
+			break;
+		case GRASSLAND:
+			break;
+		case HILL:
+			break;
+		case MOUNTAIN:
+			break;
+
+		}
 	}
 
 	private Textures getTileTexture(Biome biome) {
@@ -64,6 +111,12 @@ public class UiLocation {
 		XY tilePos = UiLocation.getUiTileXY(location);
 
 		batch.draw(texture, tilePos.x, tilePos.y, TILE_WIDTH, TILE_HEIGHT);
+
+		for (Entry<XY, Textures> e : randomElements.entrySet()) {
+			Texture eltTexture = Game.assets.getTexture(e.getValue());
+			batch.draw(eltTexture, tilePos.x + e.getKey().x, tilePos.y + e.getKey().y, eltTexture.getWidth() * ZOOM_FACTOR,
+					eltTexture.getHeight() * ZOOM_FACTOR);
+		}
 
 		// Render location spot
 		if (location.reachable || location.discovered) {

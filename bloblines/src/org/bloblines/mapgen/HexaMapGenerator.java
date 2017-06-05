@@ -16,9 +16,6 @@ public class HexaMapGenerator {
 	 */
 	public Random random = null;
 
-	/** seed for Random number generator. Given as an argument to constructor */
-	public long seed;
-
 	/** width of generated map */
 	public int width;
 	/** height of generated map */
@@ -26,9 +23,8 @@ public class HexaMapGenerator {
 	/** number of locations in the map */
 	public int locations;
 
-	public HexaMapGenerator(long seed, int width, int height, int events) {
-		this.seed = seed;
-		this.random = new Random(seed);
+	public HexaMapGenerator(Random random, int width, int height, int events) {
+		this.random = random;
 		this.width = width;
 		this.height = height;
 		this.locations = events;

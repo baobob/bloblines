@@ -55,7 +55,13 @@ public class Assets extends AssetManager {
 		TILE_BEACH("world/hexagon/tileSand.png"), 
 		TILE_GRASS("world/hexagon/tileGrass.png"), 
 		TILE_HILL("world/hexagon/tileDirt_full.png"), 
-		TILE_MOUNTAIN("world/hexagon/tileSnow.png");
+		TILE_MOUNTAIN("world/hexagon/tileSnow.png"),
+		
+		TILE_ELT_SAND_CACTUS1("world/hexagon/treeCactus_1.png"),
+		TILE_ELT_SAND_CACTUS2("world/hexagon/treeCactus_2.png"),
+		TILE_ELT_SAND_CACTUS3("world/hexagon/treeCactus_3.png"),
+		TILE_ELT_SAND_HILL("world/hexagon/hillSand.png"),
+		TILE_ELT_WAVE("world/hexagon/waveWater.png"); 
 		// @formatter:on
 
 		Textures(String path) {

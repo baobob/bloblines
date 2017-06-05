@@ -369,47 +369,11 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		}
 
 		mouseClosestLocation = mouseOverLocation();
-		if (mouseClosestLocation != null) {
+		if (mouseClosestLocation != null && mouseClosestLocation.reachable) {
 			XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
 			contextMenu = new MenuGroup(game, mouseClosestLocation, camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
 		}
 
-	}
-
-	private Window getContextMenu(Location location, int x, int y) {
-		Window menu = new Window(location.name, getDefaultSkin());
-		menu.setWidth(160);
-		menu.setHeight(240);
-		menu.clearChildren();
-		if (uiPlayer.isAtLocation(location)) {
-			// Current location contextual menu
-			for (Action a : location.actions) {
-				ActionMenu l = new ActionMenu(a);
-				menu.add(l).width(150).padBottom(10);
-				menu.row();
-			}
-		} else {
-			// Distant location
-			MenuLabel info = new MenuLabel("Information");
-			menu.add(info).width(150).padBottom(10);
-			menu.row();
-
-			if (location.neighbors.values().contains(game.player.location) && game.player.location.borders.get(location).isPassable()) {
-				MenuLabel move = new TravelMenu(location);
-				menu.add(move).width(150).padBottom(10);
-				menu.row();
-			}
-
-		}
-		menu.setPosition(x, Gdx.graphics.getHeight() - y - menu.getHeight());
-		menu.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				event.setBubbles(false);
-				super.clicked(event, x, y);
-			}
-		});
-		return menu;
 	}
 
 	public class MenuLabel extends Label {

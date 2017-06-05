@@ -20,7 +20,7 @@ public class TravelMenu extends MenuElement {
 		if (keycode == Keys.ENTER) {
 			game.player.location = target;
 			game.player.pos = target.pos;
-			getMenu().openMenu(MenuGroup.getLocationActions(game.player, target), false);
+			getMenu().remove();
 			return true;
 		}
 		return false;

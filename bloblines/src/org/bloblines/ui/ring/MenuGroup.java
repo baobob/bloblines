@@ -28,9 +28,9 @@ public class MenuGroup extends Group {
 
 	private static final float ROTATION_DURATION = 0.08f;
 
-	private static final int ICON_SIZE = 32;
+	private static final int ICON_SIZE = 48;
 
-	private int elementsAngle = 35;
+	private int elementsAngle = 55;
 
 	public Game game;
 	public UiLocation uiLocation;

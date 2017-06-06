@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bloblines.Game;
-import org.bloblines.data.action.Action;
 import org.bloblines.data.battle.Character.Attributes;
 import org.bloblines.data.game.Blob;
 import org.bloblines.data.map.Area;
@@ -19,24 +18,18 @@ import org.bloblines.utils.Assets.Textures;
 import org.bloblines.utils.XY;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MapScreen extends BlobScreen implements InputProcessor {
 
@@ -389,63 +382,6 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			contextMenu = new MenuGroup(game, closestUiLocation, camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
 		}
 
-	}
-
-	public class MenuLabel extends Label {
-
-		public MenuLabel(CharSequence text) {
-			super(text, getDefaultSkin());
-			addListener(new ClickListener() {
-				@Override
-				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-					((Label) event.getTarget()).setColor(Color.RED);
-					event.setBubbles(false);
-				}
-
-				@Override
-				public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-					((Label) event.getTarget()).setColor(Color.WHITE);
-					event.setBubbles(false);
-				}
-			});
-			setWrap(true);
-		}
-	}
-
-	public class ActionMenu extends MenuLabel {
-		public Action action;
-
-		public ActionMenu(Action a) {
-			super(a.description);
-			action = a;
-			addListener(new ClickListener(Input.Buttons.LEFT) {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					contextMenu.remove();
-					event.setBubbles(false);
-					game.launchAction(action);
-				}
-			});
-		}
-	}
-
-	public class TravelMenu extends MenuLabel {
-		public Location destination;
-
-		public TravelMenu(Location d) {
-			super("Move here");
-			destination = d;
-			addListener(new ClickListener(Input.Buttons.LEFT) {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					game.player.location = destination;
-					game.player.pos = destination.pos;
-					destination.discovered = true;
-					contextMenu.remove();
-					event.setBubbles(false);
-				}
-			});
-		}
 	}
 
 	@Override

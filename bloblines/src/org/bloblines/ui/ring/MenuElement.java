@@ -5,6 +5,7 @@ import org.bloblines.data.map.ActionType;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,6 +21,20 @@ public class MenuElement extends Image {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				leftClick();
+			}
+		});
+
+		addListener(new ClickListener() {
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				((Image) event.getTarget()).setScale(1.3f);
+				event.setBubbles(false);
+			}
+
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				((Image) event.getTarget()).setScale(1);
+				event.setBubbles(false);
 			}
 		});
 	}

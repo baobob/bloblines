@@ -252,7 +252,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 	private void updateMenu() {
 		if (contextMenu != null) {
-			XY menuPosition = UiLocation.getUiLocationCenterXY(contextMenu.location);
+			XY menuPosition = UiLocation.getUiLocationCenterXY(contextMenu.uiLocation.location);
 			Vector3 menuPositionProjected = camera.project(new Vector3(menuPosition.x, menuPosition.y, 0));
 			contextMenu.setPosition(menuPositionProjected.x, menuPositionProjected.y);
 		}
@@ -366,12 +366,24 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		if (contextMenu != null) {
 			contextMenu.remove();
 			contextMenu = null;
+			for (UiLocation uiLocation : uiArea.uiLocations) {
+				uiLocation.selected = false;
+			}
 		}
 
 		mouseClosestLocation = mouseOverLocation();
 		if (mouseClosestLocation != null && mouseClosestLocation.reachable) {
 			XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
-			contextMenu = new MenuGroup(game, mouseClosestLocation, camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
+			UiLocation closestUiLocation = null;
+			for (UiLocation uiLocation : uiArea.uiLocations) {
+				if (mouseClosestLocation.equals(uiLocation.location)) {
+					closestUiLocation = uiLocation;
+					uiLocation.selected = true;
+				} else {
+					uiLocation.selected = false;
+				}
+			}
+			contextMenu = new MenuGroup(game, closestUiLocation, camera.project(new Vector3(menuPos.x, menuPos.y, 0)), stage);
 		}
 
 	}

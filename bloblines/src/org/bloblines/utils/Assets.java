@@ -51,11 +51,11 @@ public class Assets extends AssetManager {
 		ICON_8("icons/icons8/48/Alphabet/8-48.png"), 
 		ICON_9("icons/icons8/48/Alphabet/9-48.png"),
 
-		TILE_WATER("world/hexagon/tileWater.png"), 
-		TILE_BEACH("world/hexagon/tileSand.png"), 
-		TILE_GRASS("world/hexagon/tileGrass.png"), 
-		TILE_HILL("world/hexagon/tileDirt_full.png"), 
-		TILE_MOUNTAIN("world/hexagon/tileSnow.png"),
+		TILE_WATER("world/hexagon/tileWaterBig.png"), 
+		TILE_BEACH("world/hexagon/tileSandBig.png"), 
+		TILE_GRASS("world/hexagon/tileGrassBig.png"), 
+		TILE_HILL("world/hexagon/tileDirt_fullBig.png"), 
+		TILE_MOUNTAIN("world/hexagon/tileSnowBig.png"),
 		
 		TILE_ELT_SAND_CACTUS1("world/hexagon/treeCactus_1.png"),
 		TILE_ELT_SAND_CACTUS2("world/hexagon/treeCactus_2.png"),

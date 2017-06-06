@@ -16,16 +16,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class UiLocation {
 
-	public static int ZOOM_FACTOR = 2;
+	public static int ZOOM_FACTOR = 3;
 	public static int TILE_WIDTH = 65 * ZOOM_FACTOR;
 	public static int TILE_HEIGHT = 89 * ZOOM_FACTOR;
 	public static int TILE_HEIGHT_DIFF = 48 * ZOOM_FACTOR;
 	public static int TILE_ELEVATION_DIFF = 23 * ZOOM_FACTOR;
 	public static Texture LOCATION_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION);
+	public static Texture LOCATION_SELECTED_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION_SELECTED);
+
 	public static int LOCATION_WIDTH = 65;
 	public static int LOCATION_HEIGHT = LOCATION_WIDTH * LOCATION_SPRITE.getHeight() / LOCATION_SPRITE.getWidth();;
 
 	public Location location;
+	public boolean selected;
 
 	public Map<XY, Textures> randomElements;
 
@@ -122,7 +125,8 @@ public class UiLocation {
 		if (location.reachable || location.discovered) {
 			XY uiLocationPos = getUiLocationXY(location);
 			// batch.draw(spotTexture, uiPos.x - TILE_WIDTH / 2 - width/2, uiPos.y - TILE_HEIGHT / 2, width, height);
-			batch.draw(LOCATION_SPRITE, uiLocationPos.x, uiLocationPos.y, LOCATION_WIDTH, LOCATION_HEIGHT);
+			batch.draw(selected ? LOCATION_SELECTED_SPRITE : LOCATION_SPRITE, uiLocationPos.x, uiLocationPos.y, LOCATION_WIDTH,
+					LOCATION_HEIGHT);
 			Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
 
 		}

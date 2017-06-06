@@ -7,6 +7,7 @@ import java.util.List;
 import org.bloblines.Game;
 import org.bloblines.data.game.Player;
 import org.bloblines.data.map.Location;
+import org.bloblines.ui.map.UiLocation;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
@@ -32,7 +33,7 @@ public class MenuGroup extends Group {
 	private int elementsAngle = 35;
 
 	public Game game;
-	public Location location;
+	public UiLocation uiLocation;
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
 	 */
@@ -46,12 +47,12 @@ public class MenuGroup extends Group {
 	/** Description window. This not a a menu children cause it shouldn't rotate */
 	private Window descWindow;
 
-	public MenuGroup(Game game, Location location, Vector3 menuPosition, Stage stage) {
+	public MenuGroup(Game game, UiLocation uiLocation, Vector3 menuPosition, Stage stage) {
 		this.game = game;
-		this.location = location;
+		this.uiLocation = uiLocation;
 		setPosition(menuPosition.x, menuPosition.y);
 		initMenuComponents(stage);
-		openMenu(getLocationActions(game.player, location), false);
+		openMenu(getLocationActions(game.player, uiLocation.location), false);
 		stage.addActor(this);
 	}
 

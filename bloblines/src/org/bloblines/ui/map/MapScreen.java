@@ -363,7 +363,11 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	}
 
 	private void handleMenu() {
+		mouseClosestLocation = mouseOverLocation();
+		boolean reopen = true;
 		if (contextMenu != null) {
+			if (contextMenu.uiLocation.location.equals(mouseClosestLocation))
+				reopen = false;
 			contextMenu.remove();
 			contextMenu = null;
 			for (UiLocation uiLocation : uiArea.uiLocations) {
@@ -371,8 +375,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			}
 		}
 
-		mouseClosestLocation = mouseOverLocation();
-		if (mouseClosestLocation != null && mouseClosestLocation.reachable) {
+		if (reopen && mouseClosestLocation != null && mouseClosestLocation.reachable) {
 			XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
 			UiLocation closestUiLocation = null;
 			for (UiLocation uiLocation : uiArea.uiLocations) {

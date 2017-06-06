@@ -94,7 +94,7 @@ public abstract class Character {
 	}
 
 	public int changeAttributeCurrent(Attributes attr, int value) {
-		attributesCurrent.put(attr, Integer.max(attributesBase.get(attr) + value, 0));
+		attributesCurrent.put(attr, Integer.max(attributesCurrent.get(attr) + value, 0));
 		return attributesCurrent.get(attr);
 	}
 

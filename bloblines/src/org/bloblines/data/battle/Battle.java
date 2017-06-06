@@ -100,6 +100,10 @@ public class Battle {
 	 */
 	public void process(int rounds) {
 		logs.add(new Log(Type.BATTLE_INFO, "Start of Battle"));
+		for (Character c : characters) {
+			c.firstSkillDone = false;
+		}
+
 		// TODO battle passive effects
 
 		// Process turns
@@ -114,8 +118,8 @@ public class Battle {
 				// TODO onCharacter effect
 
 				Skill skill = character.getFirstSkill();
-				doSomething(character, skill);
 				logs.add(new Log(Type.BATTLE_INFO, character.name + " uses skill " + skill.name));
+				doSomething(character, skill);
 				character.firstSkillDone = true;
 				// TODO postCharacter effect
 				character = getNextCharacter(true);
@@ -154,19 +158,19 @@ public class Battle {
 			targets = characters;
 			break;
 		case HIGH_HP:
-			sortCharacters(enemies.characters, Attributes.HP, true);
-			targets.add(enemies.characters.get(0));
-			break;
-		case HIGH_SPEED:
-			sortCharacters(enemies.characters, Attributes.SPEED, true);
-			targets.add(enemies.characters.get(0));
-			break;
-		case LOW_HP:
 			sortCharacters(enemies.characters, Attributes.HP, false);
 			targets.add(enemies.characters.get(0));
 			break;
-		case LOW_SPEED:
+		case HIGH_SPEED:
 			sortCharacters(enemies.characters, Attributes.SPEED, false);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_HP:
+			sortCharacters(enemies.characters, Attributes.HP, true);
+			targets.add(enemies.characters.get(0));
+			break;
+		case LOW_SPEED:
+			sortCharacters(enemies.characters, Attributes.SPEED, true);
 			targets.add(enemies.characters.get(0));
 			break;
 		default:
@@ -183,14 +187,14 @@ public class Battle {
 		}
 	}
 
-	private void sortCharacters(List<Character> chars, final Attributes attr, boolean descending) {
+	private void sortCharacters(List<Character> chars, final Attributes attr, boolean ascending) {
 		Collections.sort(chars, new Comparator<Character>() {
 			@Override
 			public int compare(Character c0, Character c1) {
 				return c1.getAttributeCurrent(attr) - c0.getAttributeCurrent(attr);
 			}
 		});
-		if (descending) {
+		if (ascending) {
 			Collections.reverse(chars);
 		}
 	}

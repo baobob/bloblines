@@ -23,12 +23,12 @@ public class Player {
 		this.location.discovered = true;
 		this.pos = new XY(location.pos);
 		Blob b1 = new Blob();
-		b1.name = "Bobby";
+		b1.name = "Blob #1";
 		b1.age = 1;
 		b1.initializeAttributes(57, 5, 5, 5, 5);
 
 		Blob b2 = new Blob();
-		b2.name = "Jean-Blob";
+		b2.name = "Blob #2";
 		b2.age = 1;
 		b2.initializeAttributes(52, 5, 5, 5, 5);
 		this.blobs.add(b1);

@@ -12,10 +12,7 @@ import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
@@ -63,7 +60,7 @@ public class MenuGroup extends Group {
 		descWindow.setHeight(100);
 		descWindow.setPosition((Gdx.graphics.getWidth() - w) / 2, 50);
 		descWindow.setMovable(false);
-		descWindow.setVisible(false);
+		// descWindow.setVisible(false);
 		stage.addActor(descWindow);
 	}
 
@@ -170,16 +167,6 @@ public class MenuGroup extends Group {
 		updateRotation();
 	}
 
-	@Override
-	public void setVisible(boolean visible) {
-		for (Actor child : getChildren()) {
-			child.setVisible(visible);
-		}
-		// label.setVisible(visible);
-		descWindow.setVisible(visible);
-		super.setVisible(visible);
-	}
-
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.RIGHT) {
 			right();
@@ -197,22 +184,6 @@ public class MenuGroup extends Group {
 			return false;
 		}
 		return getCurrentItem().keyDown(keycode, game);
-	}
-
-	public void render(ShapeRenderer fgShapeRenderer) {
-
-		// Draw a black square to show selected menu
-		fgShapeRenderer.begin(ShapeType.Line);
-		fgShapeRenderer.setColor(0.2f, 0.2f, 0.2f, 1);
-		fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 + 61, 40, 40);
-		fgShapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 21, Gdx.graphics.getHeight() / 2 + 60, 42, 42);
-
-		// draw a line with menu title to show selected menu
-		// int lineX = Gdx.graphics.getWidth() / 2 - 220;
-		// int lineY = Gdx.graphics.getHeight() / 2 + 150;
-		// fgShapeRenderer.line(lineX, lineY, lineX + 140, lineY);
-		// fgShapeRenderer.line(lineX + 140, lineY, lineX + 225, lineY - 48);
-		fgShapeRenderer.end();
 	}
 
 	public static List<MenuElement> getLocationActions(Player p, Location location) {
@@ -236,5 +207,11 @@ public class MenuGroup extends Group {
 			this.elements = elements;
 			this.selectedElementIndex = selectedElementIndex;
 		}
+	}
+
+	@Override
+	public boolean remove() {
+		descWindow.remove();
+		return super.remove();
 	}
 }

@@ -21,6 +21,7 @@ public class CurrentLocationMenu extends SubMenu {
 
 	public CurrentLocationMenu(Player p, Location location) {
 		super(location.name + " - " + location.biome.toString(), Textures.ICON_CURRENT_ACTION);
+		items.add(new BackMenu());
 		for (Action action : location.actions) {
 			items.add(new ActionMenu(action, getTexture(action.type), action.description));
 		}

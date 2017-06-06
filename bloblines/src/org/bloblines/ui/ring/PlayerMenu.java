@@ -21,6 +21,8 @@ public class PlayerMenu extends SubMenu {
 	public PlayerMenu(Player p, Location location) {
 		super("Player menu", Textures.ICON_BOOK);
 
+		items.add(new BackMenu());
+
 		// Status menu
 		items.add(new MenuElement("Status", Textures.ICON_HEART));
 

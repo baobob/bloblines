@@ -39,6 +39,7 @@ public class Assets extends AssetManager {
 		ICON_CURRENT_ACTION("icons/icons8/48/Maps/map_marker-48.png"),
 		ICON_SWORD("icons/icons8/48/Gaming/minecraft_sword-48.png"), 
 		ICON_SHOP("icons/icons8/48/Business/shop-48.png"),
+		ICON_BACK("icons/icons8/48/Arrows/undo-48.png"),
 		
 		ICON_0("icons/icons8/48/Alphabet/0-48.png"),
 		ICON_1("icons/icons8/48/Alphabet/1-48.png"),

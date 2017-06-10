@@ -34,9 +34,13 @@ public class UiPlayer {
 	public static int HEIGHT = 64;
 	public static int WIDTH = 64;
 
+	private XY getUiPos() {
+		return UiLocation.getUiLocationCenterXY(player.location).translate(0, 20);
+	}
+
 	public UiPlayer(Player p) {
 		player = p;
-		currentUiPos = UiLocation.getUiLocationCenterXY(player.location);
+		currentUiPos = getUiPos();
 		Texture slimeTexture = new Texture(Gdx.files.internal("characters/slime.png"));
 
 		TextureRegion[][] slimeRegion = new TextureRegion(slimeTexture).split(32, 32);
@@ -55,7 +59,7 @@ public class UiPlayer {
 
 	public void update(float delta) {
 		stateTime += delta;
-		XY dest = UiLocation.getUiLocationCenterXY(player.location);
+		XY dest = getUiPos();
 		if (dest.equals(currentUiPos)) {
 			currentAnimation = MOVE_DOWN;
 			return;
@@ -85,7 +89,7 @@ public class UiPlayer {
 
 		double dz = Math.sqrt(dx * dx + dy * dy);
 		if (dz < 3) {
-			currentUiPos = UiLocation.getUiLocationCenterXY(player.location);
+			currentUiPos = getUiPos();
 			return;
 		}
 		double ax = 3 * dx / dz;

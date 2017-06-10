@@ -26,6 +26,10 @@ public class XY {
 		return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
 	}
 
+	public XY translate(float x, float y) {
+		return new XY(this.x + x, this.y + y);
+	}
+
 	@Override
 	public String toString() {
 		return x + "/" + y;

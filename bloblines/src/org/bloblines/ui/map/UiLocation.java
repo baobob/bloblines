@@ -134,27 +134,10 @@ public class UiLocation {
 			// batch.draw(spotTexture, uiPos.x - TILE_WIDTH / 2 - width/2, uiPos.y - TILE_HEIGHT / 2, width, height);
 			batch.draw(selected ? LOCATION_SELECTED_SPRITE : LOCATION_SPRITE, uiLocationPos.x, uiLocationPos.y, LOCATION_WIDTH,
 					LOCATION_HEIGHT);
-			Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
-
+			if (MapScreen.DEBUG) {
+				Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
+			}
 		}
-		// Texture texture = Game.assets.getTexture(Textures.SPRITE_LOCATION);
-		// Texture textureSelected = Game.assets.getTexture(Textures.SPRITE_LOCATION_SELECTED);
-		//
-		// Set<Location> currentLocations = game.player.location.getAccessibleNeighbors();
-		//
-		// if (!location.reachable) {
-		// continue;
-		// }
-		// if (!location.discovered && !currentLocations.contains(location)) {
-		// continue;
-		// }
-		//
-		// if (location.equals(mouseClosestLocation) && mouseOverLocation) {
-		// batch.draw(texture, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
-		// } else {
-		// batch.draw(textureSelected, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
-		// }
-
 	}
 
 	private void renderUndiscoveredLocation(SpriteBatch batch) {

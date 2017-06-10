@@ -117,8 +117,7 @@ public class UiLocation {
 
 		for (Entry<XY, Textures> e : randomElements.entrySet()) {
 			Texture eltTexture = Game.assets.getTexture(e.getValue());
-			batch.draw(eltTexture, tilePos.x + e.getKey().x, tilePos.y + e.getKey().y, eltTexture.getWidth() * ZOOM_FACTOR,
-					eltTexture.getHeight() * ZOOM_FACTOR);
+			batch.draw(eltTexture, tilePos.x + e.getKey().x, tilePos.y + e.getKey().y, eltTexture.getWidth(), eltTexture.getHeight());
 		}
 
 		// Render location spot

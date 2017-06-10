@@ -162,6 +162,18 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		// renderPaths(game.spriteBatch);
 		uiPlayer.render(game.spriteBatch);
 
+		renderDebugPanel(delta);
+
+		game.spriteBatch.end();
+
+		// Render UI (dialogs / buttons / etc)
+		stage.act(delta);
+		stage.draw();
+
+		// System.out.println("camera position: " + camera.position);
+	}
+
+	private void renderDebugPanel(float delta) {
 		if (showDebugPanel) {
 			// TODO : Use a Scene2D Window instead of game batch
 			// getDefaultFont().setScale(1f);
@@ -174,13 +186,6 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			debug((int) (1.0f / delta) + " FPS");
 		}
 
-		game.spriteBatch.end();
-
-		// Render UI (dialogs / buttons / etc)
-		stage.act(delta);
-		stage.draw();
-
-		// System.out.println("camera position: " + camera.position);
 	}
 
 	private XY getMousePos() {
@@ -393,6 +398,18 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		camera.zoom += (amount * 1.0f) / 10;
+		if (camera.zoom > 2)
+			camera.zoom = 2;
+		if (camera.zoom < 1)
+			camera.zoom = 1;
+
+		return super.scrolled(amount);
+
 	}
 
 	@Override

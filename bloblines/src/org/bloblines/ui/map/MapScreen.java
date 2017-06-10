@@ -41,7 +41,8 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	public UiArea uiArea;
 
 	private int debugHeight;
-	private boolean showDebugPanel = false;
+	public static boolean DEBUG = false;
+	public static boolean FOG_OF_WAR = true;
 
 	private float prevMouseX = 0;
 	private float prevMouseY = 0;
@@ -174,7 +175,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	}
 
 	private void renderDebugPanel(float delta) {
-		if (showDebugPanel) {
+		if (MapScreen.DEBUG) {
 			// TODO : Use a Scene2D Window instead of game batch
 			// getDefaultFont().setScale(1f);
 			debugHeight = Gdx.graphics.getHeight() - 40;
@@ -416,7 +417,10 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	public boolean keyDown(int keycode) {
 		boolean handle = false;
 		if (keycode == Keys.F1) {
-			showDebugPanel = !showDebugPanel;
+			MapScreen.DEBUG = !MapScreen.DEBUG;
+		}
+		if (keycode == Keys.F2) {
+			MapScreen.FOG_OF_WAR = !MapScreen.FOG_OF_WAR;
 		}
 		if (keycode == Keys.ESCAPE) {
 			// if (currentState == State.MAP) {

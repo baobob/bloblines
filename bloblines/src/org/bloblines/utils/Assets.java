@@ -52,6 +52,7 @@ public class Assets extends AssetManager {
 		ICON_8("icons/icons8/48/Alphabet/8-48.png"), 
 		ICON_9("icons/icons8/48/Alphabet/9-48.png"),
 
+		TILE_FOG("world/hexagon/tileFogBig.png"), 
 		TILE_WATER("world/hexagon/tileWaterBig.png"), 
 		TILE_BEACH("world/hexagon/tileSandBig.png"), 
 		TILE_GRASS("world/hexagon/tileGrassBig.png"), 

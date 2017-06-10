@@ -20,7 +20,7 @@ public class Player {
 		this.name = playerName;
 		this.area = area;
 		this.location = startPos;
-		this.location.discovered = true;
+		this.location.discover();
 		this.pos = new XY(location.pos);
 		Blob b1 = new Blob();
 		b1.name = "Blob #1";
@@ -33,6 +33,12 @@ public class Player {
 		b2.initializeAttributes(52, 5, 5, 5, 5);
 		this.blobs.add(b1);
 		this.blobs.add(b2);
+	}
+
+	public void travel(Location destination) {
+		location = destination;
+		pos = destination.pos;
+		destination.discover();
 	}
 
 	@Override

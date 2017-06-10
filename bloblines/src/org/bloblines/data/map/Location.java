@@ -83,6 +83,13 @@ public class Location {
 		return accessibleLocations;
 	}
 
+	public void discover() {
+		discovered = true;
+		for (Location neighbor : neighbors.values()) {
+			neighbor.discovered = true;
+		}
+	}
+
 	@Override
 	public String toString() {
 		return name;

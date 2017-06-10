@@ -109,6 +109,14 @@ public class UiLocation {
 	}
 
 	public void render(SpriteBatch batch) {
+		if (location.discovered || !MapScreen.FOG_OF_WAR) {
+			renderLocation(batch);
+		} else {
+			renderUndiscoveredLocation(batch);
+		}
+	}
+
+	private void renderLocation(SpriteBatch batch) {
 		// Render tile
 		Texture texture = Game.assets.getTexture(getTileTexture(location.biome));
 		XY tilePos = UiLocation.getUiTileXY(location);
@@ -121,7 +129,7 @@ public class UiLocation {
 		}
 
 		// Render location spot
-		if (location.reachable || location.discovered) {
+		if (location.reachable) {
 			XY uiLocationPos = getUiLocationXY(location);
 			// batch.draw(spotTexture, uiPos.x - TILE_WIDTH / 2 - width/2, uiPos.y - TILE_HEIGHT / 2, width, height);
 			batch.draw(selected ? LOCATION_SELECTED_SPRITE : LOCATION_SPRITE, uiLocationPos.x, uiLocationPos.y, LOCATION_WIDTH,
@@ -129,7 +137,6 @@ public class UiLocation {
 			Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
 
 		}
-
 		// Texture texture = Game.assets.getTexture(Textures.SPRITE_LOCATION);
 		// Texture textureSelected = Game.assets.getTexture(Textures.SPRITE_LOCATION_SELECTED);
 		//
@@ -148,5 +155,11 @@ public class UiLocation {
 		// batch.draw(textureSelected, location.pos.x - width / 2, location.pos.y - height / 2, width, height);
 		// }
 
+	}
+
+	private void renderUndiscoveredLocation(SpriteBatch batch) {
+		Texture texture = Game.assets.getTexture(Textures.TILE_FOG);
+		XY tilePos = UiLocation.getUiTileXY(location);
+		batch.draw(texture, tilePos.x, tilePos.y, TILE_WIDTH, TILE_HEIGHT);
 	}
 }

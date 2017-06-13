@@ -133,41 +133,103 @@ public class Area {
 	}
 
 	public void setRoads(Random random) {
+		setRandomStart(random);
+
+		List<Location> todo = new ArrayList<>();
+		Set<Location> done = new HashSet<>();
+
+		for (Location neighbor : startLocation.neighbors.values()) {
+			if (!neighbor.reachable && neighbor.biome != Biome.OCEAN) {
+				todo.add(neighbor);
+			}
+		}
+
+		while (todo.size() > 0) {
+			Location current = todo.remove(random.nextInt(todo.size()));
+
+			current.reachable = true;
+			int x = (int) current.pos.x;
+			int y = (int) current.pos.y;
+
+			if (y % 2 == 0) {
+				if (x < width - 1 && y > 0) {
+					if (locationsByPos.get(new XY(x + 1, y)).reachable && locationsByPos.get(new XY(x, y - 1)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x > 0 && y > 0) {
+					if (locationsByPos.get(new XY(x - 1, y - 1)).reachable && locationsByPos.get(new XY(x, y - 1)).reachable) {
+						current.reachable = false;
+					}
+					if (locationsByPos.get(new XY(x - 1, y - 1)).reachable && locationsByPos.get(new XY(x - 1, y)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x > 0 && y < height - 1) {
+					if (locationsByPos.get(new XY(x - 1, y)).reachable && locationsByPos.get(new XY(x - 1, y + 1)).reachable) {
+						current.reachable = false;
+					}
+					if (locationsByPos.get(new XY(x - 1, y + 1)).reachable && locationsByPos.get(new XY(x, y + 1)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x < width - 1 && y < height - 1) {
+					if (locationsByPos.get(new XY(x, y + 1)).reachable && locationsByPos.get(new XY(x + 1, y)).reachable) {
+						current.reachable = false;
+					}
+				}
+			} else {
+				if (x < width - 1 && y > 0) {
+					if (locationsByPos.get(new XY(x + 1, y)).reachable && locationsByPos.get(new XY(x + 1, y - 1)).reachable) {
+						current.reachable = false;
+					}
+					if (locationsByPos.get(new XY(x + 1, y - 1)).reachable && locationsByPos.get(new XY(x, y - 1)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x > 0 && y > 0) {
+					if (locationsByPos.get(new XY(x, y - 1)).reachable && locationsByPos.get(new XY(x - 1, y)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x > 0 && y < height - 1) {
+					if (locationsByPos.get(new XY(x - 1, y)).reachable && locationsByPos.get(new XY(x, y + 1)).reachable) {
+						current.reachable = false;
+					}
+				}
+				if (x < width - 1 && y < height - 1) {
+					if (locationsByPos.get(new XY(x, y + 1)).reachable && locationsByPos.get(new XY(x + 1, y + 1)).reachable) {
+						current.reachable = false;
+					}
+					if (locationsByPos.get(new XY(x + 1, y + 1)).reachable && locationsByPos.get(new XY(x + 1, y)).reachable) {
+						current.reachable = false;
+					}
+				}
+			}
+
+			if (current.reachable) {
+				for (Location neighbor : current.neighbors.values()) {
+					if (!neighbor.reachable && neighbor.biome != Biome.OCEAN) {
+						todo.add(neighbor);
+					}
+				}
+			}
+		}
+
 		for (Location l : locations) {
-			if (l.biome == Biome.OCEAN) {
-				l.reachable = false;
+			if (!l.reachable) {
 				for (Border b : l.borders.values()) {
 					b.notPassable();
 				}
 			}
 		}
 
-		for (Location l : locations) {
-			if (l.passablePaths < 2) {
-				continue;
-			}
-			if (random.nextBoolean()) {
-				l.reachable = false;
-				for (Border b : l.borders.values()) {
-					b.notPassable();
-				}
-			}
-			// We will randomly remove some roads
-			// int roadsToRemove = random.nextInt(l.passablePaths);
-			// List<Border> borders = new ArrayList<>(l.borders.values());
-			// while (roadsToRemove > 0) {
-			// Border randomBorder = borders.get(random.nextInt(borders.size()));
-			// if (l.passablePaths > 1 && randomBorder.other(l).passablePaths > 1) {
-			// randomBorder.notPassable();
-			// }
-			// roadsToRemove--;
-			// }
-		}
 	}
 
 	public void setRandomStart(Random random) {
 		while (startLocation == null || startLocation.biome != Biome.GRASSLAND) {
 			startLocation = locations.get(random.nextInt(locations.size()));
+			startLocation.reachable = true;
 		}
 	}
 

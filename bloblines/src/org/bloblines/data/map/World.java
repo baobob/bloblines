@@ -28,6 +28,5 @@ public class World {
 		HexaMapGenerator generator = new HexaMapGenerator(RANDOM, WIDTH, HEIGHT, EVENTS);
 		startArea = generator.generate();
 		areas.put(startArea.name, startArea);
-		startArea.setRandomStart(RANDOM);
 	}
 }

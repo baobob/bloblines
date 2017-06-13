@@ -30,7 +30,7 @@ public class Location {
 
 	/** Elevation between 1 and 100. 0 is not initialized */
 	public int elevation = 0;
-	public boolean reachable = true;
+	public boolean reachable = false;
 
 	public Biome biome = null;
 	public int passablePaths = 0;

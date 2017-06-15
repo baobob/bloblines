@@ -21,11 +21,9 @@ public class UiLocation {
 	public static int TILE_HEIGHT = 89 * ZOOM_FACTOR;
 	public static int TILE_HEIGHT_DIFF = 48 * ZOOM_FACTOR;
 	public static int TILE_ELEVATION_DIFF = 23 * ZOOM_FACTOR;
-	public static Texture LOCATION_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION);
-	public static Texture LOCATION_SELECTED_SPRITE = Game.assets.getTexture(Textures.SPRITE_LOCATION_SELECTED);
 
-	public static int LOCATION_WIDTH = 65;
-	public static int LOCATION_HEIGHT = LOCATION_WIDTH * LOCATION_SPRITE.getHeight() / LOCATION_SPRITE.getWidth();;
+	// public static int LOCATION_WIDTH = 65;
+	// public static int LOCATION_HEIGHT = LOCATION_WIDTH * LOCATION_SPRITE.getHeight() / LOCATION_SPRITE.getWidth();;
 
 	public Location location;
 	public boolean selected;
@@ -88,6 +86,18 @@ public class UiLocation {
 		return Textures.TILE_GRASS;
 	}
 
+	private Textures getLocationTexture(Biome biome) {
+		if (selected)
+			return Textures.TILE_ELT_REACHABLE_LOCATION_SELECTED;
+		if (biome == Biome.BEACH)
+			return Textures.TILE_ELT_REACHABLE_LOCATION_SAND;
+		if (biome == Biome.HILL)
+			return Textures.TILE_ELT_REACHABLE_LOCATION_HILL;
+		if (biome == Biome.MOUNTAIN)
+			return Textures.TILE_ELT_REACHABLE_LOCATION_SNOW;
+		return Textures.TILE_ELT_REACHABLE_LOCATION_GRASS;
+	}
+
 	public static XY getUiTileXY(Location l) {
 		int x = (int) l.pos.x * TILE_WIDTH;
 		if (l.pos.y % 2 == 0)
@@ -98,14 +108,9 @@ public class UiLocation {
 
 	public static XY getUiLocationXY(Location l) {
 		XY base = getUiTileXY(l);
-		float x = base.x + TILE_WIDTH / 2 - LOCATION_WIDTH / 2;
-		float y = base.y + TILE_HEIGHT / 2 + LOCATION_HEIGHT / 2;
+		float x = base.x + TILE_WIDTH / 2;
+		float y = base.y + 162;
 		return new XY(x, y);
-	}
-
-	public static XY getUiLocationCenterXY(Location l) {
-		XY base = getUiLocationXY(l);
-		return new XY(base.x + LOCATION_WIDTH / 2, base.y + LOCATION_HEIGHT / 2);
 	}
 
 	public void render(SpriteBatch batch) {
@@ -123,20 +128,20 @@ public class UiLocation {
 
 		batch.draw(texture, tilePos.x, tilePos.y, TILE_WIDTH, TILE_HEIGHT);
 
+		// Render location spot
+		if (location.reachable) {
+			Texture locationTexture = Game.assets.getTexture(getLocationTexture(location.biome));
+			// batch.draw(spotTexture, uiPos.x - TILE_WIDTH / 2 - width/2, uiPos.y - TILE_HEIGHT / 2, width, height);
+			batch.draw(locationTexture, tilePos.x, tilePos.y, TILE_WIDTH, TILE_HEIGHT);
+			if (MapScreen.DEBUG) {
+				XY uiLocationPos = getUiLocationXY(location);
+				Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
+			}
+		}
+
 		for (Entry<XY, Textures> e : randomElements.entrySet()) {
 			Texture eltTexture = Game.assets.getTexture(e.getValue());
 			batch.draw(eltTexture, tilePos.x + e.getKey().x, tilePos.y + e.getKey().y, eltTexture.getWidth(), eltTexture.getHeight());
-		}
-
-		// Render location spot
-		if (location.reachable) {
-			XY uiLocationPos = getUiLocationXY(location);
-			// batch.draw(spotTexture, uiPos.x - TILE_WIDTH / 2 - width/2, uiPos.y - TILE_HEIGHT / 2, width, height);
-			batch.draw(selected ? LOCATION_SELECTED_SPRITE : LOCATION_SPRITE, uiLocationPos.x, uiLocationPos.y, LOCATION_WIDTH,
-					LOCATION_HEIGHT);
-			if (MapScreen.DEBUG) {
-				Game.assets.getFontSmall().draw(batch, "" + location.pos.x + "/" + location.pos.y, uiLocationPos.x, uiLocationPos.y);
-			}
 		}
 	}
 

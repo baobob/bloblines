@@ -20,8 +20,6 @@ public class Assets extends AssetManager {
 		SPLASH_SCREEN("img/hourglass.png"), 
 		BATTLE_SCREEN("img/battle.jpg"), 
 		
-		SPRITE_LOCATION("characters/location.png"), 
-		SPRITE_LOCATION_SELECTED("characters/location_selected.png"), 
 		SPRITE_LOCATION_DONE("characters/spot_done.png"), 
 		SPRITE_PATH("characters/path.png"), 
 		SPRITE_PATH_SELECTED("characters/path_selected.png"), 
@@ -58,6 +56,12 @@ public class Assets extends AssetManager {
 		TILE_GRASS("world/hexagon/tileGrassBig.png"), 
 		TILE_HILL("world/hexagon/tileDirt_fullBig.png"), 
 		TILE_MOUNTAIN("world/hexagon/tileSnowBig.png"),
+
+		TILE_ELT_REACHABLE_LOCATION_GRASS("world/hexagon/tileGrass_tileBig.png"), 
+		TILE_ELT_REACHABLE_LOCATION_SAND("world/hexagon/tileSand_tileBig.png"), 
+		TILE_ELT_REACHABLE_LOCATION_SNOW("world/hexagon/tileSnow_tileBig.png"),
+		TILE_ELT_REACHABLE_LOCATION_HILL("world/hexagon/tileDirt_tileBig.png"), 
+		TILE_ELT_REACHABLE_LOCATION_SELECTED("world/hexagon/tileMagic_tileBig.png"), 
 		
 		TILE_ELT_SAND_CACTUS1("world/hexagon/treeCactus_1Big.png"),
 		TILE_ELT_SAND_CACTUS2("world/hexagon/treeCactus_2Big.png"),

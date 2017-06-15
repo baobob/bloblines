@@ -35,7 +35,7 @@ public class UiPlayer {
 	public static int WIDTH = 64;
 
 	private XY getUiPos() {
-		return UiLocation.getUiLocationCenterXY(player.location).translate(0, 20);
+		return UiLocation.getUiLocationXY(player.location).translate(0, 20);
 	}
 
 	public UiPlayer(Player p) {

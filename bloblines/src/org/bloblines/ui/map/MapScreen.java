@@ -199,12 +199,12 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 	private Location mouseOverLocation() {
 		XY mouse = getMousePos();
 		Location closestLocation = area.locations.get(0);
-		double d = mouse.distance(UiLocation.getUiLocationCenterXY(closestLocation));
+		double d = mouse.distance(UiLocation.getUiLocationXY(closestLocation));
 		boolean changed = true;
 		while (changed) {
 			changed = false;
 			for (Location l : closestLocation.neighbors.values()) {
-				double distance = mouse.distance(UiLocation.getUiLocationCenterXY(l));
+				double distance = mouse.distance(UiLocation.getUiLocationXY(l));
 				if (distance < d) {
 					d = distance;
 					closestLocation = l;
@@ -213,7 +213,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 				}
 			}
 		}
-		if (getMousePos().distance(UiLocation.getUiLocationCenterXY(closestLocation)) < 32) {
+		if (getMousePos().distance(UiLocation.getUiLocationXY(closestLocation)) < 100) {
 			return closestLocation;
 		}
 		return null;
@@ -251,7 +251,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 
 	private void updateMenu() {
 		if (contextMenu != null) {
-			XY menuPosition = UiLocation.getUiLocationCenterXY(contextMenu.uiLocation.location);
+			XY menuPosition = UiLocation.getUiLocationXY(contextMenu.uiLocation.location);
 			Vector3 menuPositionProjected = camera.project(new Vector3(menuPosition.x, menuPosition.y, 0));
 			contextMenu.setPosition(menuPositionProjected.x, menuPositionProjected.y);
 		}
@@ -375,7 +375,7 @@ public class MapScreen extends BlobScreen implements InputProcessor {
 		}
 
 		if (reopen && mouseClosestLocation != null && mouseClosestLocation.reachable) {
-			XY menuPos = UiLocation.getUiLocationCenterXY(mouseClosestLocation);
+			XY menuPos = UiLocation.getUiLocationXY(mouseClosestLocation);
 			UiLocation closestUiLocation = null;
 			for (UiLocation uiLocation : uiArea.uiLocations) {
 				if (mouseClosestLocation.equals(uiLocation.location)) {

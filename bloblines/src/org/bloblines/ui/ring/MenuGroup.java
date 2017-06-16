@@ -60,7 +60,6 @@ public class MenuGroup extends Group {
 		descWindow.setHeight(100);
 		descWindow.setPosition((Gdx.graphics.getWidth() - w) / 2, 50);
 		descWindow.setMovable(false);
-		// descWindow.setVisible(false);
 		stage.addActor(descWindow);
 	}
 
@@ -98,7 +97,7 @@ public class MenuGroup extends Group {
 		for (MenuElement item : items) {
 			addElement(item);
 		}
-		updateDescWindow();
+		updateDescWindow(null);
 	}
 
 	public void addElement(MenuElement item) {
@@ -125,14 +124,18 @@ public class MenuGroup extends Group {
 		rotation.setDuration(ROTATION_DURATION);
 		rotation.setRotation(rotationIndex * elementsAngle);
 		addAction(rotation);
-		updateDescWindow();
+		updateDescWindow(null);
 	}
 
-	private void updateDescWindow() {
+	public void updateDescWindow(String description) {
 		descWindow.setName(getCurrentItem().label);
 		descWindow.clearChildren();
-		Label text = new Label(getCurrentItem().getDescription(), Game.assets.getSkin());
+		Label text = new Label(uiLocation.location.name, Game.assets.getSkin());
 		descWindow.add(text);
+		if (description != null) {
+			Label desc = new Label(description, Game.assets.getSkin());
+			descWindow.add(desc);
+		}
 	}
 
 	public MenuElement getCurrentItem() {

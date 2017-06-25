@@ -5,6 +5,7 @@ import org.bloblines.data.map.ActionType;
 import org.bloblines.utils.Assets.Textures;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class MenuElement extends Image {
 
 	public String label;
+
+	public boolean selected = false;
 
 	public MenuElement(String label, Textures t) {
 		super(Game.assets.getTexture(t));
@@ -43,6 +46,14 @@ public class MenuElement extends Image {
 		return this.label;
 	}
 
+	public boolean select(Game game) {
+		// Rotate to this ?
+		getMenu().rotateTo(this);
+		// display info
+		getMenu().updateDescWindow(this.getDescription());
+		return true;
+	}
+
 	public boolean keyDown(int keycode, Game game) {
 		return false;
 	}
@@ -59,7 +70,13 @@ public class MenuElement extends Image {
 	/** Left click on menu item. */
 	public void leftClick() {
 		// We need to go through MenuGroup to get game reference and pass it to clicked menu
-		getMenu().selectMenuItem(this);
+		if (!selected) {
+			getMenu().selectMenuItem(this);
+		} else {
+			// do action and close menu
+			keyDown(Keys.ENTER, getMenu().game);
+			getMenu().remove();
+		}
 	}
 
 	// disabled method for submenus ?

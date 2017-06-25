@@ -31,6 +31,8 @@ public class MenuGroup extends Group {
 
 	public Game game;
 	public UiLocation uiLocation;
+	public MenuElement selectedItem;
+
 	/**
 	 * Vector to position the next menu elements we'll add. We rotate this vector each time we add a new menuElement
 	 */
@@ -143,7 +145,24 @@ public class MenuGroup extends Group {
 	}
 
 	public void selectMenuItem(MenuElement item) {
-		item.keyDown(Keys.ENTER, game);
+		if (selectedItem != null) {
+			selectedItem.selected = false;
+		}
+		selectedItem = item;
+		selectedItem.selected = true;
+		selectedItem.select(game);
+	}
+
+	public void rotateTo(MenuElement element) {
+		for (int i = 0; i < getChildren().size; i++) {
+			MenuElement child = (MenuElement) getChildren().get(i);
+			if (child.equals(element)) {
+				rotationIndex = i;
+				updateRotation();
+			} else {
+				child.selected = false;
+			}
+		}
 	}
 
 	/**
